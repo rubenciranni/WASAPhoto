@@ -124,6 +124,60 @@ paths:
           description: Photo not found.
         "500":
           $ref: "#/components/responses/InternalServerError"
+  /following/:
+    put:
+      tags: ["following"]
+      summary: Adds user to following
+      description: |-
+        If the logged in user is not banned by user given in request body
+        it adds user to following of logged in user;
+        otherwise it returns an error.
+      operationId: followUser
+      requestBody:
+        description: The user to add to following.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: Maria
+                  pattern: 'ˆ.*?$' 
+                  minLength: 3
+                  maxLength: 16
+        required: true
+      responses:
+        "200":
+          description: User was added successfully to following.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          description: Logged in user is banned by user given in request body.
+        "404":
+          description: User not found.
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /following/{username}:
+    parameters:
+      - $ref: "#/components/parameters/username"
+    delete:
+      tags: ["following"]
+      summary: Removes user from following
+      description: |-
+        Removes user given in path from following of the logged in user;
+        it does nothing if the given user is already not in following of the
+        logged in user.
+      operationId: unfollowUser
+      responses:
+        "200":
+          description: User was removed successfully from following.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: User was not found.
+        "500":
+          $ref: "#/components/responses/InternalServerError"    
 
 components:
   securitySchemes:
@@ -132,6 +186,16 @@ components:
       scheme: bearer
       bearerFormat: uuid
   parameters:
+    username:
+      in: path
+      name: username
+      required: true
+      schema:
+        type: string
+        example: Maria
+        pattern: 'ˆ.*?$' 
+        minLength: 3
+        maxLength: 16
     photoId:
       in: path
       name: photoId
