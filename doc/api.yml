@@ -253,8 +253,31 @@ paths:
         "404":
           description: User not found.
         "500":
-          $ref: "#/components/responses/InternalServerError"       
-
+          $ref: "#/components/responses/InternalServerError"
+  /stream:
+    get:
+      tags: ["stream"]
+      summary: Returns the stream of the logged in user
+      description: |-
+        Returns a list of photo of max size given by limit request body argument
+        from followed user in reverse chronological order
+        starting from date-time specified in response body start argument.
+        It also returns the date-time of the last photo.
+      operationId: getMyStream
+      responses:
+        "200":
+          description: The stream of the logged in user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Photo"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+          
 components:
   securitySchemes:
     bearerAuth:
