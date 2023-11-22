@@ -102,6 +102,28 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         "500":
           $ref: "#/components/responses/InternalServerError"
+  /photos/{photoId}:
+    parameters:
+      - $ref: "#/components/parameters/photoId"
+    delete:
+      tags: ["photos"]
+      summary: Deletes a photo
+      description: |-
+        If the logged in user is the author of the photo
+        with id given in path, it deletes the photo;
+        otherwise, it returns an error.
+      operationId: deletePhoto
+      responses:
+        "200":
+          description: Photo was deleted successfully.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          description: Logged in user is not the author of the photo.
+        "404":
+          description: Photo not found.
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
 components:
   securitySchemes:
@@ -109,6 +131,15 @@ components:
       type: http
       scheme: bearer
       bearerFormat: uuid
+  parameters:
+    photoId:
+      in: path
+      name: photoId
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "1bce29f4-4958-4dbb-9d93-d84e99748a1b"
   responses:
     UnauthorizedError:
       description: Authorization identifier is missing or invalid.
