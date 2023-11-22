@@ -315,6 +315,72 @@ paths:
           description: "Photo not found"
         "500":
           $ref: "#/components/responses/InternalServerError"
+  /photos/{photoId}/comments:
+    parameters:
+      - $ref: "#/components/parameters/photoId"
+    post:
+      tags: ["comments"]
+      summary: Adds a comment
+      description: |-
+        If the logged in user is not banned by the author
+        of the photo given in path, it adds the comment given
+        in request body to it; otherwise it returns an error.
+      operationId: commentPhoto
+      requestBody:
+        description: Comment text
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  minLength: 0
+                  maxLength: 2200
+        required: true
+      responses:
+        "201":
+          description: A comment was added successfully to the photo.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          description: Logged in user is banned by the author of the photo.
+        "404":
+          description: "Photo not found"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /photos/{photoId}/comments/{commentId}:
+    parameters:
+      - $ref: "#/components/parameters/photoId"
+      - $ref: "#/components/parameters/commentId"
+    delete:
+      tags: ["comments"]
+      summary: Deletes a comment
+      description: |-
+        Deletes the comment given in path from the photo given in path.
+        It gives an error if the photo or comment does not exist.
+      operationId: uncommentPhoto
+      requestBody:
+        description: Comment text
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                commentText:
+                  type: string
+                  minLength: 0
+                  maxLength: 2200
+        required: true
+      responses:
+        "200":
+          description: The comment was successfully removed from the photo.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: "Photo or comment not found"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
 components:
   securitySchemes:
@@ -336,6 +402,14 @@ components:
     photoId:
       in: path
       name: photoId
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "1bce29f4-4958-4dbb-9d93-d84e99748a1b"
+    commentId:
+      in: path
+      name: commentId
       required: true
       schema:
         type: string
