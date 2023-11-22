@@ -43,6 +43,34 @@ paths:
                     type: string
                     format: uuid
                     example: "1bce29f4-4958-4dbb-9d93-d84e99748a1b"
+  /settings/username:
+    put:
+      tags: ["username"]
+      summary: Sets the username of the logged in user
+      description: |-
+        Sets the username of the logged in user with data specified in request body.
+      operationId: setMyUserName
+      requestBody:
+        description: New username.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: 
+                  type: string
+                  example: Maria
+                  pattern: 'ˆ.*?$' 
+                  minLength: 3
+                  maxLength: 16
+        required: true
+      responses:
+        "201":
+          description: Username set successfully.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
 components:
   securitySchemes:
