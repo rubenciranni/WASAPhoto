@@ -226,7 +226,34 @@ paths:
         "404":
           description: User was not found.
         "500":
-          $ref: "#/components/responses/InternalServerError"   
+          $ref: "#/components/responses/InternalServerError"
+  /users/{username}:
+    parameters:
+      - $ref: "#/components/parameters/username"
+    get:
+      tags: ["profile"]
+      summary: Returns a user profile
+      description: |-
+        If the user given in path is not banned by logged in user,
+        it returns its profile (the user’s photos in reverse chronological order,
+        how many photos have been uploaded, and the user’s number of
+        followers and following); otherwise it returns an error.
+      operationId: getUserProfile
+      responses:
+        "200":
+          description: The requested user profile.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          description: Logged in user is banned by user given in path.
+        "404":
+          description: User not found.
+        "500":
+          $ref: "#/components/responses/InternalServerError"       
 
 components:
   securitySchemes:
@@ -253,6 +280,95 @@ components:
         type: string
         format: uuid
         example: "1bce29f4-4958-4dbb-9d93-d84e99748a1b"
+  schemas:
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        author:
+              type: string
+              example: Maria
+              pattern: 'ˆ.*?$' 
+              minLength: 3
+              maxLength: 16
+        dateTime:
+              type: string
+              format: date-time
+        comment:
+          type: string
+          minLength: 0
+          maxLength: 2200
+    Photo:
+      type: object
+      properties:
+        photo:
+          type: string
+          format: binary
+        metadata:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            author:
+              type: string
+              example: Maria
+              pattern: 'ˆ.*?$' 
+              minLength: 3
+              maxLength: 16
+            caption:
+              type: string
+              minLength: 0
+              maxLength: 2200
+            dateTime:
+              type: string
+              format: date-time
+            likes:
+              type: array
+              items:
+                type: string 
+                example: Maria
+                pattern: 'ˆ.*?$' 
+                minLength: 3
+                maxLength: 16
+            comments:
+              type: array
+              items:
+                $ref: "#/components/schemas/Comment"
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+          example: Maria
+          pattern: 'ˆ.*?$' 
+          minLength: 3
+          maxLength: 16
+        followers:
+          type: array
+          items:
+            type: string 
+            example: Maria
+            pattern: 'ˆ.*?$' 
+            minLength: 3
+            maxLength: 16
+        following:
+          type: array
+          items:
+            type: string 
+            example: Maria
+            pattern: 'ˆ.*?$' 
+            minLength: 3
+            maxLength: 16
+        photos:
+          type: array
+          items:
+            $ref: "#/components/schemas/Photo"
   responses:
     UnauthorizedError:
       description: Authorization identifier is missing or invalid.
