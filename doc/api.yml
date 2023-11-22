@@ -71,6 +71,37 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         "500":
           $ref: "#/components/responses/InternalServerError"
+  /photos/:
+    post:
+      tags: ["photos"]
+      summary: Uploads a new photo
+      description: |-
+        Uploads a new photo authored by the logged in user.
+      operationId: uploadPhoto
+      requestBody:
+        description: Photo and caption.
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                photo:
+                  type: string
+                  format: binary
+                caption:
+                  type: string
+                  minLength: 0
+                  maxLength: 2000
+        required: true
+      responses:
+        "201":
+          description: Photo uploaded successfully.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
 components:
   securitySchemes:
@@ -81,5 +112,7 @@ components:
   responses:
     UnauthorizedError:
       description: Authorization identifier is missing or invalid.
+    BadRequest:
+      description: Bad request
     InternalServerError:
       description: Unexpected condition was encountered.
