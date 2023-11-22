@@ -177,7 +177,56 @@ paths:
         "404":
           description: User was not found.
         "500":
-          $ref: "#/components/responses/InternalServerError"    
+          $ref: "#/components/responses/InternalServerError"
+  /bans/:
+    put:
+      tags: ["bans"]
+      summary: Adds user to bans
+      description: |-
+        It adds user given in request body to bans of logged in user.
+      operationId: banUser
+      requestBody:
+        description: The user to add to bans.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: Maria
+                  pattern: 'ˆ.*?$' 
+                  minLength: 3
+                  maxLength: 16 
+        required: true
+      responses:
+        "200":
+          description: User was added successfully to bans.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: User not found.
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /bans/{username}:
+    parameters:
+        - $ref: "#/components/parameters/username"
+    delete:
+      tags: ["bans"]
+      summary: Removes user from bans
+      description: |-
+        It removes user given in path from bans of the logged in user;
+        it does nothing if user given in path is already not in bans.
+      operationId: unbanUser
+      responses:
+        "200":
+          description: User was removed successfully from bans.
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          description: User was not found.
+        "500":
+          $ref: "#/components/responses/InternalServerError"   
 
 components:
   securitySchemes:
