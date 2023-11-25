@@ -21,6 +21,19 @@ paths:
       responses:
         '201': { $ref: "#/components/responses/SuccessfulDoLogin" }
         '500': { $ref: "#/components/responses/InternalServerError" }
+  /users/:
+    parameters:
+      - $ref: "#/components/parameters/QueryStringUsername"
+    get:
+      tags: ["users"]
+      summary: Users matching given username.
+      description: |-
+        Returns an array of users that match the username given in query.
+      operationId: searchUser
+      responses:
+        '201': { $ref: "#/components/responses/SuccessfulSearchUser" }
+        '401': { $ref: "#/components/responses/UnauthorizedError" }
+        '500': { $ref: "#/components/responses/InternalServerError" }
 
 components:
   schemas:
@@ -37,6 +50,12 @@ components:
       type: string
       format: uuid
     # Objects
+    User:
+      description: An existing user.
+      type: object
+      properties:
+        userId: { $ref: "#/components/schemas/userId" }
+        username: { $ref: "#/components/schemas/username"}
   requestBodies:
     DoLogin:
       description: User details.
@@ -50,6 +69,10 @@ components:
   responses:
     InternalServerError:
       description: Unexpected condition was encountered.
+    UnauthorizedError:
+      description: Authorization identifier is missing or invalid.
+    BadRequest:
+      description: Bad request.
     SuccessfulDoLogin:
       description: User log-in action successful.
       content:
@@ -58,6 +81,19 @@ components:
             type: object
             properties:
               identifier: { $ref: "#/components/schemas/userId" }
+    SuccessfulSearchUser:
+      description: A list of users.
+      content:
+        application/json:
+          schema:
+            type: array
+            items: { $ref: "#/components/schemas/User" }
+  parameters:
+    QueryStringUsername:
+      name: username
+      in: query
+      schema: { $ref: "#/components/schemas/username"}
+      required: true
   securitySchemes:
     bearerAuth:
       type: http
