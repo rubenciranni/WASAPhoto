@@ -276,6 +276,18 @@ paths:
         '403': { $ref: "#/components/responses/Forbidden"}
         '404': { $ref: "#/components/responses/NotFound"}
         '500': { $ref: "#/components/responses/InternalServerError" }
+  /stream:
+    get:
+      tags: ["stream"]
+      summary: Returns the stream of the logged in user
+      description: |-
+        Returns a list of photos from followed users in reverse chronological
+        order.
+      operationId: getMyStream
+      responses:
+        '200': { $ref: "#/components/responses/SuccessfulGetMyStream" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '500': { $ref: "#/components/responses/InternalServerError" }
 
 components:
   schemas:
@@ -321,6 +333,17 @@ components:
       description: A list of users.
       type: array
       items: { $ref: "#/components/schemas/User" }
+    Photo:
+      description: An existing photo.
+      properties:
+        author: { $ref: "#/components/schemas/User" }
+        date-time: { $ref: "#/components/schemas/date-time" }
+        caption: { $ref: "#/components/schemas/text"}
+        photoId: { $ref: "#/components/schemas/photoId" }
+    PhotoList:
+      description: A list of photos.
+      type: array
+      items: { $ref: "#/components/schemas/Photo" }
     Comment:
       description: A comment.
       type: object
@@ -507,6 +530,11 @@ components:
       description: User was added succesfully to bans.
     SuccessfulUnbanUser:
       description: User was removed succesfully from bans.
+    SuccessfulGetMyStream:
+      description: The stream of the logged in user.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/PhotoList" }
   parameters:
     QueryStringUsername:
       description: Username passed in query string.
