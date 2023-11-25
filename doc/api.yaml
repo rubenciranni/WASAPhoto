@@ -6,6 +6,8 @@ info:
 security:
   - bearerAuth: []
 
+# TODO: implement pagination for user, comment, and like lists.
+
 paths:
   /session:
     post:
@@ -54,7 +56,7 @@ paths:
       - $ref: "#/components/parameters/PathPhotoId"
     get:
       tags: ["photos"]
-      summary: Get a photo
+      summary: Gets a photo
       description: |-
         If the logged in user is not banned by the author of the photo,
         it returns the requested photo; otherwise it returns an error.
@@ -100,7 +102,7 @@ paths:
       - $ref: "#/components/parameters/PathPhotoId"
     get:
       tags: ["comments"]
-      summary: Get the comments for a photo
+      summary: Gets the comments for a photo
       description: |-
         If the logged in user is not banned by the author of the photo, it returns
         the list of comments the photo; otherwise it returns an error.
@@ -148,7 +150,7 @@ paths:
       - $ref: "#/components/parameters/QueryStringUsername"
     get:
       tags: ["users"]
-      summary: Get users matching given username.
+      summary: Gets users matching given username.
       description: |-
         Returns an array of users that match the username given in query.
       operationId: searchUser
@@ -156,12 +158,28 @@ paths:
         '200': { $ref: "#/components/responses/SuccessfulSearchUser" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '500': { $ref: "#/components/responses/InternalServerError" }
+  /users/{userId}:
+    parameters:
+      - $ref: "#/components/parameters/PathUserId"
+    get:
+      tags: ["profile"] 
+      summary: Gets a user profile.  
+      description: |-
+        If the logged in user is not banned by the user with userId given in path,
+        it returns its profile; otherwise it returns an error.
+      operationId: getUserProfile
+      responses:
+        '200': { $ref: "#/components/responses/SuccessfulGetUserProfile" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '403': { $ref: "#/components/responses/Forbidden"}
+        '404': { $ref: "#/components/responses/NotFound"}
+        '500': { $ref: "#/components/responses/InternalServerError" }
   /users/{userId}/following/:
     parameters:
       - $ref: "#/components/parameters/PathUserId"
     get:
       tags: ["users"]
-      summary: Get the following of a user
+      summary: Gets the following of a user
       description: |-
         If the logged in user is not banned by the user with userId given in path,
         it returns the list of its following; otherwise it returns an error.
@@ -177,7 +195,7 @@ paths:
       - $ref: "#/components/parameters/PathUserId"
     get:
       tags: ["users"]
-      summary: Get the followers of a user
+      summary: Gets the followers of a user
       description: |-
         If the logged in user is not banned by the user with userId given in path,
         it returns the list of its followers; otherwise it returns an error.
@@ -279,7 +297,7 @@ paths:
   /stream:
     get:
       tags: ["stream"]
-      summary: Returns the stream of the logged in user
+      summary: Gets the stream of the logged in user
       description: |-
         Returns a list of photos from followed users in reverse chronological
         order.
@@ -333,6 +351,19 @@ components:
       description: A list of users.
       type: array
       items: { $ref: "#/components/schemas/User" }
+    UserProfile:
+      description: A user profile.
+      type: object
+      properties:
+        userId: { $ref: "#/components/schemas/userId" }
+        username: { $ref: "#/components/schemas/username"}
+        numberOfPhotos:
+          type: integer
+        numberOfFollowers:
+          type: integer
+        numberOfFollowing:
+          type: integer
+        photos: { $ref: "#/components/schemas/PhotoList" }
     Photo:
       description: An existing photo.
       properties:
@@ -512,6 +543,11 @@ components:
       content:
         application/json:
           schema: { $ref: "#/components/schemas/UserList" }
+    SuccessfulGetUserProfile:
+      description: The requested user profile.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/UserProfile" }
     SuccessfulGetFollowing:
       description: The list of following of the user.
       content:
