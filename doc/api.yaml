@@ -203,6 +203,64 @@ paths:
         '403': { $ref: "#/components/responses/Forbidden"}
         '404': { $ref: "#/components/responses/NotFound"}
         '500': { $ref: "#/components/responses/InternalServerError" }
+  /following/{userId}:
+    parameters:
+       - $ref: "#/components/parameters/PathUserId"
+    put:
+      tags: ["following"]
+      summary: Adds a user to following
+      description: |-
+        If the logged in user is not banned by the user with userId given in path,
+        it adds him/her to the following of the logged in user;
+        otherwise it returns an error.
+      operationId: followUser
+      responses:
+        '201': { $ref: "#/components/responses/SuccessfulFollowUser" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '403': { $ref: "#/components/responses/Forbidden"}
+        '404': { $ref: "#/components/responses/NotFound"}
+        '500': { $ref: "#/components/responses/InternalServerError" }
+    delete:
+      tags: ["following"]
+      summary: Removes a user from following
+      description: |-
+        It unfollows the user with userId given in path
+        (or does nothing if it is alerady not followed);
+        otherwise it returns an error.
+      operationId: unfollowUser
+      responses:
+        '200': { $ref: "#/components/responses/SuccessfulUnfollowUser" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '403': { $ref: "#/components/responses/Forbidden"}
+        '404': { $ref: "#/components/responses/NotFound"}
+        '500': { $ref: "#/components/responses/InternalServerError" }
+  /bans/{userId}:
+    parameters:
+       - $ref: "#/components/parameters/PathUserId"
+    put:
+      tags: ["bans"]
+      summary: Adds a user to bans
+      description: |-
+        It adds the user with userId given in path to the bans of the logged in user.
+      operationId: banUser
+      responses:
+        '201': { $ref: "#/components/responses/SuccessfulBanUser" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '403': { $ref: "#/components/responses/Forbidden"}
+        '404': { $ref: "#/components/responses/NotFound"}
+        '500': { $ref: "#/components/responses/InternalServerError" }
+    delete:
+      tags: ["bans"]
+      summary: Removes a user from following
+      description: |-
+        It removes the user with userId given in path from the bans of the logged in user.
+      operationId: unbanUser
+      responses:
+        '200': { $ref: "#/components/responses/SuccessfulUnbanUser" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '403': { $ref: "#/components/responses/Forbidden"}
+        '404': { $ref: "#/components/responses/NotFound"}
+        '500': { $ref: "#/components/responses/InternalServerError" }
 
 components:
   schemas:
@@ -416,6 +474,14 @@ components:
       content:
         application/json:
           schema: { $ref: "#/components/schemas/UserList" }
+    SuccessfulFollowUser:
+      description: User was added succesfully to following.
+    SuccessfulUnfollowUser:
+      description: User was removed successfully from following.
+    SuccessfulBanUser:
+      description: User was added succesfully to bans.
+    SuccessfulUnbanUser:
+      description: User was removed succesfully from bans.
   parameters:
     QueryStringUsername:
       description: Username passed in query string.
