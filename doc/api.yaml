@@ -166,13 +166,45 @@ paths:
       - $ref: "#/components/parameters/QueryStringUsername"
     get:
       tags: ["users"]
-      summary: Users matching given username.
+      summary: Get users matching given username.
       description: |-
         Returns an array of users that match the username given in query.
       operationId: searchUser
       responses:
         '200': { $ref: "#/components/responses/SuccessfulSearchUser" }
         '401': { $ref: "#/components/responses/Unauthorized" }
+        '500': { $ref: "#/components/responses/InternalServerError" }
+  /users/{userId}/following/:
+    parameters:
+      - $ref: "#/components/parameters/PathUserId"
+    get:
+      tags: ["users"]
+      summary: Get the following of a user
+      description: |-
+        If the logged in user is not banned by the user with userId given in path,
+        it returns the list of its following; otherwise it returns an error.
+      operationId: getFollowing
+      responses:
+        '200': { $ref: "#/components/responses/SuccessfulGetFollowing" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '403': { $ref: "#/components/responses/Forbidden"}
+        '404': { $ref: "#/components/responses/NotFound"}
+        '500': { $ref: "#/components/responses/InternalServerError" }
+  /users/{userId}/followers/:
+    parameters:
+      - $ref: "#/components/parameters/PathUserId"
+    get:
+      tags: ["users"]
+      summary: Get the followers of a user
+      description: |-
+        If the logged in user is not banned by the user with userId given in path,
+        it returns the list of its followers; otherwise it returns an error.
+      operationId: getFollowers
+      responses:
+        '200': { $ref: "#/components/responses/SuccessfulGetFollowers" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '403': { $ref: "#/components/responses/Forbidden"}
+        '404': { $ref: "#/components/responses/NotFound"}
         '500': { $ref: "#/components/responses/InternalServerError" }
 
 components:
@@ -374,6 +406,16 @@ components:
               identifier: { $ref: "#/components/schemas/commentId" }
     SuccessfulSearchUser:
       description: A list of users matching the given username.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/UserList" }
+    SuccessfulGetFollowing:
+      description: The list of following of the user.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/UserList" }
+    SuccessfulGetFollowers:
+      description: The list of followers of the user.
       content:
         application/json:
           schema: { $ref: "#/components/schemas/UserList" }
