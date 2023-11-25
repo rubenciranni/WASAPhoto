@@ -21,6 +21,21 @@ paths:
       responses:
         '201': { $ref: "#/components/responses/SuccessfulDoLogin" }
         '500': { $ref: "#/components/responses/InternalServerError" }
+  /settings/username:
+    put:
+      tags: ["settings"]
+      summary: Updates the username
+      description: |-
+        It changes the username of the logged in user with the new
+        username provided in request body; it returns Forbidden Error if the new
+        username is already taken by another user.
+      operationId: setMyUserName
+      requestBody: { $ref: "#/components/requestBodies/SetMyUserName" }
+      responses:
+        '201': { $ref: "#/components/responses/SuccessfulSetMyUserName" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '403': { $ref: "#/components/responses/Forbidden"}
+        '500': { $ref: "#/components/responses/InternalServerError" }
   /photos/:
     post:
       tags: ["photos"]
@@ -328,6 +343,14 @@ components:
             properties:
               username: { $ref: "#/components/schemas/username"}
       required: true
+    SetMyUserName:
+      description: New username.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              newUsername: { $ref: "#/components/schemas/username"}
     UploadPhoto:
       description: Photo and caption.
       content:
@@ -406,6 +429,8 @@ components:
             type: object
             properties:
               identifier: { $ref: "#/components/schemas/userId" }
+    SuccessfulSetMyUserName:
+      description: Username updated successfully.
     SuccessfulUploadPhoto:
       description: Photo uploaded successfully.
       content:
