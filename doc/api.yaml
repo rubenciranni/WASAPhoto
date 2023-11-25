@@ -64,6 +64,55 @@ paths:
         '403': { $ref: "#/components/responses/Forbidden"}
         '404': { $ref: "#/components/responses/NotFound"}
         '500': { $ref: "#/components/responses/InternalServerError" }
+  /photos/{photoId}/likes/:
+    parameters:
+      - $ref: "#/components/parameters/PathPhotoId"
+    get:
+      tags: ["likes"]
+      summary: Gets the likes for a photo
+      description: |-
+        If the logged in user is not banned by the author of the photo, it returns
+        the list of users who liked the photo; otherwise it returns an error.
+      operationId: getLikes
+      responses:
+        '200': { $ref: "#/components/responses/SuccessfulGetLikes" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '403': { $ref: "#/components/responses/Forbidden"}
+        '404': { $ref: "#/components/responses/NotFound"}
+        '500': { $ref: "#/components/responses/InternalServerError" }
+  /photos/{photoId}/likes/{userId}:
+    parameters:
+      - $ref: "#/components/parameters/PathPhotoId"
+      - $ref: "#/components/parameters/PathUserId"
+    put:
+      tags: ["likes"]
+      summary: Adds a like to a photo
+      description: |-
+        If userId provided in path corresponds to the logged in user, and the
+        logged in user is not banned by the author of the photo, it adds a like
+        to the photo with photoId given in path; otherwise it returns an error.
+      operationId: likePhoto
+      responses:
+        '200': { $ref: "#/components/responses/SuccessfulLikePhoto" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '403': { $ref: "#/components/responses/Forbidden"}
+        '404': { $ref: "#/components/responses/NotFound"}
+        '500': { $ref: "#/components/responses/InternalServerError" }
+    delete:
+      tags: ["likes"]
+      summary: Removes the like from a photo
+      description: |-
+        If userId provided in path corresponds to the logged in user,
+        it removes a like from the photo with photoId given in path
+        (or does nothing if the photo already does not have a like);
+        otherwise it returns an error.
+      operationId: unlikePhoto
+      responses:
+        '200': { $ref: "#/components/responses/SuccessfulUnlikePhoto" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '403': { $ref: "#/components/responses/Forbidden"}
+        '404': { $ref: "#/components/responses/NotFound"}
+        '500': { $ref: "#/components/responses/InternalServerError" }
   /users/:
     parameters:
       - $ref: "#/components/parameters/QueryStringUsername"
@@ -106,6 +155,10 @@ components:
       properties:
         userId: { $ref: "#/components/schemas/userId" }
         username: { $ref: "#/components/schemas/username"}
+    UserList:
+      description: A list of users.
+      type: array
+      items: { $ref: "#/components/schemas/User" }
   requestBodies:
     DoLogin:
       description: User details.
@@ -212,28 +265,38 @@ components:
             type: object
             properties:
               identifier: { $ref: "#/components/schemas/photoId" }
-    SuccessfulSearchUser:
-      description: A list of users.
+    SuccessfulLikePhoto:
+      description: A like was added to the photo.
+    SuccessfulUnlikePhoto:
+      description: The like was removed from the photo.
+    SuccessfulGetLikes:
+      description: A list of users who liked the photo.
       content:
         application/json:
-          schema:
-            type: array
-            items: { $ref: "#/components/schemas/User" }
+          schema: { $ref: "#/components/schemas/UserList" }
+    SuccessfulSearchUser:
+      description: A list of users matching the given username.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/UserList" }
   parameters:
     QueryStringUsername:
+      description: Username passed in query string.
       name: username
       in: query
       schema: { $ref: "#/components/schemas/username"}
       required: true
     PathUserId:
+      description: User identifier.
       name: userId
       in: path
       schema: { $ref: "#/components/schemas/userId" }
       required: true
     PathPhotoId:
+      description: Photo identifier.
       name: photoId
       in: path
-      schema: { $ref: "#/components/schemas/userId" }
+      schema: { $ref: "#/components/schemas/photoId" }
       required: true
   securitySchemes:
     bearerAuth:
