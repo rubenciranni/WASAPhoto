@@ -31,8 +31,38 @@ paths:
       requestBody: { $ref: "#/components/requestBodies/UploadPhoto" }
       responses:
         '201': { $ref: "#/components/responses/SuccessfulUploadPhoto" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/UnauthorizedError" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '413': { $ref: "#/components/responses/ContentTooLarge" }
+        '500': { $ref: "#/components/responses/InternalServerError" }
+  /photos/{photoId}:
+    parameters:
+      - $ref: "#/components/parameters/PathPhotoId"
+    get:
+      tags: ["photos"]
+      summary: Get a photo
+      description: |-
+        If the logged in user is not banned by the author of the photo,
+        it returns the requested photo; otherwise it returns an error.
+      operationId: getPhoto
+      responses:
+        '200': { $ref: "#/components/responses/SuccessfulGetPhoto" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '403': { $ref: "#/components/responses/Forbidden"}
+        '404': { $ref: "#/components/responses/NotFound"}
+        '500': { $ref: "#/components/responses/InternalServerError" }
+    delete:
+      tags: ["photos"]
+      summary: Deletes a photo
+      description: |-
+        If the logged in user is the author of the photo
+        with id given in path, it deletes the photo;
+        otherwise, it returns an error.
+      operationId: deletePhoto
+      responses:
+        '200': { $ref: "#/components/responses/SuccessfulDeletePhoto" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '403': { $ref: "#/components/responses/Forbidden"}
+        '404': { $ref: "#/components/responses/NotFound"}
         '500': { $ref: "#/components/responses/InternalServerError" }
   /users/:
     parameters:
@@ -44,13 +74,16 @@ paths:
         Returns an array of users that match the username given in query.
       operationId: searchUser
       responses:
-        '201': { $ref: "#/components/responses/SuccessfulSearchUser" }
-        '401': { $ref: "#/components/responses/UnauthorizedError" }
+        '200': { $ref: "#/components/responses/SuccessfulSearchUser" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
         '500': { $ref: "#/components/responses/InternalServerError" }
 
 components:
   schemas:
     # Fields
+    errorMessage:
+      description: An error message.
+      type: string
     username:
       description: Username associated with a unique user.
       type: string
@@ -102,10 +135,52 @@ components:
   responses:
     InternalServerError:
       description: Unexpected condition was encountered.
-    UnauthorizedError:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message: { $ref: "#/components/schemas/errorMessage" }
+    Unauthorized:
       description: Authorization identifier is missing or invalid.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message: { $ref: "#/components/schemas/errorMessage" }
     BadRequest:
       description: Bad request.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message: { $ref: "#/components/schemas/errorMessage" }
+    Forbidden:
+      description: Logged in user cannot perform the requested operation.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message: { $ref: "#/components/schemas/errorMessage" }
+    NotFound:
+      description: Requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message: { $ref: "#/components/schemas/errorMessage" }
+    ContentTooLarge:
+      description: Content provided in request is too large.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message: { $ref: "#/components/schemas/errorMessage" }
     SuccessfulDoLogin:
       description: User log-in action successful.
       content:
@@ -116,6 +191,21 @@ components:
               identifier: { $ref: "#/components/schemas/userId" }
     SuccessfulUploadPhoto:
       description: Photo uploaded successfully.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              identifier: { $ref: "#/components/schemas/photoId" }
+    SuccessfulGetPhoto:
+      description: The requested photo.
+      content:
+        image/png:
+          schema:
+            type: string
+            format: binary
+    SuccessfulDeletePhoto:
+      description: Photo was deleted successfully.
       content:
         application/json:
           schema:
@@ -137,6 +227,11 @@ components:
       required: true
     PathUserId:
       name: userId
+      in: path
+      schema: { $ref: "#/components/schemas/userId" }
+      required: true
+    PathPhotoId:
+      name: photoId
       in: path
       schema: { $ref: "#/components/schemas/userId" }
       required: true
