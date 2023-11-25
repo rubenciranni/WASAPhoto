@@ -21,6 +21,19 @@ paths:
       responses:
         '201': { $ref: "#/components/responses/SuccessfulDoLogin" }
         '500': { $ref: "#/components/responses/InternalServerError" }
+  /photos/:
+    post:
+      tags: ["photos"]
+      summary: Uploads a new photo
+      description: |-
+        Uploads a new photo authored by the logged in user.
+      operationId: uploadPhoto
+      requestBody: { $ref: "#/components/requestBodies/UploadPhoto" }
+      responses:
+        '201': { $ref: "#/components/responses/SuccessfulUploadPhoto" }
+        '400': { $ref: "#/components/responses/BadRequest" }
+        '401': { $ref: "#/components/responses/UnauthorizedError" }
+        '500': { $ref: "#/components/responses/InternalServerError" }
   /users/:
     parameters:
       - $ref: "#/components/parameters/QueryStringUsername"
@@ -49,6 +62,10 @@ components:
       description: UUID associated with a unique user.
       type: string
       format: uuid
+    photoId:
+      description: UUID associated with a unique photo.
+      type: string
+      format: uuid
     # Objects
     User:
       description: An existing user.
@@ -66,6 +83,22 @@ components:
             properties:
               username: { $ref: "#/components/schemas/username"}
       required: true
+    UploadPhoto:
+      description: Photo and caption.
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              photo:
+                type: string
+                format: binary
+                maxLength: 10485760 # 10MB
+              caption:
+                type: string
+                minLength: 0
+                maxLength: 2200
+      required: true
   responses:
     InternalServerError:
       description: Unexpected condition was encountered.
@@ -81,6 +114,14 @@ components:
             type: object
             properties:
               identifier: { $ref: "#/components/schemas/userId" }
+    SuccessfulUploadPhoto:
+      description: Photo uploaded successfully.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              identifier: { $ref: "#/components/schemas/photoId" }
     SuccessfulSearchUser:
       description: A list of users.
       content:
@@ -93,6 +134,11 @@ components:
       name: username
       in: query
       schema: { $ref: "#/components/schemas/username"}
+      required: true
+    PathUserId:
+      name: userId
+      in: path
+      schema: { $ref: "#/components/schemas/userId" }
       required: true
   securitySchemes:
     bearerAuth:
