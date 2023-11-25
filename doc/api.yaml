@@ -33,7 +33,7 @@ paths:
       security: []
       responses:
         '201':
-          description: User log-in action successful
+          description: User log-in action successful.
           content:
             application/json:
               schema:
@@ -42,4 +42,14 @@ paths:
                   identifier:
                     type: string
                     format: uuid
-                    example: "1bce29f4-4958-4dbb-9d93-d84e99748a1b"
+        '500': { $ref: "#/components/responses/InternalServerError" }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: uuid
+  responses:
+    InternalServerError:
+      description: Unexpected condition was encountered.
