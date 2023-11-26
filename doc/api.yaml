@@ -425,9 +425,11 @@ components:
         previousOffset:
           type: integer
           minimum: 0
+          example: 20
         nextOffset:
           type: integer
           minimum: 0
+          example: 40
         hasPrevious:
           type: boolean
         hasNext:
@@ -457,10 +459,16 @@ components:
         username: { $ref: "#/components/schemas/username" }
         numberOfPhotos:
           type: integer
+          minimum: 0
+          example: 20
         numberOfFollowers:
           type: integer
+          minimum: 0
+          example: 253
         numberOfFollowing:
           type: integer
+          minimum: 0
+          example: 253
     Photo:
       description: An existing photo.
       properties:
@@ -469,8 +477,12 @@ components:
         caption: { $ref: "#/components/schemas/text" }
         numberOfLikes:
           type: integer
+          minimum: 0
+          example: 53
         numberOfComments:
           type: integer
+          minimum: 0
+          example: 9
         photoId: { $ref: "#/components/schemas/photoId" }
     PhotoList:
       description: A list of photos.
@@ -726,6 +738,7 @@ components:
         minimum: 1
         maximum: 50
         default: 20
+        example: 20
       required: false 
     Offset:
       description: |-
@@ -737,6 +750,7 @@ components:
         type: integer
         minimum: 0
         default: 0
+        example: 0
   links:
     GetPhotoByPhotoId:
       description: |-
