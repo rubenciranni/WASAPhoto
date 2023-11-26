@@ -15,7 +15,7 @@ info:
     - Ban other users and remove the ban.
     - Get users profiles showsing: the user’s photos (in reverse chronological order),
       how many photos have been uploaded, and the user’s followers and following.
-    - Change username
+    - Change username.
     - Upload photos and remove photos (removal of an image will also remove likes and comments).
     - Follow/unfollow other users.
     - Search other user profiles via username.
@@ -85,7 +85,7 @@ paths:
         - $ref: "#/components/parameters/Offset"
         - $ref: "#/components/parameters/QueryStringUserId"
       tags: ["photos"]
-      summary: Gets a list of photos.
+      summary: Gets a list of photos
       description: |-
         If the logged in user is not banned by the user with `userId` specified
         in query string, it returns a list of photos authored by that user;
@@ -167,7 +167,7 @@ paths:
         '500': { $ref: "#/components/responses/InternalServerError" }
     post:
       tags: ["comments"]
-      summary: Adds a comment to a photo.
+      summary: Adds a comment to a photo
       description: |-
         If the logged in user is not banned by the author of the photo, it adds
         a comment to the photo authored by the logged in user;
@@ -206,7 +206,7 @@ paths:
         - $ref: "#/components/parameters/Limit"
         - $ref: "#/components/parameters/Offset"
       tags: ["users"]
-      summary: Gets users matching given username.
+      summary: Gets users matching given username
       description: |-
         Returns an array of users that match the `username` given in query.
       operationId: searchUser
@@ -219,7 +219,7 @@ paths:
       - $ref: "#/components/parameters/PathUserId"
     get:
       tags: ["profile"] 
-      summary: Gets a user profile.  
+      summary: Gets a user profile
       description: |-
         If the logged in user is not banned by the user with `userId` given in path,
         it returns its profile; otherwise it returns an error.
@@ -381,8 +381,10 @@ components:
       type: string
       format: date-time
     text:
-      description: A generic text.
+      description: A generic text that does not exceed 2200 characters.
       type: string
+      example: lorem ipsum dolor sit amet.
+      pattern: '.*'
       minLength: 0
       maxLength: 2200
     photo:
@@ -394,8 +396,8 @@ components:
     username:
       description: Username associated with a unique user.
       type: string
-      example: Maria
-      pattern: 'ˆ.*?$' 
+      example: Maria_03
+      pattern: '^[a-zA-Z0-9_-]{3,16}$' 
       minLength: 3
       maxLength: 16
     userId:
