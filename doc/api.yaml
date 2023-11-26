@@ -424,10 +424,12 @@ components:
       properties:
         previousOffset:
           type: integer
+          format: int32
           minimum: 0
           example: 20
         nextOffset:
           type: integer
+          format: int32
           minimum: 0
           example: 40
         hasPrevious:
@@ -459,14 +461,17 @@ components:
         username: { $ref: "#/components/schemas/username" }
         numberOfPhotos:
           type: integer
+          format: int32
           minimum: 0
           example: 20
         numberOfFollowers:
           type: integer
+          format: int32
           minimum: 0
           example: 253
         numberOfFollowing:
           type: integer
+          format: int32
           minimum: 0
           example: 253
     Photo:
@@ -477,10 +482,12 @@ components:
         caption: { $ref: "#/components/schemas/text" }
         numberOfLikes:
           type: integer
+          format: int32
           minimum: 0
           example: 53
         numberOfComments:
           type: integer
+          format: int32
           minimum: 0
           example: 9
         photoId: { $ref: "#/components/schemas/photoId" }
@@ -735,6 +742,7 @@ components:
       in: query
       schema:
         type: integer
+        format: int32
         minimum: 1
         maximum: 50
         default: 20
@@ -748,6 +756,7 @@ components:
       in: query
       schema:
         type: integer
+        format: int32
         minimum: 0
         default: 0
         example: 0
