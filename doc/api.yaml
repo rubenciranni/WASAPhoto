@@ -2,6 +2,23 @@ openapi: '3.0.2'
 info:
   title: WASAPhoto Backend API
   version: '1.0'
+  description: |-
+    The WASAPhoto Backend API allows to perform the following operations:
+    - Log in by specifying a username.
+    - Get the a stream of photos (images) in reverse chronological order for the logged in user,
+      with information about when each photo was uploaded (date and time) and how many likes
+      and comments it has. The stream is composed by photos from “following”
+      (other users that the user follows).
+    - Place (or  remove) a “like” to photos from other users.
+    - Add comments to any image (even those uploaded by themself), and remove
+      them (only authors can remove their comments).
+    - Ban other users and remove the ban.
+    - Get users profiles showsing: the user’s photos (in reverse chronological order),
+      how many photos have been uploaded, and the user’s followers and following.
+    - Change username
+    - Upload photos and remove photos (removal of an image will also remove likes and comments).
+    - Follow/unfollow other users.
+    - Search other user profiles via username.
 
 security:
   - bearerAuth: []
@@ -46,7 +63,7 @@ paths:
       responses:
         '201': { $ref: "#/components/responses/SuccessfulSetMyUserName" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
+        '403': { $ref: "#/components/responses/Forbidden" }
         '500': { $ref: "#/components/responses/InternalServerError" }
   /photos/:
     post:
@@ -60,6 +77,7 @@ paths:
         '201': { $ref: "#/components/responses/SuccessfulUploadPhoto" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '413': { $ref: "#/components/responses/ContentTooLarge" }
+        '415': { $ref: "#/components/responses/UnsupportedMediaType" }
         '500': { $ref: "#/components/responses/InternalServerError" }
     get:
       parameters:
@@ -76,8 +94,8 @@ paths:
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetPhotos" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
   /photos/{photoId}:
     parameters:
@@ -92,8 +110,8 @@ paths:
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetPhoto" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
     delete:
       tags: ["photos"]
@@ -106,8 +124,8 @@ paths:
       responses:
         '200': { $ref: "#/components/responses/SuccessfulDeletePhoto" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
   /photos/{photoId}/likes/:
     parameters:
@@ -125,8 +143,8 @@ paths:
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetLikes" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
   /photos/{photoId}/comments/:
     parameters:
@@ -144,8 +162,8 @@ paths:
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetComments" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
     post:
       tags: ["comments"]
@@ -159,9 +177,9 @@ paths:
       responses:
         '201': { $ref: "#/components/responses/SuccessfulCommentPhoto" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '413': { $ref: "#/components/responses/ContentTooLarge"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '413': { $ref: "#/components/responses/ContentTooLarge" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
   /photos/{photoId}/comments/{commentId}:
     parameters:
@@ -177,8 +195,8 @@ paths:
       responses:
         '200': { $ref: "#/components/responses/SuccessfulUncommentPhoto" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
   /users/:
     parameters:
@@ -209,8 +227,8 @@ paths:
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetUserProfile" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
   /users/{userId}/following/:
     parameters:
@@ -228,8 +246,8 @@ paths:
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetFollowing" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
   /users/{userId}/followers/:
     parameters:
@@ -247,8 +265,8 @@ paths:
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetFollowers" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
   /liked-photos/{photoId}:
     parameters:
@@ -264,8 +282,8 @@ paths:
       responses:
         '201': { $ref: "#/components/responses/SuccessfulLikePhoto" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
     delete:
       tags: ["likes"]
@@ -278,8 +296,8 @@ paths:
       responses:
         '200': { $ref: "#/components/responses/SuccessfulUnlikePhoto" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
   /following/{userId}:
     parameters:
@@ -295,8 +313,8 @@ paths:
       responses:
         '201': { $ref: "#/components/responses/SuccessfulFollowUser" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
     delete:
       tags: ["following"]
@@ -309,8 +327,8 @@ paths:
       responses:
         '200': { $ref: "#/components/responses/SuccessfulUnfollowUser" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
   /bans/{userId}:
     parameters:
@@ -324,8 +342,8 @@ paths:
       responses:
         '201': { $ref: "#/components/responses/SuccessfulBanUser" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
     delete:
       tags: ["bans"]
@@ -336,8 +354,8 @@ paths:
       responses:
         '200': { $ref: "#/components/responses/SuccessfulUnbanUser" }
         '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden"}
-        '404': { $ref: "#/components/responses/NotFound"}
+        '403': { $ref: "#/components/responses/Forbidden" }
+        '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
   /stream:
     get:
@@ -361,6 +379,10 @@ components:
     errorMessage:
       description: An error message.
       type: string
+      example: "Internal Server Error: Unexpected condition was encountered."
+      pattern: '.*'
+      minLength: 0
+      maxLength: 269
     date-time:
       description: A date-time.
       type: string
@@ -370,6 +392,12 @@ components:
       type: string
       minLength: 0
       maxLength: 2200
+    photo:
+      description: A png photo of 10 MB maximum size in binary format.
+      type: string
+      format: binary
+      minLength: 536
+      maxLength: 10485760 # 10MB
     username:
       description: Username associated with a unique user.
       type: string
@@ -409,7 +437,7 @@ components:
       type: object
       properties:
         userId: { $ref: "#/components/schemas/userId" }
-        username: { $ref: "#/components/schemas/username"}
+        username: { $ref: "#/components/schemas/username" }
     UserList:
       description: A list of users.
       allOf:
@@ -419,13 +447,14 @@ components:
             records:
               type: array
               items: { $ref: "#/components/schemas/User" }
+              minItems: 0
               maxItems: 50
     UserProfile:
       description: A user profile.
       type: object
       properties:
         userId: { $ref: "#/components/schemas/userId" }
-        username: { $ref: "#/components/schemas/username"}
+        username: { $ref: "#/components/schemas/username" }
         numberOfPhotos:
           type: integer
         numberOfFollowers:
@@ -437,7 +466,7 @@ components:
       properties:
         author: { $ref: "#/components/schemas/User" }
         date-time: { $ref: "#/components/schemas/date-time" }
-        caption: { $ref: "#/components/schemas/text"}
+        caption: { $ref: "#/components/schemas/text" }
         numberOfLikes:
           type: integer
         numberOfComments:
@@ -452,12 +481,14 @@ components:
             records:
               type: array
               items: { $ref: "#/components/schemas/Photo" }
+              minItems: 0
+              maxItems: 50
     Comment:
       description: A comment.
       type: object
       properties:
         commentId: { $ref: "#/components/schemas/commentId" }
-        comment: { $ref: "#/components/schemas/text"}
+        comment: { $ref: "#/components/schemas/text" }
         author: { $ref: "#/components/schemas/User" }
         date-time: { $ref: "#/components/schemas/date-time" }
     CommentList:
@@ -469,6 +500,8 @@ components:
             records:
               type: array
               items: { $ref: "#/components/schemas/Comment" }
+              minItems: 0
+              maxItems: 50
   requestBodies:
     DoLogin:
       description: User details.
@@ -477,7 +510,7 @@ components:
           schema:
             type: object
             properties:
-              username: { $ref: "#/components/schemas/username"}
+              username: { $ref: "#/components/schemas/username" }
       required: true
     SetMyUserName:
       description: New username.
@@ -486,7 +519,7 @@ components:
           schema:
             type: object
             properties:
-              newUsername: { $ref: "#/components/schemas/username"}
+              newUsername: { $ref: "#/components/schemas/username" }
     UploadPhoto:
       description: Photo and caption.
       content:
@@ -494,11 +527,8 @@ components:
           schema:
             type: object
             properties:
-              photo:
-                type: string
-                format: binary
-                maxLength: 10485760 # 10MB
-              caption: { $ref: "#/components/schemas/text"}
+              photo: { $ref: "#/components/schemas/photo" }
+              caption: { $ref: "#/components/schemas/text" }
       required: true
     CommentPhoto:
       description: Comment to add to the photo.
@@ -507,7 +537,7 @@ components:
           schema:
             type: object
             properties:
-              comment: { $ref: "#/components/schemas/text"}
+              comment: { $ref: "#/components/schemas/text" }
   responses:
     InternalServerError:
       description: Unexpected condition was encountered.
@@ -549,6 +579,8 @@ components:
             type: object
             properties:
               message: { $ref: "#/components/schemas/errorMessage" }
+    UnsupportedMediaType:
+      description: Content media type provided in request is not supported
     SuccessfulDoLogin:
       description: User log-in action successful.
       content:
@@ -571,9 +603,7 @@ components:
       description: The requested photo.
       content:
         image/png:
-          schema:
-            type: string
-            format: binary
+          schema: { $ref: "#/components/schemas/photo" }
     SuccessfulGetPhotos:
       description: The requested photos.
       content:
@@ -630,7 +660,7 @@ components:
         application/json:
           schema: { $ref: "#/components/schemas/UserProfile" }
       links:
-        GetUserPhotosByUserId: { $ref: "#/components/links/GetUserPhotosByUserId"}
+        GetUserPhotosByUserId: { $ref: "#/components/links/GetUserPhotosByUserId" }
     SuccessfulGetFollowing:
       description: The list of following of the user.
       content:
@@ -655,19 +685,19 @@ components:
         application/json:
           schema: { $ref: "#/components/schemas/PhotoList" }
       links:
-        GetPhotoByPhotoId: { $ref: "#/components/links/GetPhotoByPhotoId"}
+        GetPhotoByPhotoId: { $ref: "#/components/links/GetPhotoByPhotoId" }
   parameters:
     QueryStringUsername:
       description: Username passed in query string.
       name: username
       in: query
-      schema: { $ref: "#/components/schemas/username"}
+      schema: { $ref: "#/components/schemas/username" }
       required: true
     QueryStringUserId:
       description: User identifier passed in query string.
       name: userId
       in: query
-      schema: { $ref: "#/components/schemas/userId"}
+      schema: { $ref: "#/components/schemas/userId" }
       required: true
     PathUserId:
       description: User identifier passed in path.
@@ -725,6 +755,8 @@ components:
 
   securitySchemes:
     bearerAuth:
+      description: |-
+        Simplified bearer authentication using UUID of the user.
       type: http
       scheme: bearer
       bearerFormat: uuid
