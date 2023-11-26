@@ -27,8 +27,8 @@ paths:
       tags: ["settings"]
       summary: Updates the username
       description: |-
-        It changes the username of the logged in user with the new
-        username provided in request body; it returns Forbidden Error if the new
+        It updates the username of the logged in user with the new
+        username provided in request body; it returns `Forbidden Error` if the new
         username is already taken by another user.
       operationId: setMyUserName
       requestBody: { $ref: "#/components/requestBodies/SetMyUserName" }
@@ -58,7 +58,7 @@ paths:
       tags: ["photos"]
       summary: Gets a list of photos.
       description: |-
-        If the logged in user is not banned by the user with id specified
+        If the logged in user is not banned by the user with `userId` specified
         in query string, it returns a list of photos authored by that user;
         otherwise it returns an error.
       operationId: getPhotos
@@ -89,7 +89,7 @@ paths:
       summary: Deletes a photo
       description: |-
         If the logged in user is the author of the photo
-        with id given in path, it deletes the photo;
+        with `photoId` given in path, it deletes the photo;
         otherwise, it returns an error.
       operationId: deletePhoto
       responses:
@@ -128,7 +128,7 @@ paths:
       summary: Gets the comments for a photo
       description: |-
         If the logged in user is not banned by the author of the photo, it returns
-        the list of comments the photo; otherwise it returns an error.
+        the list of comments of the photo; otherwise it returns an error.
       operationId: getComments
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetComments" }
@@ -141,7 +141,8 @@ paths:
       summary: Adds a comment to a photo.
       description: |-
         If the logged in user is not banned by the author of the photo, it adds
-        a comment to the photo; otherwise it returns an error.
+        a comment to the photo authored by the logged in user;
+        otherwise it returns an error.
       operationId: commentPhoto
       requestBody: { $ref: "#/components/requestBodies/CommentPhoto" }
       responses:
@@ -159,7 +160,7 @@ paths:
       tags: ["comments"]
       summary: Removes a comment from a photo
       description: |-
-        If the logged in user is the author of the comment, it removes it;
+        If the logged in user is the author of the comment, it deletes it;
         otherwise it returns an error.
       operationId: uncommentPhoto
       responses:
@@ -178,7 +179,7 @@ paths:
       tags: ["users"]
       summary: Gets users matching given username.
       description: |-
-        Returns an array of users that match the username given in query.
+        Returns an array of users that match the `username` given in query.
       operationId: searchUser
       responses:
         '200': { $ref: "#/components/responses/SuccessfulSearchUser" }
@@ -191,7 +192,7 @@ paths:
       tags: ["profile"] 
       summary: Gets a user profile.  
       description: |-
-        If the logged in user is not banned by the user with userId given in path,
+        If the logged in user is not banned by the user with `userId` given in path,
         it returns its profile; otherwise it returns an error.
       operationId: getUserProfile
       responses:
@@ -210,7 +211,7 @@ paths:
       tags: ["users"]
       summary: Gets the following of a user
       description: |-
-        If the logged in user is not banned by the user with userId given in path,
+        If the logged in user is not banned by the user with `userId` given in path,
         it returns the list of its following; otherwise it returns an error.
       operationId: getFollowing
       responses:
@@ -229,7 +230,7 @@ paths:
       tags: ["users"]
       summary: Gets the followers of a user
       description: |-
-        If the logged in user is not banned by the user with userId given in path,
+        If the logged in user is not banned by the user with `userId` given in path,
         it returns the list of its followers; otherwise it returns an error.
       operationId: getFollowers
       responses:
@@ -245,8 +246,9 @@ paths:
       tags: ["likes"]
       summary: Adds a like to a photo
       description: |-
-        If the logged in user is not banned by the author of the photo, it adds a like
-        to the photo with photoId given in path; otherwise it returns an error.
+        If the logged in user is not banned by the author of the the photo with
+        `photoId` given in path, it adds a like to the photo;
+        otherwise it returns an error.
       operationId: likePhoto
       responses:
         '200': { $ref: "#/components/responses/SuccessfulLikePhoto" }
@@ -258,7 +260,7 @@ paths:
       tags: ["likes"]
       summary: Removes the like from a photo
       description: |-
-        It removes a like from the photo with photoId given in path
+        It removes the like from the photo with `photoId` given in path
         (or does nothing if the photo already does not have a like);
         otherwise it returns an error.
       operationId: unlikePhoto
@@ -275,7 +277,7 @@ paths:
       tags: ["following"]
       summary: Adds a user to following
       description: |-
-        If the logged in user is not banned by the user with userId given in path,
+        If the logged in user is not banned by the user with `userId` given in path,
         it adds him/her to the following of the logged in user;
         otherwise it returns an error.
       operationId: followUser
@@ -289,7 +291,7 @@ paths:
       tags: ["following"]
       summary: Removes a user from following
       description: |-
-        It unfollows the user with userId given in path
+        It unfollows the user with `userId` given in path
         (or does nothing if it is alerady not followed);
         otherwise it returns an error.
       operationId: unfollowUser
@@ -306,7 +308,7 @@ paths:
       tags: ["bans"]
       summary: Adds a user to bans
       description: |-
-        It adds the user with userId given in path to the bans of the logged in user.
+        It adds the user with `userId` given in path to the bans of the logged in user.
       operationId: banUser
       responses:
         '201': { $ref: "#/components/responses/SuccessfulBanUser" }
@@ -318,7 +320,7 @@ paths:
       tags: ["bans"]
       summary: Removes a user from following
       description: |-
-        It removes the user with userId given in path from the bans of the logged in user.
+        It removes the user with `userId` given in path from the bans of the logged in user.
       operationId: unbanUser
       responses:
         '200': { $ref: "#/components/responses/SuccessfulUnbanUser" }
@@ -519,7 +521,7 @@ components:
           schema:
             type: object
             properties:
-              identifier: { $ref: "#/components/schemas/userId" }
+              userId: { $ref: "#/components/schemas/userId" }
     SuccessfulSetMyUserName:
       description: Username updated successfully.
     SuccessfulUploadPhoto:
@@ -529,7 +531,7 @@ components:
           schema:
             type: object
             properties:
-              identifier: { $ref: "#/components/schemas/photoId" }
+              photoId: { $ref: "#/components/schemas/photoId" }
     SuccessfulGetPhoto:
       description: The requested photo.
       content:
@@ -551,7 +553,7 @@ components:
           schema:
             type: object
             properties:
-              identifier: { $ref: "#/components/schemas/photoId" }
+              photoId: { $ref: "#/components/schemas/photoId" }
     SuccessfulLikePhoto:
       description: A like was added to the photo.
     SuccessfulUnlikePhoto:
@@ -573,7 +575,7 @@ components:
           schema:
             type: object
             properties:
-              identifier: { $ref: "#/components/schemas/commentId" }
+              commentId: { $ref: "#/components/schemas/commentId" }
     SuccessfulUncommentPhoto:
       description: A comment was successfully added to the photo.
       content:
@@ -581,7 +583,7 @@ components:
           schema:
             type: object
             properties:
-              identifier: { $ref: "#/components/schemas/commentId" }
+              commentId: { $ref: "#/components/schemas/commentId" }
     SuccessfulSearchUser:
       description: A list of users matching the given username.
       content:
@@ -627,25 +629,25 @@ components:
       schema: { $ref: "#/components/schemas/username"}
       required: true
     QueryStringUserId:
-      description: UserId passed in query string.
+      description: User identifier passed in query string.
       name: userId
       in: query
       schema: { $ref: "#/components/schemas/userId"}
       required: true
     PathUserId:
-      description: User identifier.
+      description: User identifier passed in path.
       name: userId
       in: path
       schema: { $ref: "#/components/schemas/userId" }
       required: true
     PathPhotoId:
-      description: Photo identifier.
+      description: Photo identifier passed in path.
       name: photoId
       in: path
       schema: { $ref: "#/components/schemas/photoId" }
       required: true
     PathCommentId:
-      description: Comment identifier.
+      description: Comment identifier passed in path.
       name: commentId
       in: path
       schema: { $ref: "#/components/schemas/commentId" }
@@ -673,15 +675,15 @@ components:
   links:
     GetPhotoByPhotoId:
       description: |-
-        The photoId value in response can be used as photoId path parameter in
-        GET /photos/{photoId}.
+        The `photoId` value in response can be used as photoId path parameter in
+        `GET /photos/{photoId}`.
       operationId: getPhoto
       parameters:
         photoId: "$response.body#/photoId"
     GetUserPhotosByUserId:
         description: |-
-          The userId value in response can be used as userId query string
-          parameter in GET /photos/.
+          The userId value in response can be used as `userId` query string
+          parameter in `GET /photos/`.
         operationId: getPhotos
         parameters:
           userId: "$response.body#/userId"
