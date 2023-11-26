@@ -6,7 +6,6 @@ info:
 security:
   - bearerAuth: []
 
-
 paths:
   /session:
     post:
@@ -239,7 +238,7 @@ paths:
         '403': { $ref: "#/components/responses/Forbidden"}
         '404': { $ref: "#/components/responses/NotFound"}
         '500': { $ref: "#/components/responses/InternalServerError" }
-  /likes/{photoId}:
+  /liked-photos/{photoId}:
     parameters:
       - $ref: "#/components/parameters/PathPhotoId"
     put:
@@ -388,6 +387,8 @@ components:
         nextOffset:
           type: integer
           minimum: 0
+        hasPrevious:
+          type: boolean
         hasNext:
           type: boolean
     User:
@@ -402,7 +403,7 @@ components:
         - $ref: "#/components/schemas/PaginatedList"
         - type: object
           properties:
-            list:
+            records:
               type: array
               items: { $ref: "#/components/schemas/User" }
               maxItems: 50
@@ -424,6 +425,10 @@ components:
         author: { $ref: "#/components/schemas/User" }
         date-time: { $ref: "#/components/schemas/date-time" }
         caption: { $ref: "#/components/schemas/text"}
+        numberOfLikes:
+          type: integer
+        numberOfComments:
+          type: integer
         photoId: { $ref: "#/components/schemas/photoId" }
     PhotoList:
       description: A list of photos.
@@ -431,7 +436,7 @@ components:
         - $ref: "#/components/schemas/PaginatedList"
         - type: object
           properties:
-            list:
+            records:
               type: array
               items: { $ref: "#/components/schemas/Photo" }
     Comment:
@@ -448,7 +453,7 @@ components:
         - $ref: "#/components/schemas/PaginatedList"
         - type: object
           properties:
-            list:
+            records:
               type: array
               items: { $ref: "#/components/schemas/Comment" }
   requestBodies:
@@ -700,18 +705,18 @@ components:
   links:
     GetPhotoByPhotoId:
       description: |-
-        The `photoId` value in response can be used as photoId path parameter in
+        The `photoId` value in response can be used as `photoId` path parameter in
         `GET /photos/{photoId}`.
       operationId: getPhoto
       parameters:
-        photoId: $response.body#/list/photoId
+        photoId: $response.body#/records/photoId
     GetUserPhotosByUserId:
         description: |-
-          The userId value in response can be used as `userId` query string
+          The `userId` value in response can be used as `userId` query string
           parameter in `GET /photos/`.
         operationId: getPhotos
         parameters:
-          userId: $response.body#/list/userId
+          userId: $response.body#/records/userId
 
   securitySchemes:
     bearerAuth:
