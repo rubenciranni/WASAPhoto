@@ -6,6 +6,18 @@ info:
 security:
   - bearerAuth: []
 
+tags:
+  - name: login
+  - name: settings
+  - name: photos
+  - name: likes
+  - name: comments
+  - name: users
+  - name: profile
+  - name: following
+  - name: bans
+  - name: stream
+
 paths:
   /session:
     post:
@@ -163,7 +175,7 @@ paths:
         otherwise it returns an error.
       operationId: uncommentPhoto
       responses:
-        '201': { $ref: "#/components/responses/SuccessfulUncommentPhoto" }
+        '200': { $ref: "#/components/responses/SuccessfulUncommentPhoto" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden"}
         '404': { $ref: "#/components/responses/NotFound"}
@@ -250,7 +262,7 @@ paths:
         otherwise it returns an error.
       operationId: likePhoto
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulLikePhoto" }
+        '201': { $ref: "#/components/responses/SuccessfulLikePhoto" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden"}
         '404': { $ref: "#/components/responses/NotFound"}
@@ -317,7 +329,7 @@ paths:
         '500': { $ref: "#/components/responses/InternalServerError" }
     delete:
       tags: ["bans"]
-      summary: Removes a user from following
+      summary: Removes a user from bans
       description: |-
         It removes the user with `userId` given in path from the bans of the logged in user.
       operationId: unbanUser
@@ -354,6 +366,7 @@ components:
       type: string
       format: date-time
     text:
+      description: A generic text.
       type: string
       minLength: 0
       maxLength: 2200
@@ -512,14 +525,6 @@ components:
             type: object
             properties:
               message: { $ref: "#/components/schemas/errorMessage" }
-    BadRequest:
-      description: Bad request.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              message: { $ref: "#/components/schemas/errorMessage" }
     Forbidden:
       description: Logged in user cannot perform the requested operation.
       content:
@@ -607,7 +612,7 @@ components:
             properties:
               commentId: { $ref: "#/components/schemas/commentId" }
     SuccessfulUncommentPhoto:
-      description: A comment was successfully added to the photo.
+      description: The comment was successfully removed from the photo.
       content:
         application/json:
           schema:
