@@ -378,6 +378,18 @@ components:
       type: string
       format: uuid
     # Objects
+    PaginatedList:
+      description: A generic paginated list.
+      type: object
+      properties:
+        previousOffset:
+          type: integer
+          minimum: 0
+        nextOffset:
+          type: integer
+          minimum: 0
+        hasNext:
+          type: boolean
     User:
       description: An existing user.
       type: object
@@ -386,9 +398,14 @@ components:
         username: { $ref: "#/components/schemas/username"}
     UserList:
       description: A list of users.
-      type: array
-      items: { $ref: "#/components/schemas/User" }
-      maxItems: 50
+      allOf:
+        - $ref: "#/components/schemas/PaginatedList"
+        - type: object
+          properties:
+            list:
+              type: array
+              items: { $ref: "#/components/schemas/User" }
+              maxItems: 50
     UserProfile:
       description: A user profile.
       type: object
@@ -410,9 +427,13 @@ components:
         photoId: { $ref: "#/components/schemas/photoId" }
     PhotoList:
       description: A list of photos.
-      type: array
-      items: { $ref: "#/components/schemas/Photo" }
-      maxItems: 50
+      allOf:
+        - $ref: "#/components/schemas/PaginatedList"
+        - type: object
+          properties:
+            list:
+              type: array
+              items: { $ref: "#/components/schemas/Photo" }
     Comment:
       description: A comment.
       type: object
@@ -423,9 +444,13 @@ components:
         date-time: { $ref: "#/components/schemas/date-time" }
     CommentList:
       description: A list of comments.
-      type: array
-      items: { $ref: "#/components/schemas/Comment" }
-      maxItems: 50
+      allOf:
+        - $ref: "#/components/schemas/PaginatedList"
+        - type: object
+          properties:
+            list:
+              type: array
+              items: { $ref: "#/components/schemas/Comment" }
   requestBodies:
     DoLogin:
       description: User details.
@@ -679,14 +704,14 @@ components:
         `GET /photos/{photoId}`.
       operationId: getPhoto
       parameters:
-        photoId: "$response.body#/photoId"
+        photoId: $response.body#/list/photoId
     GetUserPhotosByUserId:
         description: |-
           The userId value in response can be used as `userId` query string
           parameter in `GET /photos/`.
         operationId: getPhotos
         parameters:
-          userId: "$response.body#/userId"
+          userId: $response.body#/list/userId
 
   securitySchemes:
     bearerAuth:
