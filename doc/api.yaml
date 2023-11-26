@@ -6,7 +6,6 @@ info:
 security:
   - bearerAuth: []
 
-# TODO: implement pagination for user, comment, and like lists.
 
 paths:
   /session:
@@ -51,6 +50,24 @@ paths:
         '401': { $ref: "#/components/responses/Unauthorized" }
         '413': { $ref: "#/components/responses/ContentTooLarge" }
         '500': { $ref: "#/components/responses/InternalServerError" }
+    get:
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/QueryStringUserId"
+      tags: ["photos"]
+      summary: Gets a list of photos.
+      description: |-
+        If the logged in user is not banned by the user with id specified
+        in query string, it returns a list of photos authored by that user;
+        otherwise it returns an error.
+      operationId: getPhotos
+      responses:
+        '200': { $ref: "#/components/responses/SuccessfulGetPhotos" }
+        '401': { $ref: "#/components/responses/Unauthorized" }
+        '403': { $ref: "#/components/responses/Forbidden"}
+        '404': { $ref: "#/components/responses/NotFound"}
+        '500': { $ref: "#/components/responses/InternalServerError" }
   /photos/{photoId}:
     parameters:
       - $ref: "#/components/parameters/PathPhotoId"
@@ -85,6 +102,9 @@ paths:
     parameters:
       - $ref: "#/components/parameters/PathPhotoId"
     get:
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
       tags: ["likes"]
       summary: Gets the likes for a photo
       description: |-
@@ -101,6 +121,9 @@ paths:
     parameters:
       - $ref: "#/components/parameters/PathPhotoId"
     get:
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
       tags: ["comments"]
       summary: Gets the comments for a photo
       description: |-
@@ -149,6 +172,9 @@ paths:
     parameters:
       - $ref: "#/components/parameters/QueryStringUsername"
     get:
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
       tags: ["users"]
       summary: Gets users matching given username.
       description: |-
@@ -178,6 +204,9 @@ paths:
     parameters:
       - $ref: "#/components/parameters/PathUserId"
     get:
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
       tags: ["users"]
       summary: Gets the following of a user
       description: |-
@@ -194,6 +223,9 @@ paths:
     parameters:
       - $ref: "#/components/parameters/PathUserId"
     get:
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
       tags: ["users"]
       summary: Gets the followers of a user
       description: |-
@@ -296,6 +328,9 @@ paths:
         '500': { $ref: "#/components/responses/InternalServerError" }
   /stream:
     get:
+      parameters:
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
       tags: ["stream"]
       summary: Gets the stream of the logged in user
       description: |-
@@ -351,6 +386,7 @@ components:
       description: A list of users.
       type: array
       items: { $ref: "#/components/schemas/User" }
+      maxItems: 50
     UserProfile:
       description: A user profile.
       type: object
@@ -363,7 +399,6 @@ components:
           type: integer
         numberOfFollowing:
           type: integer
-        photos: { $ref: "#/components/schemas/PhotoList" }
     Photo:
       description: An existing photo.
       properties:
@@ -375,6 +410,7 @@ components:
       description: A list of photos.
       type: array
       items: { $ref: "#/components/schemas/Photo" }
+      maxItems: 50
     Comment:
       description: A comment.
       type: object
@@ -387,6 +423,7 @@ components:
       description: A list of comments.
       type: array
       items: { $ref: "#/components/schemas/Comment" }
+      maxItems: 50
   requestBodies:
     DoLogin:
       description: User details.
@@ -500,6 +537,13 @@ components:
           schema:
             type: string
             format: binary
+    SuccessfulGetPhotos:
+      description: The requested photos.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/PhotoList" }
+      links:
+        GetPhotoByPhotoId: { $ref: "#/components/links/GetPhotoByPhotoId"}
     SuccessfulDeletePhoto:
       description: Photo was deleted successfully.
       content:
@@ -548,6 +592,8 @@ components:
       content:
         application/json:
           schema: { $ref: "#/components/schemas/UserProfile" }
+      links:
+        GetUserPhotosByUserId: { $ref: "#/components/links/GetUserPhotosByUserId"}
     SuccessfulGetFollowing:
       description: The list of following of the user.
       content:
@@ -571,12 +617,20 @@ components:
       content:
         application/json:
           schema: { $ref: "#/components/schemas/PhotoList" }
+      links:
+        GetPhotoByPhotoId: { $ref: "#/components/links/GetPhotoByPhotoId"}
   parameters:
     QueryStringUsername:
       description: Username passed in query string.
       name: username
       in: query
       schema: { $ref: "#/components/schemas/username"}
+      required: true
+    QueryStringUserId:
+      description: UserId passed in query string.
+      name: userId
+      in: query
+      schema: { $ref: "#/components/schemas/userId"}
       required: true
     PathUserId:
       description: User identifier.
@@ -596,6 +650,42 @@ components:
       in: path
       schema: { $ref: "#/components/schemas/commentId" }
       required: true
+    Limit:
+      description: The maximum number of records to be returned.
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 20
+      required: false 
+    Offset:
+      description: |-
+        The number of records to skip. If it is greater than the total number of
+        records, the response is an empty array.
+      name: offset
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+  links:
+    GetPhotoByPhotoId:
+      description: |-
+        The photoId value in response can be used as photoId path parameter in
+        GET /photos/{photoId}.
+      operationId: getPhoto
+      parameters:
+        photoId: "$response.body#/photoId"
+    GetUserPhotosByUserId:
+        description: |-
+          The userId value in response can be used as userId query string
+          parameter in GET /photos/.
+        operationId: getPhotos
+        parameters:
+          userId: "$response.body#/userId"
+
   securitySchemes:
     bearerAuth:
       type: http
