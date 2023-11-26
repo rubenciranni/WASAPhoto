@@ -376,13 +376,6 @@ paths:
 components:
   schemas:
     # Fields
-    errorMessage:
-      description: An error message.
-      type: string
-      example: "Internal Server Error: Unexpected condition was encountered."
-      pattern: '.*'
-      minLength: 0
-      maxLength: 269
     date-time:
       description: A date-time.
       type: string
@@ -563,7 +556,7 @@ components:
           example: '/some/uri-reference#specific-occurrence-context'
   requestBodies:
     DoLogin:
-      description: User details.
+      description: A username (new or existing).
       content:
         application/json:
           schema:
@@ -580,7 +573,9 @@ components:
             properties:
               newUsername: { $ref: "#/components/schemas/username" }
     UploadPhoto:
-      description: Photo and caption.
+      description: |-
+        Photo and caption to be uploaded. Photo must be in png format and
+        it must not exceed 10 MB. The caption must not exceed 2200 characters.
       content:
         multipart/form-data:
           schema:
@@ -590,7 +585,8 @@ components:
               caption: { $ref: "#/components/schemas/text" }
       required: true
     CommentPhoto:
-      description: Comment to add to the photo.
+      description: |-
+        Comment to add to the photo. The comment must not exceed 2200 characters.
       content:
         application/json:
           schema:
@@ -621,12 +617,12 @@ components:
     ContentTooLarge:
       description: Content provided in request is too large.
       content:
-        application/probelm+json:
+        application/problem+json:
           schema: { $ref: "#/components/schemas/Problem" }
     UnsupportedMediaType:
       description: Content media type provided in request is not supported.
       content:
-        application/probelm+json:
+        application/problem+json:
           schema: { $ref: "#/components/schemas/Problem" }
     SuccessfulDoLogin:
       description: User log-in action successful.
