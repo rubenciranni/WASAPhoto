@@ -61,7 +61,7 @@ paths:
       operationId: setMyUserName
       requestBody: { $ref: "#/components/requestBodies/SetMyUserName" }
       responses:
-        '201': { $ref: "#/components/responses/SuccessfulSetMyUserName" }
+        '204': { $ref: "#/components/responses/SuccessfulSetMyUserName" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '500': { $ref: "#/components/responses/InternalServerError" }
@@ -280,7 +280,7 @@ paths:
         otherwise it returns an error.
       operationId: likePhoto
       responses:
-        '201': { $ref: "#/components/responses/SuccessfulLikePhoto" }
+        '204': { $ref: "#/components/responses/SuccessfulLikePhoto" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -294,7 +294,7 @@ paths:
         otherwise it returns an error.
       operationId: unlikePhoto
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulUnlikePhoto" }
+        '204': { $ref: "#/components/responses/SuccessfulUnlikePhoto" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -311,7 +311,7 @@ paths:
         otherwise it returns an error.
       operationId: followUser
       responses:
-        '201': { $ref: "#/components/responses/SuccessfulFollowUser" }
+        '204': { $ref: "#/components/responses/SuccessfulFollowUser" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -325,7 +325,7 @@ paths:
         otherwise it returns an error.
       operationId: unfollowUser
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulUnfollowUser" }
+        '204': { $ref: "#/components/responses/SuccessfulUnfollowUser" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -340,7 +340,7 @@ paths:
         It adds the user with `userId` given in path to the bans of the logged in user.
       operationId: banUser
       responses:
-        '201': { $ref: "#/components/responses/SuccessfulBanUser" }
+        '204': { $ref: "#/components/responses/SuccessfulBanUser" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -352,7 +352,7 @@ paths:
         It removes the user with `userId` given in path from the bans of the logged in user.
       operationId: unbanUser
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulUnbanUser" }
+        '204': { $ref: "#/components/responses/SuccessfulUnbanUser" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -380,6 +380,9 @@ components:
       description: A date-time.
       type: string
       format: date-time
+      pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+      minLength: 20
+      maxLength: 20
     text:
       description: A generic text that does not exceed 2200 characters.
       type: string
@@ -418,18 +421,22 @@ components:
       type: object
       properties:
         previousOffset:
+          description: The offset of the previous block of records.
           type: integer
           format: int32
           minimum: 0
           example: 20
         nextOffset:
+          description: The offset of the next block of records.
           type: integer
           format: int32
           minimum: 0
           example: 40
         hasPrevious:
+          description: Whether there is a previous block of records.
           type: boolean
         hasNext:
+          description: Whether there is a next block of records.
           type: boolean
     User:
       description: An existing user.
@@ -444,6 +451,7 @@ components:
         - type: object
           properties:
             records:
+              description: An array of users.
               type: array
               items: { $ref: "#/components/schemas/User" }
               minItems: 0
@@ -455,16 +463,19 @@ components:
         userId: { $ref: "#/components/schemas/userId" }
         username: { $ref: "#/components/schemas/username" }
         numberOfPhotos:
+          description: The number of photos posted by the user.
           type: integer
           format: int32
           minimum: 0
           example: 20
         numberOfFollowers:
+          description: The number of followers of the user.
           type: integer
           format: int32
           minimum: 0
           example: 253
         numberOfFollowing:
+          description: The number of following of the user.
           type: integer
           format: int32
           minimum: 0
@@ -476,11 +487,13 @@ components:
         date-time: { $ref: "#/components/schemas/date-time" }
         caption: { $ref: "#/components/schemas/text" }
         numberOfLikes:
+          description: The number of likes of the photo.
           type: integer
           format: int32
           minimum: 0
           example: 53
         numberOfComments:
+          description: The number of comments of the photo.
           type: integer
           format: int32
           minimum: 0
@@ -493,6 +506,7 @@ components:
         - type: object
           properties:
             records:
+              description: An array of photos.
               type: array
               items: { $ref: "#/components/schemas/Photo" }
               minItems: 0
@@ -512,13 +526,14 @@ components:
         - type: object
           properties:
             records:
+              description: An array of comments.
               type: array
               items: { $ref: "#/components/schemas/Comment" }
               minItems: 0
               maxItems: 50
     Problem:
       description: |-
-        A JSON Problem (RFC-7807). Inspired by:
+        A Problem (RFC-7807). Inspired by:
         https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.1.yaml#/Problem
       type: object
       properties:
@@ -534,6 +549,9 @@ components:
           description: |-
             A short summary of the problem type.
           type: string
+          pattern: '.*'
+          minLength: 0
+          maxLength: 200
           example: some title for the error situation
         status:
           description: |-
@@ -549,6 +567,9 @@ components:
             A human readable explanation specific to this occurrence of the
             problem.
           type: string
+          pattern: '.*'
+          minLength: 0
+          maxLength: 2200
           example: some description for the error situation
         instance:
           description: |-
@@ -558,40 +579,44 @@ components:
           example: '/some/uri-reference#specific-occurrence-context'
   requestBodies:
     DoLogin:
-      description: A username (new or existing).
+      description: Request body for doLogin operation.
       content:
         application/json:
           schema:
+            description: A username (new or existing).
             type: object
             properties:
               username: { $ref: "#/components/schemas/username" }
       required: true
     SetMyUserName:
-      description: New username.
+      description: Request body for setMyUserName operation.
       content:
         application/json:
           schema:
+            description: The new username.
             type: object
             properties:
               newUsername: { $ref: "#/components/schemas/username" }
     UploadPhoto:
-      description: |-
-        Photo and caption to be uploaded. Photo must be in png format and
-        it must not exceed 10 MB. The caption must not exceed 2200 characters.
+      description: Request body for uploadPhoto operation.
       content:
         multipart/form-data:
           schema:
+            description: |-
+              Photo and caption to be uploaded. Photo must be in png format and
+              it must not exceed 10 MB. The caption must not exceed 2200 characters.
             type: object
             properties:
               photo: { $ref: "#/components/schemas/photo" }
               caption: { $ref: "#/components/schemas/text" }
       required: true
     CommentPhoto:
-      description: |-
-        Comment to add to the photo. The comment must not exceed 2200 characters.
+      description: Request body for commentPhoto operation.
       content:
         application/json:
           schema:
+            description: |-
+              Comment to add to the photo. The comment must not exceed 2200 characters.
             type: object
             properties:
               comment: { $ref: "#/components/schemas/text" }
@@ -631,6 +656,7 @@ components:
       content:
         application/json:
           schema:
+            description: The requested user UUID.
             type: object
             properties:
               userId: { $ref: "#/components/schemas/userId" }
@@ -641,6 +667,7 @@ components:
       content:
         application/json:
           schema:
+            description: The UUID of the uploaded photo.
             type: object
             properties:
               photoId: { $ref: "#/components/schemas/photoId" }
@@ -661,6 +688,7 @@ components:
       content:
         application/json:
           schema:
+            description: The UUID of the deleted photo.
             type: object
             properties:
               photoId: { $ref: "#/components/schemas/photoId" }
@@ -683,6 +711,7 @@ components:
       content:
         application/json:
           schema:
+            description: The UUID of the newly added comment.
             type: object
             properties:
               commentId: { $ref: "#/components/schemas/commentId" }
@@ -691,6 +720,7 @@ components:
       content:
         application/json:
           schema:
+            description: The UUID of the deleted comment.
             type: object
             properties:
               commentId: { $ref: "#/components/schemas/commentId" }
@@ -767,6 +797,7 @@ components:
       name: limit
       in: query
       schema:
+        description: The limit size of the block of records.
         type: integer
         format: int32
         minimum: 1
@@ -781,6 +812,7 @@ components:
       name: offset
       in: query
       schema:
+        description: The offset of the block of records.
         type: integer
         format: int32
         minimum: 0
