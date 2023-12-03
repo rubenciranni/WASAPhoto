@@ -416,7 +416,7 @@ components:
       type: string
       format: uuid
     # Objects
-    PaginatedList:
+    Paginator:
       description: A generic paginated list.
       type: object
       properties:
@@ -447,7 +447,7 @@ components:
     UserList:
       description: A list of users.
       allOf:
-        - $ref: "#/components/schemas/PaginatedList"
+        - $ref: "#/components/schemas/Paginator"
         - type: object
           properties:
             records:
@@ -483,8 +483,9 @@ components:
     Photo:
       description: An existing photo.
       properties:
+        photoId: { $ref: "#/components/schemas/photoId" }
         author: { $ref: "#/components/schemas/User" }
-        date-time: { $ref: "#/components/schemas/date-time" }
+        dateTime: { $ref: "#/components/schemas/date-time" }
         caption: { $ref: "#/components/schemas/text" }
         numberOfLikes:
           description: The number of likes of the photo.
@@ -498,11 +499,10 @@ components:
           format: int32
           minimum: 0
           example: 9
-        photoId: { $ref: "#/components/schemas/photoId" }
     PhotoList:
       description: A list of photos.
       allOf:
-        - $ref: "#/components/schemas/PaginatedList"
+        - $ref: "#/components/schemas/Paginator"
         - type: object
           properties:
             records:
@@ -516,13 +516,13 @@ components:
       type: object
       properties:
         commentId: { $ref: "#/components/schemas/commentId" }
-        comment: { $ref: "#/components/schemas/text" }
+        text: { $ref: "#/components/schemas/text" }
         author: { $ref: "#/components/schemas/User" }
-        date-time: { $ref: "#/components/schemas/date-time" }
+        dateTime: { $ref: "#/components/schemas/date-time" }
     CommentList:
       description: A list of comments.
       allOf:
-        - $ref: "#/components/schemas/PaginatedList"
+        - $ref: "#/components/schemas/Paginator"
         - type: object
           properties:
             records:
@@ -619,7 +619,7 @@ components:
               Comment to add to the photo. The comment must not exceed 2200 characters.
             type: object
             properties:
-              comment: { $ref: "#/components/schemas/text" }
+              text: { $ref: "#/components/schemas/text" }
   responses:
     InternalServerError:
       description: Unexpected condition was encountered.
