@@ -1,12 +1,8 @@
 package schema
 
-import (
-	"time"
-)
-
 type Comment struct {
-	CommentId UUID
+	CommentId string
 	Text      string
 	Author    User
-	DateTime  time.Time
+	DateTime  string
 }

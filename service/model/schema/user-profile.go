@@ -1,7 +1,7 @@
 package schema
 
 type UserProfile struct {
-	UserId            UUID
+	UserId            string
 	Username          string
 	NumberOfPhotos    int
 	NumberOfFollowers int

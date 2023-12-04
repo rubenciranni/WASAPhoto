@@ -1,14 +1,10 @@
 package schema
 
-import (
-	"time"
-)
-
 type Photo struct {
-	PhotoId          UUID
+	PhotoId          string
 	Author           User
-	DateTime         time.Time
+	DateTime         string
 	Caption          string
-	numberOfLikes    int
-	numberOfComments int
+	NumberOfLikes    int
+	NumberOfComments int
 }

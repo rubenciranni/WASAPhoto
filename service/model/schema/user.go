@@ -1,6 +1,6 @@
 package schema
 
 type User struct {
-	UserId   UUID
+	UserId   string
 	Username string
 }
