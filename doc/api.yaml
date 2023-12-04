@@ -81,8 +81,8 @@ paths:
         '500': { $ref: "#/components/responses/InternalServerError" }
     get:
       parameters:
-        - $ref: "#/components/parameters/Limit"
-        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/LastDate"
+        - $ref: "#/components/parameters/LastId"
         - $ref: "#/components/parameters/QueryStringUserId"
       tags: ["photos"]
       summary: Gets a list of photos
@@ -132,8 +132,8 @@ paths:
       - $ref: "#/components/parameters/PathPhotoId"
     get:
       parameters:
-        - $ref: "#/components/parameters/Limit"
-        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/LastDate"
+        - $ref: "#/components/parameters/LastId"
       tags: ["likes"]
       summary: Gets the likes for a photo
       description: |-
@@ -151,8 +151,8 @@ paths:
       - $ref: "#/components/parameters/PathPhotoId"
     get:
       parameters:
-        - $ref: "#/components/parameters/Limit"
-        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/LastDate"
+        - $ref: "#/components/parameters/LastId"
       tags: ["comments"]
       summary: Gets the comments for a photo
       description: |-
@@ -203,8 +203,8 @@ paths:
       - $ref: "#/components/parameters/QueryStringUsername"
     get:
       parameters:
-        - $ref: "#/components/parameters/Limit"
-        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/LastDate"
+        - $ref: "#/components/parameters/LastId"
       tags: ["users"]
       summary: Gets users matching given username
       description: |-
@@ -235,8 +235,8 @@ paths:
       - $ref: "#/components/parameters/PathUserId"
     get:
       parameters:
-        - $ref: "#/components/parameters/Limit"
-        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/LastDate"
+        - $ref: "#/components/parameters/LastId"
       tags: ["users"]
       summary: Gets the following of a user
       description: |-
@@ -254,8 +254,8 @@ paths:
       - $ref: "#/components/parameters/PathUserId"
     get:
       parameters:
-        - $ref: "#/components/parameters/Limit"
-        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/LastDate"
+        - $ref: "#/components/parameters/LastId"
       tags: ["users"]
       summary: Gets the followers of a user
       description: |-
@@ -360,8 +360,8 @@ paths:
   /stream:
     get:
       parameters:
-        - $ref: "#/components/parameters/Limit"
-        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/LastDate"
+        - $ref: "#/components/parameters/LastId"
       tags: ["stream"]
       summary: Gets the stream of the logged in user
       description: |-
@@ -376,7 +376,7 @@ paths:
 components:
   schemas:
     # Fields
-    date-time:
+    dateTime:
       description: A date-time.
       type: string
       format: date-time
@@ -420,24 +420,19 @@ components:
       description: A generic paginated list.
       type: object
       properties:
-        previousOffset:
-          description: The offset of the previous block of records.
-          type: integer
-          format: int32
-          minimum: 0
-          example: 20
-        nextOffset:
-          description: The offset of the next block of records.
-          type: integer
-          format: int32
-          minimum: 0
-          example: 40
-        hasPrevious:
-          description: Whether there is a previous block of records.
-          type: boolean
-        hasNext:
-          description: Whether there is a next block of records.
-          type: boolean
+        lastDate:
+          description: |-
+            The date of the last record in the current response.
+          type: string
+          format: date-time
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          minLength: 20
+          maxLength: 20
+        lastId:
+          description: |-
+            The id of the last record in the current response.
+          type: string
+          format: uuid
     User:
       description: An existing user.
       type: object
@@ -455,7 +450,7 @@ components:
               type: array
               items: { $ref: "#/components/schemas/User" }
               minItems: 0
-              maxItems: 50
+              maxItems: 20
     UserProfile:
       description: A user profile.
       type: object
@@ -485,7 +480,7 @@ components:
       properties:
         photoId: { $ref: "#/components/schemas/photoId" }
         author: { $ref: "#/components/schemas/User" }
-        dateTime: { $ref: "#/components/schemas/date-time" }
+        dateTime: { $ref: "#/components/schemas/dateTime" }
         caption: { $ref: "#/components/schemas/text" }
         numberOfLikes:
           description: The number of likes of the photo.
@@ -510,7 +505,7 @@ components:
               type: array
               items: { $ref: "#/components/schemas/Photo" }
               minItems: 0
-              maxItems: 50
+              maxItems: 20
     Comment:
       description: A comment.
       type: object
@@ -518,7 +513,7 @@ components:
         commentId: { $ref: "#/components/schemas/commentId" }
         text: { $ref: "#/components/schemas/text" }
         author: { $ref: "#/components/schemas/User" }
-        dateTime: { $ref: "#/components/schemas/date-time" }
+        dateTime: { $ref: "#/components/schemas/dateTime" }
     CommentList:
       description: A list of comments.
       allOf:
@@ -530,7 +525,7 @@ components:
               type: array
               items: { $ref: "#/components/schemas/Comment" }
               minItems: 0
-              maxItems: 50
+              maxItems: 20
     Problem:
       description: |-
         A Problem (RFC-7807). Inspired by:
@@ -792,32 +787,31 @@ components:
       in: path
       schema: { $ref: "#/components/schemas/commentId" }
       required: true
-    Limit:
-      description: The maximum number of records to be returned.
-      name: limit
-      in: query
-      schema:
-        description: The limit size of the block of records.
-        type: integer
-        format: int32
-        minimum: 1
-        maximum: 50
-        default: 20
-        example: 20
-      required: false 
-    Offset:
+    LastDate:
       description: |-
-        The number of records to skip. If it is greater than the total number of
-        records, the response is an empty array.
-      name: offset
+        The date of the last record in the previous request,
+        it starts to the current date if not specified.
+      name: lastDate
       in: query
       schema:
-        description: The offset of the block of records.
-        type: integer
-        format: int32
-        minimum: 0
-        default: 0
-        example: 0
+        description: The date of the last record.
+        type: string
+        format: date-time
+        pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+        minLength: 20
+        maxLength: 20
+      required: false 
+    LastId:
+      description: |-
+        The id of the last record in the previous response.
+        It starts from the first id if it is not specified.
+      name: lastId
+      in: query
+      schema:
+        description: The id of the last record.
+        type: string
+        format: uuid
+      required: false
   links:
     GetPhotoByPhotoId:
       description: |-
