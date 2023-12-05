@@ -121,6 +121,7 @@ type AppDatabase interface {
 	GetCommentAuthorId(commentId string) (string, error)
 	GetComments(photoId string, startDate string) ([]schema.Comment, error)
 	GetUsers(username string, startId string) ([]schema.User, error)
+	GetUser(userId string) (schema.User, error)
 	GetFollowing(userId string, startId string) ([]schema.User, error)
 	GetFollowers(userId string, startId string) ([]schema.User, error)
 	GetUserProfile(userId string) (schema.UserProfile, error)
