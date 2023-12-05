@@ -1,9 +1,7 @@
 package schema
 
 type PhotoList struct {
-	PreviousOffset int
-	NextOffset     int
-	HasPrevious    bool
-	HasNext        bool
-	records        []Photo
+	LastDate string  `json:"lastDate"`
+	LastId   string  `json:"lastId"`
+	Records  []Photo `json:"records"`
 }

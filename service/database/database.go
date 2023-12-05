@@ -42,7 +42,7 @@ const (
 	createUsersTable = `
 		CREATE TABLE User (
 			userId TEXT PRIMARY KEY,
-			username TEXT NOT NULL
+			username TEXT NOT NULL,
 			numberOfPhotos INTEGER,
 			numberOfFollowers INTEGER,
 			numberOfFollowing INTEGER

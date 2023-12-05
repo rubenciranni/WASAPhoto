@@ -1,9 +1,7 @@
 package schema
 
 type UserList struct {
-	PreviousOffset int
-	NextOffset     int
-	HasPrevious    bool
-	HasNext        bool
-	records        []User
+	LastDate string `json:"lastDate"`
+	LastId   string `json:"lastId"`
+	Records  []User `json:"records"`
 }

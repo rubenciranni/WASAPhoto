@@ -1,5 +1,5 @@
 package request
 
 type SetMyUserNameRequest struct {
-	NewUsername string
+	NewUsername string `json:"newUsername"`
 }

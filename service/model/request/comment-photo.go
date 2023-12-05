@@ -1,5 +1,5 @@
 package request
 
 type CommentPhotoRequest struct {
-	Text string
+	Text string `json:"text"`
 }

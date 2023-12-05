@@ -1,9 +1,7 @@
 package schema
 
 type CommentList struct {
-	PreviousOffset int
-	NextOffset     int
-	HasPrevious    bool
-	HasNext        bool
-	records        []Comment
+	LastDate string    `json:"lastDate"`
+	LastId   string    `json:"lastId"`
+	Records  []Comment `json:"records"`
 }

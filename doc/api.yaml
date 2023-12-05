@@ -20,6 +20,9 @@ info:
     - Follow/unfollow other users.
     - Search other user profiles via username.
 
+servers:
+  - url: http://localhost:3000
+  
 security:
   - bearerAuth: []
 
@@ -49,6 +52,7 @@ paths:
       security: []
       responses:
         '201': { $ref: "#/components/responses/SuccessfulDoLogin" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '500': { $ref: "#/components/responses/InternalServerError" }
   /settings/username:
     put:
@@ -528,18 +532,9 @@ components:
               maxItems: 20
     Problem:
       description: |-
-        A Problem (RFC-7807). Inspired by:
-        https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.1.yaml#/Problem
+        A simplified Problem (RFC-7807).
       type: object
       properties:
-        type:
-          description: |-
-            A URI reference that uniquely identifies the problem type only in the
-            context of the provided API.
-          type: string
-          format: uri-reference
-          default: 'about:blank'
-          example: '/some/uri-reference'
         title:
           description: |-
             A short summary of the problem type.
@@ -566,12 +561,6 @@ components:
           minLength: 0
           maxLength: 2200
           example: some description for the error situation
-        instance:
-          description: |-
-            A URI reference that identifies the specific occurrence of the problem.
-          type: string
-          format: uri-reference
-          example: '/some/uri-reference#specific-occurrence-context'
   requestBodies:
     DoLogin:
       description: Request body for doLogin operation.
@@ -619,32 +608,35 @@ components:
     InternalServerError:
       description: Unexpected condition was encountered.
       content:
-        application/problem+json:
+        application/json:
           schema: { $ref: "#/components/schemas/Problem" }
+    BadRequest:
+      description: |-
+        The server cannot or will not process the request due to an apparent client error.
     Unauthorized:
       description: Authorization identifier is missing or invalid.
       content:
-        application/problem+json:
+        application/json:
           schema: { $ref: "#/components/schemas/Problem" }
     Forbidden:
       description: Logged in user cannot perform the requested operation.
       content:
-        application/problem+json:
+        application/json:
           schema: { $ref: "#/components/schemas/Problem" }
     NotFound:
       description: Requested resource was not found.
       content:
-        application/problem+json:
+        application/json:
           schema: { $ref: "#/components/schemas/Problem" }
     ContentTooLarge:
       description: Content provided in request is too large.
       content:
-        application/problem+json:
+        application/json:
           schema: { $ref: "#/components/schemas/Problem" }
     UnsupportedMediaType:
       description: Content media type provided in request is not supported.
       content:
-        application/problem+json:
+        application/json:
           schema: { $ref: "#/components/schemas/Problem" }
     SuccessfulDoLogin:
       description: User log-in action successful.

@@ -1,5 +1,5 @@
 package response
 
 type DeletePhotoResponse struct {
-	PhotoId string
+	PhotoId string `json:"photoId"`
 }

@@ -1,9 +1,7 @@
 package response
 
 type Problem struct {
-	Type     string
-	Title    string
-	Status   int
-	Detail   string
-	Instance string
+	Title  string `json:"title"`
+	Status int    `json:"status"`
+	Detail string `json:"detail"`
 }

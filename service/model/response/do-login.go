@@ -1,5 +1,5 @@
 package response
 
 type DoLoginResponse struct {
-	UserId string
+	UserId string `json:"userId"`
 }

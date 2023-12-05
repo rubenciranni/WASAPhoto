@@ -73,10 +73,12 @@ func run() error {
 	// Init logging
 	logger := logrus.New()
 	logger.SetOutput(os.Stdout)
-	if cfg.Debug {
-		logger.SetLevel(logrus.DebugLevel)
-	} else {
+	level, err := logrus.ParseLevel(cfg.Log.Level)
+	if err != nil {
 		logger.SetLevel(logrus.InfoLevel)
+		logger.WithError(err).Error("error while parsing log level from config, defaulted to info")
+	} else {
+		logger.SetLevel(level)
 	}
 
 	logger.Infof("application initializing")

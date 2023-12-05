@@ -1,5 +1,5 @@
 package request
 
 type DoLoginRequest struct {
-	Username string
+	Username string `json:"username"`
 }
