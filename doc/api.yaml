@@ -66,6 +66,7 @@ paths:
       requestBody: { $ref: "#/components/requestBodies/SetMyUserName" }
       responses:
         '204': { $ref: "#/components/responses/SuccessfulSetMyUserName" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '500': { $ref: "#/components/responses/InternalServerError" }
@@ -79,6 +80,7 @@ paths:
       requestBody: { $ref: "#/components/requestBodies/UploadPhoto" }
       responses:
         '201': { $ref: "#/components/responses/SuccessfulUploadPhoto" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '413': { $ref: "#/components/responses/ContentTooLarge" }
         '415': { $ref: "#/components/responses/UnsupportedMediaType" }
@@ -97,6 +99,7 @@ paths:
       operationId: getPhotos
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetPhotos" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -113,6 +116,7 @@ paths:
       operationId: getPhoto
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetPhoto" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -127,6 +131,7 @@ paths:
       operationId: deletePhoto
       responses:
         '200': { $ref: "#/components/responses/SuccessfulDeletePhoto" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -146,6 +151,7 @@ paths:
       operationId: getLikes
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetLikes" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -165,6 +171,7 @@ paths:
       operationId: getComments
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetComments" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -180,6 +187,7 @@ paths:
       requestBody: { $ref: "#/components/requestBodies/CommentPhoto" }
       responses:
         '201': { $ref: "#/components/responses/SuccessfulCommentPhoto" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '413': { $ref: "#/components/responses/ContentTooLarge" }
@@ -198,6 +206,7 @@ paths:
       operationId: uncommentPhoto
       responses:
         '200': { $ref: "#/components/responses/SuccessfulUncommentPhoto" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -216,6 +225,7 @@ paths:
       operationId: searchUser
       responses:
         '200': { $ref: "#/components/responses/SuccessfulSearchUser" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '500': { $ref: "#/components/responses/InternalServerError" }
   /users/{userId}:
@@ -230,6 +240,7 @@ paths:
       operationId: getUserProfile
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetUserProfile" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -249,6 +260,7 @@ paths:
       operationId: getFollowing
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetFollowing" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -268,6 +280,7 @@ paths:
       operationId: getFollowers
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetFollowers" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -285,6 +298,7 @@ paths:
       operationId: likePhoto
       responses:
         '204': { $ref: "#/components/responses/SuccessfulLikePhoto" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -299,6 +313,7 @@ paths:
       operationId: unlikePhoto
       responses:
         '204': { $ref: "#/components/responses/SuccessfulUnlikePhoto" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -316,6 +331,7 @@ paths:
       operationId: followUser
       responses:
         '204': { $ref: "#/components/responses/SuccessfulFollowUser" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -330,6 +346,7 @@ paths:
       operationId: unfollowUser
       responses:
         '204': { $ref: "#/components/responses/SuccessfulUnfollowUser" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -345,6 +362,7 @@ paths:
       operationId: banUser
       responses:
         '204': { $ref: "#/components/responses/SuccessfulBanUser" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -357,6 +375,7 @@ paths:
       operationId: unbanUser
       responses:
         '204': { $ref: "#/components/responses/SuccessfulUnbanUser" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
@@ -374,6 +393,7 @@ paths:
       operationId: getMyStream
       responses:
         '200': { $ref: "#/components/responses/SuccessfulGetMyStream" }
+        '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '500': { $ref: "#/components/responses/InternalServerError" }
 
