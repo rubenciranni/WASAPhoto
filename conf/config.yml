@@ -11,3 +11,6 @@ log:
   level: debug
 db:
   filename: /tmp/wasaphoto.db
+filesystem:
+  root: /tmp/wasaphoto
+  photos: photos
