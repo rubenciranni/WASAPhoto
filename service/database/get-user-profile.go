@@ -10,8 +10,21 @@ func (db *appdbimpl) GetUserProfile(userId string) (schema.UserProfile, error) {
 		numberOfFollowing int
 	)
 	err := db.c.QueryRow(
-		`SELECT * FROM User WHERE userId = ?`,
-		userId).Scan(&userId, &username, &numberOfPhotos, &numberOfFollowers, &numberOfFollowing)
+		`
+		SELECT 
+			User.username,
+			(SELECT COUNT(*) FROM Photo WHERE authorId = ?) AS numberOfPhotos,
+			(SELECT COUNT(*) FROM Follow WHERE followedId = ?) AS numberOfFollowers,
+			(SELECT COUNT(*) FROM Follow WHERE followerId = ?) AS numberOfFollowing
+		FROM 
+			User
+		WHERE 
+			User.userId = ?
+		`,
+		userId,
+		userId,
+		userId,
+		userId).Scan(&username, &numberOfPhotos, &numberOfFollowers, &numberOfFollowing)
 
 	userProfile := schema.UserProfile{
 		UserId:            userId,

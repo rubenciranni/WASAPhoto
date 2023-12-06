@@ -6,7 +6,7 @@ func (db *appdbimpl) GetUsers(username string, startId string) ([]schema.User, e
 	var userList []schema.User
 	rows, err := db.c.Query(
 		`
-		SELECT userId, username
+		SELECT *
 		FROM User
 		WHERE username LIKE '%?%' AND userId > ?
 		ORDER BY userId

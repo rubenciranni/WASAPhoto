@@ -6,7 +6,7 @@ func (db *appdbimpl) GetFollowers(userId string, startId string) ([]schema.User,
 	var followersList []schema.User
 	rows, err := db.c.Query(
 		`
-		SELECT Follow.followerId, User.username
+		SELECT User.*
 		FROM Follow JOIN User
 		ON Follow.followerId = User.userId
 		WHERE Follow.followedId = ? AND Follow.followerId > ?

@@ -8,7 +8,7 @@ func (db *appdbimpl) GetLikes(photoId string, startId string) ([]schema.User, er
 	var userList []schema.User
 	rows, err := db.c.Query(
 		`
-		SELECT User.userId, User.username 
+		SELECT User.* 
 		FROM Like JOIN User
 		ON User.userId = Like.userId
 		WHERE Like.photoId = ? AND User.userId > ?

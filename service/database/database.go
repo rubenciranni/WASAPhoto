@@ -42,10 +42,7 @@ const (
 	createUsersTable = `
 		CREATE TABLE User (
 			userId TEXT PRIMARY KEY,
-			username TEXT NOT NULL,
-			numberOfPhotos INTEGER,
-			numberOfFollowers INTEGER,
-			numberOfFollowing INTEGER
+			username TEXT NOT NULL
 		);
 	`
 	createPhotoTable = `
@@ -53,9 +50,7 @@ const (
 			photoId TEXT PRIMARY KEY,
 			authorId TEXT NOT NULL,
 			caption TEXT,
-			dateTime TEXT,
-			numberOfLikes INTEGER,
-			numberOfComments INTEGER,
+			dateTime TEXT
 			FOREIGN KEY (authorId) REFERENCES User(userId)
 		);
 	`

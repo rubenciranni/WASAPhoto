@@ -6,11 +6,23 @@ func (db *appdbimpl) GetStream(userId string, startDate string) ([]schema.Photo,
 	var photoList []schema.Photo
 	rows, err := db.c.Query(
 		`
-		SELECT Photo.*
-		FROM Photo
-		JOIN User ON Photo.authorId = User.userId
-		JOIN Follow ON Photo.authorId = Follow.followedId
-		WHERE Follow.followerId = ? AND Photo.dateTime < ?
+		SELECT 
+			Photo.photoId,
+			Photo.authorId,
+			User.username AS authorUsername,
+			Photo.caption,
+			Photo.dateTime,
+			(SELECT COUNT(*) FROM Like WHERE photoId = Photo.photoId) AS numberOfLikes,
+			(SELECT COUNT(*) FROM Comment WHERE photoId = Photo.photoId) AS numberOfComments
+		FROM 
+			Photo
+		JOIN 
+			User ON Photo.authorId = User.userId
+		WHERE 
+			Photo.authorId IN (
+				SELECT followedId FROM Follow WHERE followerId = ?
+			) AND
+			Photo.dateTime < ?
 		ORDER BY Photo.dateTime DESC
 		LIMIT 20
 		`,
