@@ -40,7 +40,6 @@ func (rt *_router) wrap(fn httpRouterHandler, requiresAuth bool) func(http.Respo
 		if requiresAuth {
 			ctx.Logger.Debug("checking authorization header")
 			respondUnauthorized := func() {
-				ctx.Logger.Debugf(`request authorization header missing or invalid`)
 				w.WriteHeader(http.StatusUnauthorized)
 				response := response.Problem{
 					Title:  "Unauthorized",
@@ -53,21 +52,25 @@ func (rt *_router) wrap(fn httpRouterHandler, requiresAuth bool) func(http.Respo
 			// Check authorization header format
 			authHeader := r.Header.Get("Authorization")
 			if authHeader == "" {
+				ctx.Logger.Debugf("request authorization header missing")
 				respondUnauthorized()
 				return
 			}
 			if !strings.HasPrefix(authHeader, "Bearer ") {
+				ctx.Logger.Debugf("request authorization header has wrong format")
 				respondUnauthorized()
 				return
 			}
 			// Check authorization token format
 			authToken := strings.TrimPrefix(authHeader, "Bearer ")
 			if !isValidUUID(authToken) {
+				ctx.Logger.Debugf("request authorization token is not a valid UUID")
 				respondUnauthorized()
 				return
 			}
 			// Check authorization token existance
 			if user, err := rt.db.GetUser(authToken); errors.Is(err, sql.ErrNoRows) {
+				ctx.Logger.Debugf("request authorization token not found")
 				respondUnauthorized()
 				return
 			} else if err != nil {
@@ -93,5 +96,5 @@ func (rt *_router) wrap(fn httpRouterHandler, requiresAuth bool) func(http.Respo
 
 func isValidUUID(u string) bool {
 	_, err := uuid.FromString(u)
-	return err != nil
+	return err == nil
 }

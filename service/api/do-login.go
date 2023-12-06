@@ -46,7 +46,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 
-	// Checking username validity
+	// Checking username existance
 	ctx.Logger.Debugf(`retrieving userId for user "%s"`, request.Username)
 	userId, err := rt.db.GetUserId(request.Username)
 
