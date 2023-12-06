@@ -50,7 +50,7 @@ const (
 			photoId TEXT PRIMARY KEY,
 			authorId TEXT NOT NULL,
 			caption TEXT,
-			dateTime TEXT
+			dateTime TEXT,
 			FOREIGN KEY (authorId) REFERENCES User(userId)
 		);
 	`
