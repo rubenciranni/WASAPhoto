@@ -1,11 +1,16 @@
 package api
 
 import (
+	"database/sql"
+	"encoding/json"
+	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/gofrs/uuid"
 	"github.com/julienschmidt/httprouter"
 	"github.com/rubenciranni/WASAPhoto/service/api/reqcontext"
+	"github.com/rubenciranni/WASAPhoto/service/model/response"
 	"github.com/sirupsen/logrus"
 )
 
@@ -14,7 +19,7 @@ import (
 type httpRouterHandler func(http.ResponseWriter, *http.Request, httprouter.Params, reqcontext.RequestContext)
 
 // wrap parses the request and adds a reqcontext.RequestContext instance related to the request.
-func (rt *_router) wrap(fn httpRouterHandler) func(http.ResponseWriter, *http.Request, httprouter.Params) {
+func (rt *_router) wrap(fn httpRouterHandler, requiresAuth bool) func(http.ResponseWriter, *http.Request, httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		reqUUID, err := uuid.NewV4()
 		if err != nil {
@@ -32,7 +37,61 @@ func (rt *_router) wrap(fn httpRouterHandler) func(http.ResponseWriter, *http.Re
 			"remote-ip": r.RemoteAddr,
 		})
 
+		if requiresAuth {
+			ctx.Logger.Debug("checking authorization header")
+			respondUnauthorized := func() {
+				ctx.Logger.Debugf(`request authorization header missing or invalid`)
+				w.WriteHeader(http.StatusUnauthorized)
+				response := response.Problem{
+					Title:  "Unauthorized",
+					Status: 401,
+					Detail: "Request authorization header missing or invalid."}
+				json.NewEncoder(w).Encode(response)
+				rt.baseLogger.Debug("sending response")
+				return
+			}
+			// Check authorization header format
+			authHeader := r.Header.Get("Authorization")
+			if authHeader == "" {
+				respondUnauthorized()
+				return
+			}
+			if !strings.HasPrefix(authHeader, "Bearer ") {
+				respondUnauthorized()
+				return
+			}
+			// Check authorization token format
+			authToken := strings.TrimPrefix(authHeader, "Bearer ")
+			if !isValidUUID(authToken) {
+				respondUnauthorized()
+				return
+			}
+			// Check authorization token existance
+			if user, err := rt.db.GetUser(authToken); errors.Is(err, sql.ErrNoRows) {
+				respondUnauthorized()
+				return
+			} else if err != nil {
+				ctx.Logger.WithError(err).Error("can't get the userId for username")
+				w.WriteHeader(http.StatusInternalServerError)
+				response := response.Problem{
+					Title:  "Internal Server Error",
+					Status: 501,
+					Detail: "Cannot authorize user"}
+				json.NewEncoder(w).Encode(response)
+				rt.baseLogger.Debug("sending response")
+				return
+				// Adding User to context
+			} else {
+				ctx.User = user
+			}
+		}
+
 		// Call the next handler in chain (usually, the handler function for the path)
 		fn(w, r, ps, ctx)
 	}
+}
+
+func isValidUUID(u string) bool {
+	_, err := uuid.FromString(u)
+	return err != nil
 }

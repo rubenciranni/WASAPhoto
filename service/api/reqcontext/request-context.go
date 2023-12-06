@@ -8,6 +8,7 @@ package reqcontext
 
 import (
 	"github.com/gofrs/uuid"
+	"github.com/rubenciranni/WASAPhoto/service/model/schema"
 	"github.com/sirupsen/logrus"
 )
 
@@ -18,4 +19,7 @@ type RequestContext struct {
 
 	// Logger is a custom field logger for the request
 	Logger logrus.FieldLogger
+
+	// The user who is performing the request, if authentication is required
+	User schema.User
 }
