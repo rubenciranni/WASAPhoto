@@ -16,6 +16,9 @@ func (db *appdbimpl) GetComments(photoId string, startDate string) ([]schema.Com
 		photoId,
 		startDate,
 	)
+	if err != nil {
+		return commentList, err
+	}
 	defer rows.Close()
 
 	for rows.Next() {
@@ -35,6 +38,10 @@ func (db *appdbimpl) GetComments(photoId string, startDate string) ([]schema.Com
 			Author:    schema.User{UserId: authorId, Username: authorUsername},
 			DateTime:  dateTime,
 		})
+	}
+
+	if err := rows.Err(); err != nil {
+		return commentList, err
 	}
 
 	return commentList, err

@@ -15,6 +15,9 @@ func (db *appdbimpl) GetUsers(username string, startId string) ([]schema.User, e
 		username,
 		startId,
 	)
+	if err != nil {
+		return userList, err
+	}
 	defer rows.Close()
 
 	for rows.Next() {
@@ -29,6 +32,10 @@ func (db *appdbimpl) GetUsers(username string, startId string) ([]schema.User, e
 			UserId:   userId,
 			Username: username,
 		})
+	}
+
+	if err := rows.Err(); err != nil {
+		return userList, err
 	}
 
 	return userList, err

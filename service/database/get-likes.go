@@ -18,6 +18,9 @@ func (db *appdbimpl) GetLikes(photoId string, startId string) ([]schema.User, er
 		photoId,
 		startId,
 	)
+	if err != nil {
+		return userList, err
+	}
 	defer rows.Close()
 
 	for rows.Next() {
@@ -32,6 +35,10 @@ func (db *appdbimpl) GetLikes(photoId string, startId string) ([]schema.User, er
 			UserId:   userId,
 			Username: username,
 		})
+	}
+
+	if err := rows.Err(); err != nil {
+		return userList, err
 	}
 
 	return userList, err

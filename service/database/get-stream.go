@@ -29,6 +29,9 @@ func (db *appdbimpl) GetStream(userId string, startDate string) ([]schema.Photo,
 		userId,
 		startDate,
 	)
+	if err != nil {
+		return photoList, err
+	}
 	defer rows.Close()
 
 	for rows.Next() {
@@ -52,6 +55,10 @@ func (db *appdbimpl) GetStream(userId string, startDate string) ([]schema.Photo,
 			NumberOfLikes:    numberOfLikes,
 			NumberOfComments: numberOfComments,
 		})
+	}
+
+	if err := rows.Err(); err != nil {
+		return photoList, err
 	}
 
 	return photoList, err

@@ -25,6 +25,9 @@ func (db *appdbimpl) GetPhotosByUser(userId string, startDate string) ([]schema.
 		userId,
 		startDate,
 	)
+	if err != nil {
+		return photoList, err
+	}
 	defer rows.Close()
 
 	for rows.Next() {
@@ -47,6 +50,10 @@ func (db *appdbimpl) GetPhotosByUser(userId string, startDate string) ([]schema.
 			NumberOfLikes:    numberOfLikes,
 			NumberOfComments: numberOfComments,
 		})
+	}
+
+	if err := rows.Err(); err != nil {
+		return photoList, err
 	}
 
 	return photoList, err

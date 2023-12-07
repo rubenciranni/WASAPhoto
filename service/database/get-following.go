@@ -16,6 +16,9 @@ func (db *appdbimpl) GetFollowing(userId string, startId string) ([]schema.User,
 		userId,
 		startId,
 	)
+	if err != nil {
+		return followingList, err
+	}
 	defer rows.Close()
 
 	for rows.Next() {
@@ -30,6 +33,10 @@ func (db *appdbimpl) GetFollowing(userId string, startId string) ([]schema.User,
 			UserId:   userId,
 			Username: username,
 		})
+	}
+
+	if err := rows.Err(); err != nil {
+		return followingList, err
 	}
 
 	return followingList, err
