@@ -10,7 +10,7 @@ import (
 )
 
 func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	// Parsing request
+	// Parse request
 	var request request.SetMyUserNameRequest
 	ctx.Logger.Debugf("deconding JSON")
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -26,7 +26,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	// Checking if newUsername is already taken by another user
+	// Check if newUsername is already taken by another user
 	ctx.Logger.Debugf(`checking username "%s" availability`, request.NewUsername)
 	if userId, err := rt.db.GetUserId(request.NewUsername); err == nil && userId != ctx.User.UserId {
 		ctx.Logger.Errorf(`username "%s" is already taken`, request.NewUsername)
@@ -34,7 +34,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	// Updating username
+	// Update username
 	ctx.Logger.Debugf("updating username")
 	err = rt.db.SetUserName(ctx.User.UserId, request.NewUsername)
 	if err != nil {
@@ -43,5 +43,6 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
+	// Send the response
 	w.WriteHeader(http.StatusNoContent)
 }

@@ -14,7 +14,7 @@ import (
 )
 
 func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	// Parsing request
+	// Parse request
 	var request request.DoLoginRequest
 	ctx.Logger.Debugf("deconding JSON")
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -30,11 +30,11 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 
-	// Checking username existance
+	// Check username existance
 	ctx.Logger.Debugf(`retrieving userId for user "%s"`, request.Username)
 	userId, err := rt.db.GetUserId(request.Username)
 
-	// Creating new user if username doesn't exists
+	// Create new user if username doesn't exists
 	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.Debugf(`user "%s" does not exist, creating new user`, request.Username)
 		newUserId, err := uuid.NewV4()
@@ -56,9 +56,9 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 
-	// Creating response
+	// Send the response
 	response := response.DoLoginResponse{UserId: userId}
-
 	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("content-type", "application/json")
 	_ = json.NewEncoder(w).Encode(response)
 }
