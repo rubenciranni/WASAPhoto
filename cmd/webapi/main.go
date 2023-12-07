@@ -32,13 +32,13 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"path"
 	"syscall"
 
 	"github.com/ardanlabs/conf"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/rubenciranni/WASAPhoto/service/api"
 	"github.com/rubenciranni/WASAPhoto/service/database"
+	"github.com/rubenciranni/WASAPhoto/service/filesystem"
 	"github.com/rubenciranni/WASAPhoto/service/globaltime"
 	"github.com/sirupsen/logrus"
 )
@@ -103,20 +103,7 @@ func run() error {
 
 	// Creating FileSystem Root and Photos folders if not exists
 	logger.Println("initializing filesystem")
-	if _, err := os.Stat(cfg.FileSystem.Root); os.IsNotExist(err) {
-		err := os.Mkdir(cfg.FileSystem.Root, 0755)
-		if err != nil {
-			logger.WithError(err).Error("error creating filesystem root directory")
-			return fmt.Errorf("creating filesystem root: %w", err)
-		}
-	}
-	if _, err := os.Stat(path.Join(cfg.FileSystem.Root, cfg.FileSystem.Photos)); os.IsNotExist(err) {
-		err := os.Mkdir(path.Join(cfg.FileSystem.Root, cfg.FileSystem.Photos), 0755)
-		if err != nil {
-			logger.WithError(err).Error("error creating filesystem photos directory")
-			return fmt.Errorf("creating filesystem photos directory: %w", err)
-		}
-	}
+	fs, err := filesystem.New(cfg.FileSystem.Root, cfg.FileSystem.Photos)
 
 	// Start (main) API server
 	logger.Info("initializing API server")
@@ -132,9 +119,9 @@ func run() error {
 
 	// Create the API router
 	apirouter, err := api.New(api.Config{
-		Logger:         logger,
-		Database:       db,
-		FileSystemRoot: cfg.FileSystem.Root,
+		Logger:     logger,
+		Database:   db,
+		FileSystem: fs,
 	})
 	if err != nil {
 		logger.WithError(err).Error("error creating the API server instance")

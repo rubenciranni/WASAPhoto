@@ -42,6 +42,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/rubenciranni/WASAPhoto/service/database"
+	"github.com/rubenciranni/WASAPhoto/service/filesystem"
 	"github.com/sirupsen/logrus"
 )
 
@@ -54,7 +55,7 @@ type Config struct {
 	Database database.AppDatabase
 
 	// Filesystem is where the app filesystem is located
-	FileSystemRoot string
+	FileSystem filesystem.AppFileSystem
 }
 
 // Router is the package API interface representing an API handler builder
@@ -75,6 +76,9 @@ func New(cfg Config) (Router, error) {
 	if cfg.Database == nil {
 		return nil, errors.New("database is required")
 	}
+	if cfg.FileSystem == nil {
+		return nil, errors.New("filesystem is required")
+	}
 
 	// Create a new router where we will register HTTP endpoints. The server will pass requests to this router to be
 	// handled.
@@ -86,7 +90,7 @@ func New(cfg Config) (Router, error) {
 		router:     router,
 		baseLogger: cfg.Logger,
 		db:         cfg.Database,
-		fsRoot:     cfg.FileSystemRoot,
+		fs:         cfg.FileSystem,
 	}, nil
 }
 
@@ -99,5 +103,5 @@ type _router struct {
 
 	db database.AppDatabase
 
-	fsRoot string
+	fs filesystem.AppFileSystem
 }
