@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"regexp"
 
 	"github.com/gofrs/uuid"
 	"github.com/julienschmidt/httprouter"
@@ -25,8 +24,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	regexpPattern := regexp.MustCompile(`^[a-zA-Z0-9_-]{3,16}$`)
-	if !regexpPattern.MatchString(request.Username) {
+	if !request.IsValid() {
 		ctx.Logger.Error("error validating JSON")
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -61,10 +59,6 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 	// Creating response
 	response := response.DoLoginResponse{UserId: userId}
 
-	if err = json.NewEncoder(w).Encode(response); err != nil {
-		ctx.Logger.WithError(err).Error("error encoding response")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("content-type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	_ = json.NewEncoder(w).Encode(response)
 }

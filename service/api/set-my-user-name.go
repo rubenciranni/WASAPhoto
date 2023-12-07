@@ -12,10 +12,16 @@ import (
 func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parsing request
 	var request request.SetMyUserNameRequest
-
+	ctx.Logger.Debugf("deconding JSON")
 	err := json.NewDecoder(r.Body).Decode(&request)
+	_ = r.Body.Close()
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error deconding JSON")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if !request.IsValid() {
+		ctx.Logger.Error("error validating JSON")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
