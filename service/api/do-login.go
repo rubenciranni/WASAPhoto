@@ -15,42 +15,20 @@ import (
 )
 
 func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	w.Header().Set("content-type", "application/json")
 	// Parsing request
 	var request request.DoLoginRequest
+	ctx.Logger.Debugf("deconding JSON")
 	err := json.NewDecoder(r.Body).Decode(&request)
+	_ = r.Body.Close()
 	if err != nil {
-		ctx.Logger.WithError(err).Error("can't parse request body for DoLogin operation")
-		response := response.Problem{
-			Title:  "Bad Request",
-			Status: http.StatusBadRequest,
-			Detail: "Cannot parse request body."}
-		if err = json.NewEncoder(w).Encode(response); err != nil {
-			ctx.Logger.WithError(err).Error("can't encode response")
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
+		ctx.Logger.WithError(err).Error("error decoding JSON")
 		w.WriteHeader(http.StatusBadRequest)
-		ctx.Logger.Debug("sending response")
 		return
 	}
-	ctx.Logger.Debugf(`received and parsed request for doLogin operation`)
-
-	// Checking username validity
 	regexpPattern := regexp.MustCompile(`^[a-zA-Z0-9_-]{3,16}$`)
 	if !regexpPattern.MatchString(request.Username) {
-		ctx.Logger.Debugf(`username in request is invalid`)
-		response := response.Problem{
-			Title:  "Bad Request",
-			Status: http.StatusBadRequest,
-			Detail: "Invalid username."}
-		if err = json.NewEncoder(w).Encode(response); err != nil {
-			ctx.Logger.WithError(err).Error("can't encode response")
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
+		ctx.Logger.Error("error validating JSON")
 		w.WriteHeader(http.StatusBadRequest)
-		ctx.Logger.Debug("sending response")
 		return
 	}
 
@@ -63,47 +41,20 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		ctx.Logger.Debugf(`user "%s" does not exist, creating new user`, request.Username)
 		newUserId, err := uuid.NewV4()
 		if err != nil {
-			ctx.Logger.WithError(err).Error("can't generate a new user UUID")
+			ctx.Logger.WithError(err).Error("error creating new UUID")
 			w.WriteHeader(http.StatusInternalServerError)
-			response := response.Problem{
-				Title:  "Internal Server Error",
-				Status: http.StatusInternalServerError,
-				Detail: "Cannot create a new user"}
-			if err = json.NewEncoder(w).Encode(response); err != nil {
-				ctx.Logger.WithError(err).Error("can't encode response")
-				return
-			}
-			ctx.Logger.Debug("sending response")
 			return
 		}
 		userId = newUserId.String()
 		err = rt.db.InsertUser(userId, request.Username)
 		if err != nil {
-			ctx.Logger.WithError(err).Error("can't insert a new user in database")
+			ctx.Logger.WithError(err).Error("error inserting new user in database")
 			w.WriteHeader(http.StatusInternalServerError)
-			response := response.Problem{
-				Title:  "Internal Server Error",
-				Status: http.StatusInternalServerError,
-				Detail: "Cannot create a new user"}
-			if err = json.NewEncoder(w).Encode(response); err != nil {
-				ctx.Logger.WithError(err).Error("can't encode response")
-				return
-			}
-			ctx.Logger.Debug("sending response")
 			return
 		}
 	} else if err != nil {
-		ctx.Logger.WithError(err).Error("can't get the userId for username")
+		ctx.Logger.WithError(err).Error("error getting userId from database")
 		w.WriteHeader(http.StatusInternalServerError)
-		response := response.Problem{
-			Title:  "Internal Server Error",
-			Status: http.StatusInternalServerError,
-			Detail: "Cannot get userId for requested username"}
-		if err = json.NewEncoder(w).Encode(response); err != nil {
-			ctx.Logger.WithError(err).Error("can't encode response")
-			return
-		}
-		ctx.Logger.Debug("sending response")
 		return
 	}
 
@@ -111,10 +62,9 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 	response := response.DoLoginResponse{UserId: userId}
 
 	if err = json.NewEncoder(w).Encode(response); err != nil {
-		ctx.Logger.WithError(err).Error("can't encode response")
+		ctx.Logger.WithError(err).Error("error encoding response")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
-	ctx.Logger.Debug("sending response")
+	w.Header().Set("content-type", "application/json")
 }
