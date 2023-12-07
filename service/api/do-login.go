@@ -21,12 +21,16 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("can't parse request body for DoLogin operation")
-		w.WriteHeader(http.StatusBadRequest)
 		response := response.Problem{
 			Title:  "Bad Request",
-			Status: 400,
+			Status: http.StatusBadRequest,
 			Detail: "Cannot parse request body."}
-		json.NewEncoder(w).Encode(response)
+		if err = json.NewEncoder(w).Encode(response); err != nil {
+			ctx.Logger.WithError(err).Error("can't encode response")
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
 		ctx.Logger.Debug("sending response")
 		return
 	}
@@ -36,12 +40,16 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 	regexpPattern := regexp.MustCompile(`^[a-zA-Z0-9_-]{3,16}$`)
 	if !regexpPattern.MatchString(request.Username) {
 		ctx.Logger.Debugf(`username in request is invalid`)
-		w.WriteHeader(http.StatusBadRequest)
 		response := response.Problem{
 			Title:  "Bad Request",
-			Status: 400,
+			Status: http.StatusBadRequest,
 			Detail: "Invalid username."}
-		json.NewEncoder(w).Encode(response)
+		if err = json.NewEncoder(w).Encode(response); err != nil {
+			ctx.Logger.WithError(err).Error("can't encode response")
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
 		ctx.Logger.Debug("sending response")
 		return
 	}
@@ -59,9 +67,12 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 			w.WriteHeader(http.StatusInternalServerError)
 			response := response.Problem{
 				Title:  "Internal Server Error",
-				Status: 500,
-				Detail: "Cannot generate a new user UUID"}
-			json.NewEncoder(w).Encode(response)
+				Status: http.StatusInternalServerError,
+				Detail: "Cannot create a new user"}
+			if err = json.NewEncoder(w).Encode(response); err != nil {
+				ctx.Logger.WithError(err).Error("can't encode response")
+				return
+			}
 			ctx.Logger.Debug("sending response")
 			return
 		}
@@ -72,9 +83,12 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 			w.WriteHeader(http.StatusInternalServerError)
 			response := response.Problem{
 				Title:  "Internal Server Error",
-				Status: 500,
-				Detail: "Cannot insert a new user in database"}
-			json.NewEncoder(w).Encode(response)
+				Status: http.StatusInternalServerError,
+				Detail: "Cannot create a new user"}
+			if err = json.NewEncoder(w).Encode(response); err != nil {
+				ctx.Logger.WithError(err).Error("can't encode response")
+				return
+			}
 			ctx.Logger.Debug("sending response")
 			return
 		}
@@ -83,17 +97,24 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		w.WriteHeader(http.StatusInternalServerError)
 		response := response.Problem{
 			Title:  "Internal Server Error",
-			Status: 500,
+			Status: http.StatusInternalServerError,
 			Detail: "Cannot get userId for requested username"}
-		json.NewEncoder(w).Encode(response)
+		if err = json.NewEncoder(w).Encode(response); err != nil {
+			ctx.Logger.WithError(err).Error("can't encode response")
+			return
+		}
 		ctx.Logger.Debug("sending response")
 		return
 	}
 
 	// Creating response
-	w.WriteHeader(http.StatusCreated)
 	response := response.DoLoginResponse{UserId: userId}
 
-	json.NewEncoder(w).Encode(response)
+	if err = json.NewEncoder(w).Encode(response); err != nil {
+		ctx.Logger.WithError(err).Error("can't encode response")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
 	ctx.Logger.Debug("sending response")
 }

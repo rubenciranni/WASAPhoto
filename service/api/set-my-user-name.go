@@ -17,12 +17,17 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("can't parse request body for setMyUserName operation")
-		w.WriteHeader(http.StatusBadRequest)
+		w.Header().Set("content-type", "application/json")
 		response := response.Problem{
 			Title:  "Bad Request",
-			Status: 400,
+			Status: http.StatusBadRequest,
 			Detail: "Cannot parse request body."}
-		json.NewEncoder(w).Encode(response)
+		if err = json.NewEncoder(w).Encode(response); err != nil {
+			ctx.Logger.WithError(err).Error("can't encode response")
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
 		ctx.Logger.Debug("sending response")
 		return
 	}
@@ -31,12 +36,17 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 	// Checking if newUsername is already taken by another user
 	if userId, err := rt.db.GetUserId(request.NewUsername); err == nil && userId != ctx.User.UserId {
 		ctx.Logger.Debugf(`username "%s" is already taken, responding forbidden`, request.NewUsername)
-		w.WriteHeader(http.StatusForbidden)
+		w.Header().Set("content-type", "application/json")
 		response := response.Problem{
 			Title:  "Forbidden",
-			Status: 403,
+			Status: http.StatusForbidden,
 			Detail: "Username is already taken."}
-		json.NewEncoder(w).Encode(response)
+		if err = json.NewEncoder(w).Encode(response); err != nil {
+			ctx.Logger.WithError(err).Error("can't encode response")
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusForbidden)
 		ctx.Logger.Debug("sending response")
 		return
 	}
@@ -45,12 +55,17 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 	err = rt.db.SetUserName(ctx.User.UserId, request.NewUsername)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("can't update username")
+		w.Header().Set("content-type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		response := response.Problem{
 			Title:  "Internal Server Error",
-			Status: 500,
+			Status: http.StatusInternalServerError,
 			Detail: "Cannot update username"}
-		json.NewEncoder(w).Encode(response)
+		if err = json.NewEncoder(w).Encode(response); err != nil {
+			ctx.Logger.WithError(err).Error("can't encode response")
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 		ctx.Logger.Debug("sending response")
 		return
 	}

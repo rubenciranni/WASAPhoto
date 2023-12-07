@@ -25,6 +25,15 @@ func (rt *_router) wrap(fn httpRouterHandler, requiresAuth bool) func(http.Respo
 		if err != nil {
 			rt.baseLogger.WithError(err).Error("can't generate a request UUID")
 			w.WriteHeader(http.StatusInternalServerError)
+			response := response.Problem{
+				Title:  "Internal Server Error",
+				Status: http.StatusInternalServerError,
+				Detail: "Cannot generate a new request UUID"}
+			if err = json.NewEncoder(w).Encode(response); err != nil {
+				rt.baseLogger.WithError(err).Error("can't encode response")
+				return
+			}
+			rt.baseLogger.Debug("sending response")
 			return
 		}
 		var ctx = reqcontext.RequestContext{
@@ -40,12 +49,16 @@ func (rt *_router) wrap(fn httpRouterHandler, requiresAuth bool) func(http.Respo
 		if requiresAuth {
 			ctx.Logger.Debug("checking authorization header")
 			respondUnauthorized := func() {
-				w.WriteHeader(http.StatusUnauthorized)
 				response := response.Problem{
 					Title:  "Unauthorized",
-					Status: 401,
+					Status: http.StatusUnauthorized,
 					Detail: "Request authorization header missing or invalid."}
-				json.NewEncoder(w).Encode(response)
+				if err = json.NewEncoder(w).Encode(response); err != nil {
+					ctx.Logger.WithError(err).Error("can't encode response")
+					w.WriteHeader(http.StatusInternalServerError)
+					return
+				}
+				w.WriteHeader(http.StatusUnauthorized)
 				rt.baseLogger.Debug("sending response")
 				return
 			}
@@ -78,13 +91,16 @@ func (rt *_router) wrap(fn httpRouterHandler, requiresAuth bool) func(http.Respo
 				w.WriteHeader(http.StatusInternalServerError)
 				response := response.Problem{
 					Title:  "Internal Server Error",
-					Status: 501,
+					Status: http.StatusInternalServerError,
 					Detail: "Cannot authorize user"}
-				json.NewEncoder(w).Encode(response)
+				if err = json.NewEncoder(w).Encode(response); err != nil {
+					ctx.Logger.WithError(err).Error("can't encode response")
+					return
+				}
 				rt.baseLogger.Debug("sending response")
 				return
-				// Adding User to context
 			} else {
+				// Authorization successful
 				ctx.User = user
 			}
 		}
