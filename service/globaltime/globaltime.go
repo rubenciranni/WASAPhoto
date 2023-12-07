@@ -19,3 +19,7 @@ func Now() time.Time {
 func Since(tm time.Time) time.Duration {
 	return Now().Sub(tm)
 }
+
+func ToString(tm time.Time) string {
+	return tm.Format("2006-01-02T15:04:05Z")
+}

@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-func (fs *appfsimpl) SavePhoto(file multipart.File, photoId string) error {
+func (fs *appfsimpl) SavePhoto(file *multipart.File, photoId string) error {
 	filename := fmt.Sprintf("%s.png", photoId)
 
 	// Create the file on the filesystem
@@ -19,9 +19,6 @@ func (fs *appfsimpl) SavePhoto(file multipart.File, photoId string) error {
 	defer dst.Close()
 
 	// Copy the contents of the file to the destination file
-	_, err = io.Copy(dst, file)
-	if err != nil {
-		return err
-	}
-	return nil
+	_, err = io.Copy(dst, *file)
+	return err
 }
