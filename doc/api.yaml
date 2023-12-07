@@ -418,6 +418,7 @@ components:
       description: A png photo of 10 MB maximum size in binary format.
       type: string
       format: binary
+      pattern: '^[01]+$'
       minLength: 536
       maxLength: 10485760 # 10MB
     username:
@@ -431,14 +432,23 @@ components:
       description: UUID associated with a unique user.
       type: string
       format: uuid
+      pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      minLength: 36
+      maxLength: 36
     photoId:
       description: UUID associated with a unique photo.
       type: string
       format: uuid
+      pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      minLength: 36
+      maxLength: 36
     commentId:
       description: UUID associated with a unique comment.
       type: string
       format: uuid
+      pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      minLength: 36
+      maxLength: 36
     # Objects
     Paginator:
       description: A generic paginated list.
@@ -457,6 +467,9 @@ components:
             The id of the last record in the current response.
           type: string
           format: uuid
+          pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+          minLength: 36
+          maxLength: 36
     User:
       description: An existing user.
       type: object
@@ -823,6 +836,9 @@ components:
         description: The id of the last record.
         type: string
         format: uuid
+        pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+        minLength: 36
+        maxLength: 36
       required: false
   links:
     GetPhotoByPhotoId:
