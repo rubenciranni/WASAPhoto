@@ -88,6 +88,7 @@ paths:
     get:
       parameters:
         - $ref: "#/components/parameters/LastDate"
+        - $ref: "#/components/parameters/LastId"
         - $ref: "#/components/parameters/QueryStringUserId"
       tags: ["photos"]
       summary: Gets a list of photos
@@ -140,6 +141,7 @@ paths:
       - $ref: "#/components/parameters/PathPhotoId"
     get:
       parameters:
+        - $ref: "#/components/parameters/LastDate"
         - $ref: "#/components/parameters/LastId"
       tags: ["likes"]
       summary: Gets the likes for a photo
@@ -160,6 +162,7 @@ paths:
     get:
       parameters:
         - $ref: "#/components/parameters/LastDate"
+        - $ref: "#/components/parameters/LastId"
       tags: ["comments"]
       summary: Gets the comments for a photo
       description: |-
@@ -213,6 +216,7 @@ paths:
       - $ref: "#/components/parameters/QueryStringUsername"
     get:
       parameters:
+        - $ref: "#/components/parameters/LastDate"
         - $ref: "#/components/parameters/LastId"
       tags: ["users"]
       summary: Gets users matching given username
@@ -246,6 +250,7 @@ paths:
       - $ref: "#/components/parameters/PathUserId"
     get:
       parameters:
+        - $ref: "#/components/parameters/LastDate"
         - $ref: "#/components/parameters/LastId"
       tags: ["users"]
       summary: Gets the following of a user
@@ -265,6 +270,7 @@ paths:
       - $ref: "#/components/parameters/PathUserId"
     get:
       parameters:
+        - $ref: "#/components/parameters/LastDate"
         - $ref: "#/components/parameters/LastId"
       tags: ["users"]
       summary: Gets the followers of a user
@@ -378,6 +384,7 @@ paths:
     get:
       parameters:
         - $ref: "#/components/parameters/LastDate"
+        - $ref: "#/components/parameters/LastId"
       tags: ["stream"]
       summary: Gets the stream of the logged in user
       description: |-
