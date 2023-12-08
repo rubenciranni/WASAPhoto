@@ -2,7 +2,7 @@ package database
 
 import "github.com/rubenciranni/WASAPhoto/service/model/schema"
 
-func (db *appdbimpl) GetStream(userId string, startDate string) ([]schema.Photo, error) {
+func (db *appdbimpl) GetStream(userId string, startDate string, startId string) ([]schema.Photo, error) {
 	var photoList []schema.Photo
 	rows, err := db.c.Query(
 		`
@@ -22,12 +22,14 @@ func (db *appdbimpl) GetStream(userId string, startDate string) ([]schema.Photo,
 			Photo.authorId IN (
 				SELECT followedId FROM Follow WHERE followerId = ?
 			) AND
-			Photo.dateTime < ?
-		ORDER BY Photo.dateTime DESC
+			Photo.dateTime < ?  OR (Photo.dateTime = ? AND Photo.photoId > ?)
+		ORDER BY Photo.dateTime DESC, Photo.photoId ASC
 		LIMIT 20
 		`,
 		userId,
 		startDate,
+		startDate,
+		startId,
 	)
 	if err != nil {
 		return photoList, err

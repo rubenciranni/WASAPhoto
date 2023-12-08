@@ -2,19 +2,22 @@ package database
 
 import "github.com/rubenciranni/WASAPhoto/service/model/schema"
 
-func (db *appdbimpl) GetComments(photoId string, startDate string) ([]schema.Comment, error) {
+func (db *appdbimpl) GetComments(photoId string, startDate string, startId string) ([]schema.Comment, error) {
 	var commentList []schema.Comment
 	rows, err := db.c.Query(
 		`
 		SELECT Comment.commentId, Comment.authorId, User.username, Comment.text, Comment.dateTime
 		FROM Comment JOIN User
 		ON Comment.authorId = User.userId
-		WHERE Comment.photoId = ? AND Comment.dateTime < ?
-		ORDER BY Comment.dateTime DESC
+		WHERE Comment.photoId = ? AND
+		Comment.dateTime < ? OR (Comment.dateTime = ? AND Comment.commentId > ?)
+		ORDER BY Comment.dateTime DESC, Comment.commentId ASC
 		LIMIT 20
 		`,
 		photoId,
 		startDate,
+		startDate,
+		startId,
 	)
 	if err != nil {
 		return commentList, err

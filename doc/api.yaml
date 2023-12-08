@@ -141,7 +141,6 @@ paths:
       - $ref: "#/components/parameters/PathPhotoId"
     get:
       parameters:
-        - $ref: "#/components/parameters/LastDate"
         - $ref: "#/components/parameters/LastId"
       tags: ["likes"]
       summary: Gets the likes for a photo
@@ -216,7 +215,6 @@ paths:
       - $ref: "#/components/parameters/QueryStringUsername"
     get:
       parameters:
-        - $ref: "#/components/parameters/LastDate"
         - $ref: "#/components/parameters/LastId"
       tags: ["users"]
       summary: Gets users matching given username
@@ -250,7 +248,6 @@ paths:
       - $ref: "#/components/parameters/PathUserId"
     get:
       parameters:
-        - $ref: "#/components/parameters/LastDate"
         - $ref: "#/components/parameters/LastId"
       tags: ["users"]
       summary: Gets the following of a user
@@ -270,7 +267,6 @@ paths:
       - $ref: "#/components/parameters/PathUserId"
     get:
       parameters:
-        - $ref: "#/components/parameters/LastDate"
         - $ref: "#/components/parameters/LastId"
       tags: ["users"]
       summary: Gets the followers of a user
