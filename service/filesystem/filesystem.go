@@ -9,6 +9,7 @@ import (
 
 type AppFileSystem interface {
 	SavePhoto(file *multipart.File, photoId string) error
+	GetPhotoPath(photoId string) (string, error)
 }
 
 type appfsimpl struct {
