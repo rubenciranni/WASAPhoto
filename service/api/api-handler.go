@@ -10,6 +10,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/session", rt.wrap(rt.doLogin, "doLogin", false))
 	rt.router.PUT("/settings/username", rt.wrap(rt.setMyUserName, "setMyUserName", true))
 	rt.router.POST("/photos/", rt.wrap(rt.uploadPhoto, "uploadPhoto", true))
+	rt.router.GET("/photos/", rt.wrap(rt.getPhotos, "getPhotos", true))
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
