@@ -2,7 +2,7 @@ package request
 
 type GetPhotoRequest struct {
 	PathParameters struct {
-		PhotoId string
+		PhotoId string `key:"photoId"`
 	}
 }
 

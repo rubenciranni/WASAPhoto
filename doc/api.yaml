@@ -87,8 +87,8 @@ paths:
         '500': { $ref: "#/components/responses/InternalServerError" }
     get:
       parameters:
-        - $ref: "#/components/parameters/LastDate"
-        - $ref: "#/components/parameters/LastId"
+        - $ref: "#/components/parameters/StartDate"
+        - $ref: "#/components/parameters/StartId"
         - $ref: "#/components/parameters/QueryStringUserId"
       tags: ["photos"]
       summary: Gets a list of photos
@@ -141,7 +141,7 @@ paths:
       - $ref: "#/components/parameters/PathPhotoId"
     get:
       parameters:
-        - $ref: "#/components/parameters/LastId"
+        - $ref: "#/components/parameters/StartId"
       tags: ["likes"]
       summary: Gets the likes for a photo
       description: |-
@@ -160,8 +160,8 @@ paths:
       - $ref: "#/components/parameters/PathPhotoId"
     get:
       parameters:
-        - $ref: "#/components/parameters/LastDate"
-        - $ref: "#/components/parameters/LastId"
+        - $ref: "#/components/parameters/StartDate"
+        - $ref: "#/components/parameters/StartId"
       tags: ["comments"]
       summary: Gets the comments for a photo
       description: |-
@@ -215,7 +215,7 @@ paths:
       - $ref: "#/components/parameters/QueryStringUsername"
     get:
       parameters:
-        - $ref: "#/components/parameters/LastId"
+        - $ref: "#/components/parameters/StartId"
       tags: ["users"]
       summary: Gets users matching given username
       description: |-
@@ -248,7 +248,7 @@ paths:
       - $ref: "#/components/parameters/PathUserId"
     get:
       parameters:
-        - $ref: "#/components/parameters/LastId"
+        - $ref: "#/components/parameters/StartId"
       tags: ["users"]
       summary: Gets the following of a user
       description: |-
@@ -267,7 +267,7 @@ paths:
       - $ref: "#/components/parameters/PathUserId"
     get:
       parameters:
-        - $ref: "#/components/parameters/LastId"
+        - $ref: "#/components/parameters/StartId"
       tags: ["users"]
       summary: Gets the followers of a user
       description: |-
@@ -379,8 +379,8 @@ paths:
   /stream:
     get:
       parameters:
-        - $ref: "#/components/parameters/LastDate"
-        - $ref: "#/components/parameters/LastId"
+        - $ref: "#/components/parameters/StartDate"
+        - $ref: "#/components/parameters/StartId"
       tags: ["stream"]
       summary: Gets the stream of the logged in user
       description: |-
@@ -761,11 +761,12 @@ components:
       in: path
       schema: { $ref: "#/components/schemas/commentId" }
       required: true
-    LastDate:
+    StartDate:
       description: |-
-        The date of the last record in the previous request,
-        it starts to the current date if not specified.
-      name: lastDate
+        The date of the last record in the previous response.
+        It is used for keyset pagination.
+        It starts to the current date if not specified.
+      name: startDate
       in: query
       schema:
         description: The date of the last record.
@@ -775,11 +776,12 @@ components:
         minLength: 20
         maxLength: 20
       required: false 
-    LastId:
+    StartId:
       description: |-
         The id of the last record in the previous response.
+        It is used for keyset pagination.
         It starts from the first id if it is not specified.
-      name: lastId
+      name: startId
       in: query
       schema:
         description: The id of the last record.

@@ -15,15 +15,15 @@ import (
 func (rt *_router) getPhotos(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
 	userId := r.URL.Query().Get("userId")
-	lastDate := r.URL.Query().Get("lastDate")
-	lastId := r.URL.Query().Get("lastId")
-	if lastDate == "" {
-		lastDate = globaltime.ToString(globaltime.Now())
+	startDate := r.URL.Query().Get("startDate")
+	startId := r.URL.Query().Get("startId")
+	if startDate == "" {
+		startDate = globaltime.ToString(globaltime.Now())
 	}
 	var request request.GetPhotosRequest
 	request.QueryParameters.UserId = userId
-	request.QueryParameters.LastDate = lastDate
-	request.QueryParameters.LastId = lastId
+	request.QueryParameters.StartDate = startDate
+	request.QueryParameters.StartId = startId
 
 	// Validate request
 	if !request.IsValid() {
@@ -59,7 +59,7 @@ func (rt *_router) getPhotos(w http.ResponseWriter, r *http.Request, ps httprout
 
 	// Retrieve photos from database
 	ctx.Logger.Debugf(`retrieving photos by userId "%s"`, request.QueryParameters.UserId)
-	photos, err := rt.db.GetPhotosByUser(userId, lastDate, lastId)
+	photos, err := rt.db.GetPhotosByUser(userId, startDate, startId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error retrieving photos from database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -74,5 +74,4 @@ func (rt *_router) getPhotos(w http.ResponseWriter, r *http.Request, ps httprout
 	}
 	w.Header().Set("content-type", "application/json")
 	_ = json.NewEncoder(w).Encode(response)
-
 }
