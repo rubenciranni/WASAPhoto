@@ -11,7 +11,7 @@ import (
 func (fs *appfsimpl) SavePhoto(file *multipart.File, photoId string) error {
 	filename := fmt.Sprintf("%s.png", photoId)
 
-	// Create the file on the filesystem
+	// Create the file on the file system
 	dst, err := os.Create(filepath.Join(fs.root, fs.photos, filename))
 	if err != nil {
 		return err

@@ -102,7 +102,7 @@ func run() error {
 	}
 
 	// Creating FileSystem Root and Photos folders if not exists
-	logger.Println("initializing filesystem")
+	logger.Println("initializing file system")
 	fs, err := filesystem.New(cfg.FileSystem.Root, cfg.FileSystem.Photos)
 
 	// Start (main) API server

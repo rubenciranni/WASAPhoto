@@ -59,11 +59,11 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 	photoId := photoUUID.String()
 
-	// Save photo to filesystem
-	ctx.Logger.Debugf("saving photo to filesystem")
+	// Save photo to file system
+	ctx.Logger.Debugf("saving photo to file system")
 	err = rt.fs.SavePhoto(&file, photoId)
 	if err != nil {
-		ctx.Logger.WithError(err).Error("error saving photo to filesystem")
+		ctx.Logger.WithError(err).Error("error saving photo to file system")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

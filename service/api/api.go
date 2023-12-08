@@ -54,7 +54,7 @@ type Config struct {
 	// Database is the instance of database.AppDatabase where data are saved
 	Database database.AppDatabase
 
-	// Filesystem is where the app filesystem is located
+	// Filesystem is where the app file system is located
 	FileSystem filesystem.AppFileSystem
 }
 

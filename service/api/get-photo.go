@@ -48,10 +48,10 @@ func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 
 	// Retrieve photo
-	ctx.Logger.Debugf("retrieving photo from filesystem")
+	ctx.Logger.Debugf("retrieving photo from file system")
 	photoPath, err := rt.fs.GetPhotoPath(photoId)
 	if err != nil {
-		ctx.Logger.WithError(err).Error("error retrieving photo from filesystem")
+		ctx.Logger.WithError(err).Error("error retrieving photo from file system")
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
