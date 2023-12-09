@@ -67,7 +67,7 @@ func (rt *_router) getPhotos(w http.ResponseWriter, r *http.Request, ps httprout
 	}
 
 	// Send response
-	response := response.GetPhotosResponse{}
+	var response response.GetPhotosResponse
 	if len(photos) == 0 {
 		response.LastDate = ""
 		response.LastId = ""

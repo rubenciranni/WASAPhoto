@@ -61,7 +61,7 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 
 	// Send response
-	response := response.GetLikesResponse{}
+	var response response.GetLikesResponse
 	if len(likes) == 0 {
 		response.LastId = ""
 	} else {

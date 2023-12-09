@@ -70,7 +70,7 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Send response
-	response := response.GetCommentsResponse{}
+	var response response.GetCommentsResponse
 	if len(comments) == 0 {
 		response.LastDate = ""
 		response.LastId = ""
