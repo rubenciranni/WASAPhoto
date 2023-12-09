@@ -27,6 +27,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.DELETE("/following/:userId", rt.wrap(rt.unfollowUser, "unfollowUser", true))
 	rt.router.PUT("/bans/:userId", rt.wrap(rt.banUser, "banUser", true))
 	rt.router.DELETE("/bans/:userId", rt.wrap(rt.unbanUser, "unbanUser", true))
+	rt.router.GET("/stream", rt.wrap(rt.getMyStream, "getMyStream", true))
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
