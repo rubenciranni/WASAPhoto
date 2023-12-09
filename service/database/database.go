@@ -115,7 +115,7 @@ type AppDatabase interface {
 	GetLikes(photoId string, startId string) ([]schema.User, error)
 	GetCommentAuthorId(commentId string) (string, error)
 	GetComments(photoId string, startDate string, startId string) ([]schema.Comment, error)
-	GetUsers(username string, startId string) ([]schema.User, error)
+	GetUsers(loggedInUserId string, username string, startId string) ([]schema.User, error)
 	GetUser(userId string) (schema.User, error)
 	GetFollowing(userId string, startId string) ([]schema.User, error)
 	GetFollowers(userId string, startId string) ([]schema.User, error)
