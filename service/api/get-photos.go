@@ -66,12 +66,16 @@ func (rt *_router) getPhotos(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	// Send the response
-	response := response.GetPhotosResponse{
-		LastDate: photos[len(photos)-1].DateTime,
-		LastId:   photos[len(photos)-1].PhotoId,
-		Records:  photos,
+	// Send response
+	response := response.GetPhotosResponse{}
+	if len(photos) == 0 {
+		response.LastDate = ""
+		response.LastId = ""
+	} else {
+		response.LastDate = photos[len(photos)-1].DateTime
+		response.LastId = photos[len(photos)-1].PhotoId
 	}
+	response.Records = photos
 	w.Header().Set("content-type", "application/json")
 	_ = json.NewEncoder(w).Encode(response)
 }

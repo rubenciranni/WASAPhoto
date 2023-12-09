@@ -21,7 +21,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 	if !request.IsValid() {
-		ctx.Logger.Error("error validating JSON")
+		ctx.Logger.Error("error validating request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -43,6 +43,6 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	// Send the response
+	// Send response
 	w.WriteHeader(http.StatusNoContent)
 }

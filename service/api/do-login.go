@@ -24,8 +24,10 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	// Validate request
 	if !request.IsValid() {
-		ctx.Logger.Error("error validating JSON")
+		ctx.Logger.Error("error validating request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -56,7 +58,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 		return
 	}
 
-	// Send the response
+	// Send response
 	response := response.DoLoginResponse{UserId: userId}
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("content-type", "application/json")

@@ -69,16 +69,16 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Save record to database
-	ctx.Logger.Debugf("saving photo record to database")
+	ctx.Logger.Debugf("inserting photo record into database")
 	dateTime := globaltime.ToString(globaltime.Now())
 	err = rt.db.InsertPhoto(photoId, ctx.User.UserId, caption, dateTime)
 	if err != nil {
-		ctx.Logger.WithError(err).Error("error saving photo record to database")
+		ctx.Logger.WithError(err).Error("error inserting photo record into database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	// Send the response
+	// Send response
 	response := response.UploadPhotoResponse{PhotoId: photoId}
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("content-type", "application/json")
