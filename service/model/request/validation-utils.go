@@ -22,3 +22,9 @@ var usernameRegexp = regexp.MustCompile(`^[a-zA-Z0-9_-]{3,16}$`)
 func isValidUsername(username string) bool {
 	return usernameRegexp.MatchString(username)
 }
+
+const maxTextLenght = 2200
+
+func isValidText(text string) bool {
+	return len(text) < maxTextLenght
+}

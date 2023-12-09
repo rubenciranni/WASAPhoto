@@ -1,11 +1,12 @@
 package request
 
 type CommentPhotoRequest struct {
+	PathParameters struct {
+		PhotoId string `key:"photoId"`
+	}
 	Text string `json:"text"`
 }
 
-const maxTextLenght = 2200
-
 func (request *CommentPhotoRequest) IsValid() bool {
-	return len(request.Text) < maxTextLenght
+	return isValidUUID(request.PathParameters.PhotoId) && isValidText(request.Text)
 }
