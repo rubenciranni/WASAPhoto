@@ -1,0 +1,54 @@
+package api
+
+import (
+	"net/http"
+
+	"github.com/julienschmidt/httprouter"
+	"github.com/rubenciranni/WASAPhoto/service/api/reqcontext"
+	"github.com/rubenciranni/WASAPhoto/service/model/request"
+)
+
+func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+	// Parse request
+	userId := ps.ByName("userId")
+	var request request.FollowUserRequest
+	request.PathParameters.UserId = userId
+
+	// Validate request
+	if !request.IsValid() {
+		ctx.Logger.Error("error validating request")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Check if logged in user is the requested user
+	if ctx.User.UserId == userId {
+		ctx.Logger.Error("error: user is trying to follow himself")
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	// Check if logged in user is banned by requested user
+	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, request.PathParameters.UserId, ctx.User.UserId)
+	if banned, err := rt.db.ExistsBan(userId, ctx.User.UserId); err != nil {
+		ctx.Logger.WithError(err).Error("error searching ban in database")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	} else if banned {
+		ctx.Logger.Error("requested user is banned by logged in user")
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	// Insert follow into database
+	ctx.Logger.Debugf(`Inserting follow (followerId: "%s", followedId: "%s") into database`, ctx.User.UserId, userId)
+	err := rt.db.InsertFollow(ctx.User.UserId, userId)
+	if err != nil {
+		ctx.Logger.WithError(err).Error("error inserting follow into database")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Send response
+	w.WriteHeader(http.StatusNoContent)
+}
