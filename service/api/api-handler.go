@@ -16,6 +16,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.GET("/photos/:photoId/likes/", rt.wrap(rt.getLikes, "getLikes", true))
 	rt.router.GET("/photos/:photoId/comments/", rt.wrap(rt.getComments, "getComments", true))
 	rt.router.POST("/photos/:photoId/comments/", rt.wrap(rt.commentPhoto, "commentPhoto", true))
+	rt.router.DELETE("/photos/:photoId/comments/:commentId", rt.wrap(rt.uncommentPhoto, "uncommentPhoto", true))
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
