@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -25,7 +26,7 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	// Retrieve author of the photo
 	ctx.Logger.Debugf("retrieving photo authorId from database")
 	authorId, err := rt.db.GetPhotoAuthorId(photoId)
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("error retrieving photo authorId from database")
 		w.WriteHeader(http.StatusNotFound)
 		return

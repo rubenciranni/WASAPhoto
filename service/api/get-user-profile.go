@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -38,7 +39,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 
 	// Retrieve user profile from database
 	profile, err := rt.db.GetUserProfile(userId)
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("error retrieving user profile from database")
 		w.WriteHeader(http.StatusNotFound)
 		return

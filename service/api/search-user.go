@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -29,7 +30,7 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprou
 	// Retrieve users from database
 	ctx.Logger.Debug("retrieving users from database")
 	users, err := rt.db.GetUsers(ctx.User.UserId, username, startId)
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("error retrieving users from database")
 		w.WriteHeader(http.StatusNotFound)
 		return

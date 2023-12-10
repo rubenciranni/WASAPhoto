@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -29,7 +30,7 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps htt
 	// Retrieve author of the comment
 	ctx.Logger.Debugf("retrieving comment authorId from database")
 	authorId, err := rt.db.GetCommentAuthorId(commentId)
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("error retrieving comment authorId from database")
 		w.WriteHeader(http.StatusNotFound)
 		return

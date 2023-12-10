@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -34,7 +35,7 @@ func (rt *_router) getPhotos(w http.ResponseWriter, r *http.Request, ps httprout
 
 	// Check if provided userId exists
 	ctx.Logger.Debugf(`retrieving user for userId "%s"`, request.QueryParameters.UserId)
-	if _, err := rt.db.GetUser(userId); err == sql.ErrNoRows {
+	if _, err := rt.db.GetUser(userId); errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("userId does not exist in database")
 		w.WriteHeader(http.StatusNotFound)
 		return
