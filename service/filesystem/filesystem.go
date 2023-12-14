@@ -19,7 +19,6 @@ type appfsimpl struct {
 }
 
 func New(root string, photos string) (AppFileSystem, error) {
-
 	if _, err := os.Stat(root); os.IsNotExist(err) {
 		err := os.Mkdir(root, 0755)
 		if err != nil {

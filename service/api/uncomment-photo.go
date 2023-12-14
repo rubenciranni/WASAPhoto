@@ -12,16 +12,16 @@ import (
 	"github.com/rubenciranni/WASAPhoto/service/model/response"
 )
 
-func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) uncommentPhoto(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
 	photoId := ps.ByName("photoId")
 	commentId := ps.ByName("commentId")
-	var request request.UncommentPhotoRequest
-	request.PathParameters.PhotoId = photoId
-	request.PathParameters.CommentId = commentId
+	var req request.UncommentPhotoRequest
+	req.PathParameters.PhotoId = photoId
+	req.PathParameters.CommentId = commentId
 
 	// Validate request
-	if !request.IsValid() {
+	if !req.IsValid() {
 		ctx.Logger.Error("error validating request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -40,10 +40,10 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	// Check if logged in user is the author of the comment
-	ctx.Logger.Debugf("checking if logged in user is the author of the comment")
+	// Check if logged-in user is the author of the comment
+	ctx.Logger.Debugf("checking if logged-in user is the author of the comment")
 	if authorId != ctx.User.UserId {
-		ctx.Logger.Error("error: logged in user is not the author of the comment")
+		ctx.Logger.Error("error: logged-in user is not the author of the comment")
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
@@ -58,7 +58,7 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	// Send response
-	response := response.UncommentPhotoResponse{CommentId: commentId}
+	res := response.UncommentPhotoResponse{CommentId: commentId}
 	w.Header().Set("content-type", "application/json")
-	_ = json.NewEncoder(w).Encode(response)
+	_ = json.NewEncoder(w).Encode(res)
 }

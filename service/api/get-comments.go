@@ -21,16 +21,16 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	if startDate == "" {
 		startDate = globaltime.ToString(globaltime.Now())
 	}
-	var request request.GetCommentsRequest
-	request.PathParameters.PhotoId = photoId
-	request.QueryParameters.StartId = startId
-	request.QueryParameters.StartDate = startDate
+	var req request.GetCommentsRequest
+	req.PathParameters.PhotoId = photoId
+	req.QueryParameters.StartId = startId
+	req.QueryParameters.StartDate = startDate
 
 	// Validate request
 	ctx.Logger.Debug(photoId)
 	ctx.Logger.Debug(startId)
 	ctx.Logger.Debug(startDate)
-	if !request.IsValid() {
+	if !req.IsValid() {
 		ctx.Logger.Error("error validating request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -49,20 +49,20 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	// Check if logged in user is banned by author of the photo
+	// Check if logged-in user is banned by author of the photo
 	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, authorId, ctx.User.UserId)
 	if banned, err := rt.db.ExistsBan(authorId, ctx.User.UserId); err != nil {
 		ctx.Logger.WithError(err).Error("error searching ban in database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	} else if banned {
-		ctx.Logger.Error("requested user is banned by logged in user")
+		ctx.Logger.Error("requested user is banned by logged-in user")
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
 
 	// Get comments from database
-	ctx.Logger.Debugf(`retrieving comments for photoId "%s"`, request.PathParameters.PhotoId)
+	ctx.Logger.Debugf(`retrieving comments for photoId "%s"`, req.PathParameters.PhotoId)
 	comments, err := rt.db.GetComments(photoId, startDate, startId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error retrieving comments from database")
@@ -71,15 +71,15 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Send response
-	var response response.GetCommentsResponse
+	var res response.GetCommentsResponse
 	if len(comments) == 0 {
-		response.LastDate = ""
-		response.LastId = ""
+		res.LastDate = ""
+		res.LastId = ""
 	} else {
-		response.LastDate = comments[len(comments)-1].DateTime
-		response.LastId = comments[len(comments)-1].CommentId
+		res.LastDate = comments[len(comments)-1].DateTime
+		res.LastId = comments[len(comments)-1].CommentId
 	}
-	response.Records = comments
+	res.Records = comments
 	w.Header().Set("content-type", "application/json")
-	_ = json.NewEncoder(w).Encode(response)
+	_ = json.NewEncoder(w).Encode(res)
 }

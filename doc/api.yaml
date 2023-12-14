@@ -5,7 +5,7 @@ info:
   description: |-
     The WASAPhoto Backend API allows to perform the following operations:
     - Log in by specifying a username.
-    - Get the a stream of photos (images) in reverse chronological order for the logged in user,
+    - Get the a stream of photos (images) in reverse chronological order for the logged-in user,
       with information about when each photo was uploaded (date and time) and how many likes
       and comments it has. The stream is composed by photos from “following”
       (other users that the user follows).
@@ -13,7 +13,7 @@ info:
     - Add comments to any image (even those uploaded by themself), and remove
       them (only authors can remove their comments).
     - Ban other users and remove the ban.
-    - Get users profiles showsing: the user’s photos (in reverse chronological order),
+    - Get users profiles showing: the user’s photos (in reverse chronological order),
       how many photos have been uploaded, and the user’s followers and following.
     - Change username.
     - Upload photos and remove photos (removal of an image will also remove likes and comments).
@@ -59,7 +59,7 @@ paths:
       tags: ["settings"]
       summary: Updates the username
       description: |-
-        It updates the username of the logged in user with the new
+        It updates the username of the logged-in user with the new
         username provided in request body; it returns `Forbidden Error` if the new
         username is already taken by another user.
       operationId: setMyUserName
@@ -75,7 +75,7 @@ paths:
       tags: ["photos"]
       summary: Uploads a new photo
       description: |-
-        Uploads a new photo authored by the logged in user.
+        Uploads a new photo authored by the logged-in user.
       operationId: uploadPhoto
       requestBody: { $ref: "#/components/requestBodies/UploadPhoto" }
       responses:
@@ -93,7 +93,7 @@ paths:
       tags: ["photos"]
       summary: Gets a list of photos
       description: |-
-        If the logged in user is not banned by the user with `userId` specified
+        If the logged-in user is not banned by the user with `userId` specified
         in query string, it returns a list of photos authored by that user;
         otherwise it returns an error.
       operationId: getPhotos
@@ -111,7 +111,7 @@ paths:
       tags: ["photos"]
       summary: Gets a photo
       description: |-
-        If the logged in user is not banned by the author of the photo,
+        If the logged-in user is not banned by the author of the photo,
         it returns the requested photo; otherwise it returns an error.
       operationId: getPhoto
       responses:
@@ -125,7 +125,7 @@ paths:
       tags: ["photos"]
       summary: Deletes a photo
       description: |-
-        If the logged in user is the author of the photo
+        If the logged-in user is the author of the photo
         with `photoId` given in path, it deletes the photo;
         otherwise, it returns an error.
       operationId: deletePhoto
@@ -145,7 +145,7 @@ paths:
       tags: ["likes"]
       summary: Gets the likes for a photo
       description: |-
-        If the logged in user is not banned by the author of the photo, it returns
+        If the logged-in user is not banned by the author of the photo, it returns
         the list of users who liked the photo; otherwise it returns an error.
       operationId: getLikes
       responses:
@@ -165,7 +165,7 @@ paths:
       tags: ["comments"]
       summary: Gets the comments for a photo
       description: |-
-        If the logged in user is not banned by the author of the photo, it returns
+        If the logged-in user is not banned by the author of the photo, it returns
         the list of comments of the photo; otherwise it returns an error.
       operationId: getComments
       responses:
@@ -179,8 +179,8 @@ paths:
       tags: ["comments"]
       summary: Adds a comment to a photo
       description: |-
-        If the logged in user is not banned by the author of the photo, it adds
-        a comment to the photo authored by the logged in user;
+        If the logged-in user is not banned by the author of the photo, it adds
+        a comment to the photo authored by the logged-in user;
         otherwise it returns an error.
       operationId: commentPhoto
       requestBody: { $ref: "#/components/requestBodies/CommentPhoto" }
@@ -199,7 +199,7 @@ paths:
       tags: ["comments"]
       summary: Removes a comment from a photo
       description: |-
-        If the logged in user is the author of the comment, it deletes it;
+        If the logged-in user is the author of the comment, it deletes it;
         otherwise it returns an error.
       operationId: uncommentPhoto
       responses:
@@ -232,7 +232,7 @@ paths:
       tags: ["profile"] 
       summary: Gets a user profile
       description: |-
-        If the logged in user is not banned by the user with `userId` given in path,
+        If the logged-in user is not banned by the user with `userId` given in path,
         it returns its profile; otherwise it returns an error.
       operationId: getUserProfile
       responses:
@@ -251,7 +251,7 @@ paths:
       tags: ["users"]
       summary: Gets the following of a user
       description: |-
-        If the logged in user is not banned by the user with `userId` given in path,
+        If the logged-in user is not banned by the user with `userId` given in path,
         it returns the list of its following; otherwise it returns an error.
       operationId: getFollowing
       responses:
@@ -270,7 +270,7 @@ paths:
       tags: ["users"]
       summary: Gets the followers of a user
       description: |-
-        If the logged in user is not banned by the user with `userId` given in path,
+        If the logged-in user is not banned by the user with `userId` given in path,
         it returns the list of its followers; otherwise it returns an error.
       operationId: getFollowers
       responses:
@@ -287,7 +287,7 @@ paths:
       tags: ["likes"]
       summary: Adds a like to a photo
       description: |-
-        If the logged in user is not banned by the author of the the photo with
+        If the logged-in user is not banned by the author of the the photo with
         `photoId` given in path, it adds a like to the photo;
         otherwise it returns an error.
       operationId: likePhoto
@@ -320,8 +320,8 @@ paths:
       tags: ["following"]
       summary: Adds a user to following
       description: |-
-        If the logged in user is not banned by the user with `userId` given in path,
-        it adds him/her to the following of the logged in user;
+        If the logged-in user is not banned by the user with `userId` given in path,
+        it adds him/her to the following of the logged-in user;
         otherwise it returns an error.
       operationId: followUser
       responses:
@@ -336,7 +336,7 @@ paths:
       summary: Removes a user from following
       description: |-
         It unfollows the user with `userId` given in path
-        (or does nothing if it is alerady not followed);
+        (or does nothing if it is already not followed);
         otherwise it returns an error.
       operationId: unfollowUser
       responses:
@@ -353,7 +353,7 @@ paths:
       tags: ["bans"]
       summary: Adds a user to bans
       description: |-
-        It adds the user with `userId` given in path to the bans of the logged in user.
+        It adds the user with `userId` given in path to the bans of the logged-in user.
       operationId: banUser
       responses:
         '204': { $ref: "#/components/responses/SuccessfulBanUser" }
@@ -366,7 +366,7 @@ paths:
       tags: ["bans"]
       summary: Removes a user from bans
       description: |-
-        It removes the user with `userId` given in path from the bans of the logged in user.
+        It removes the user with `userId` given in path from the bans of the logged-in user.
       operationId: unbanUser
       responses:
         '204': { $ref: "#/components/responses/SuccessfulUnbanUser" }
@@ -381,7 +381,7 @@ paths:
         - $ref: "#/components/parameters/StartDate"
         - $ref: "#/components/parameters/StartId"
       tags: ["stream"]
-      summary: Gets the stream of the logged in user
+      summary: Gets the stream of the logged-in user
       description: |-
         Returns a list of photos from followed users in reverse chronological
         order.
@@ -612,7 +612,7 @@ components:
     Unauthorized:
       description: Authorization identifier is missing or invalid.
     Forbidden:
-      description: Logged in user cannot perform the requested operation.
+      description: logged-in user cannot perform the requested operation.
     NotFound:
       description: Requested resource was not found.
     RequestEntityTooLarge:
@@ -715,15 +715,15 @@ components:
         application/json:
           schema: { $ref: "#/components/schemas/UserList" }
     SuccessfulFollowUser:
-      description: User was added succesfully to following.
+      description: User was added successfully to following.
     SuccessfulUnfollowUser:
       description: User was removed successfully from following.
     SuccessfulBanUser:
-      description: User was added succesfully to bans.
+      description: User was added successfully to bans.
     SuccessfulUnbanUser:
-      description: User was removed succesfully from bans.
+      description: User was removed successfully from bans.
     SuccessfulGetMyStream:
-      description: The stream of the logged in user.
+      description: The stream of the logged-in user.
       content:
         application/json:
           schema: { $ref: "#/components/schemas/PhotoList" }

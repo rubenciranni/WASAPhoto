@@ -9,34 +9,34 @@ import (
 	"github.com/rubenciranni/WASAPhoto/service/model/request"
 )
 
-func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, _ httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	var request request.SetMyUserNameRequest
-	ctx.Logger.Debugf("deconding JSON")
-	err := json.NewDecoder(r.Body).Decode(&request)
+	var req request.SetMyUserNameRequest
+	ctx.Logger.Debugf("decoding JSON")
+	err := json.NewDecoder(r.Body).Decode(&req)
 	_ = r.Body.Close()
 	if err != nil {
-		ctx.Logger.WithError(err).Error("error deconding JSON")
+		ctx.Logger.WithError(err).Error("error decoding JSON")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if !request.IsValid() {
+	if !req.IsValid() {
 		ctx.Logger.Error("error validating request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Check if newUsername is already taken by another user
-	ctx.Logger.Debugf(`checking username "%s" availability`, request.NewUsername)
-	if userId, err := rt.db.GetUserId(request.NewUsername); err == nil && userId != ctx.User.UserId {
-		ctx.Logger.Errorf(`username "%s" is already taken`, request.NewUsername)
+	ctx.Logger.Debugf(`checking username "%s" availability`, req.NewUsername)
+	if userId, err := rt.db.GetUserId(req.NewUsername); err == nil && userId != ctx.User.UserId {
+		ctx.Logger.Errorf(`username "%s" is already taken`, req.NewUsername)
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
 
 	// Update username
 	ctx.Logger.Debugf("updating username")
-	err = rt.db.SetUserName(ctx.User.UserId, request.NewUsername)
+	err = rt.db.SetUserName(ctx.User.UserId, req.NewUsername)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error updating username")
 		w.WriteHeader(http.StatusInternalServerError)

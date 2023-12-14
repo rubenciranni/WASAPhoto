@@ -15,10 +15,10 @@ import (
 )
 
 func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	// Parse request
-	var request request.CommentPhotoRequest
-	ctx.Logger.Debugf("deconding JSON")
-	err := json.NewDecoder(r.Body).Decode(&request)
+	// Parse req
+	var req request.CommentPhotoRequest
+	ctx.Logger.Debugf("decoding JSON")
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error decoding JSON")
 		w.WriteHeader(http.StatusBadRequest)
@@ -26,10 +26,10 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 	_ = r.Body.Close()
 	photoId := ps.ByName("photoId")
-	request.PathParameters.PhotoId = photoId
+	req.PathParameters.PhotoId = photoId
 
 	// Validate request
-	if !request.IsValid() {
+	if !req.IsValid() {
 		ctx.Logger.Error("error validating request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -48,14 +48,14 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 
-	// Check if logged in user is banned by author of the photo
+	// Check if logged-in user is banned by author of the photo
 	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, authorId, ctx.User.UserId)
 	if banned, err := rt.db.ExistsBan(authorId, ctx.User.UserId); err != nil {
 		ctx.Logger.WithError(err).Error("error searching ban in database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	} else if banned {
-		ctx.Logger.Error("requested user is banned by logged in user")
+		ctx.Logger.Error("requested user is banned by logged-in user")
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
@@ -72,7 +72,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 	// Insert comment into database
 	ctx.Logger.Debugf("inserting comment into database")
 	dateTime := globaltime.ToString(globaltime.Now())
-	err = rt.db.InsertComment(commentId, photoId, ctx.User.UserId, request.Text, dateTime)
+	err = rt.db.InsertComment(commentId, photoId, ctx.User.UserId, req.Text, dateTime)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error inserting comment into database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -80,8 +80,8 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	// Send response
-	response := response.CommentPhotoResponse{CommentId: commentId}
+	res := response.CommentPhotoResponse{CommentId: commentId}
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("content-type", "application/json")
-	_ = json.NewEncoder(w).Encode(response)
+	_ = json.NewEncoder(w).Encode(res)
 }

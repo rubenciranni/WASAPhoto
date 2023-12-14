@@ -13,11 +13,11 @@ import (
 func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
 	photoId := ps.ByName("photoId")
-	var request request.GetPhotoRequest
-	request.PathParameters.PhotoId = photoId
+	var req request.GetPhotoRequest
+	req.PathParameters.PhotoId = photoId
 
 	// Validate request
-	if !request.IsValid() {
+	if !req.IsValid() {
 		ctx.Logger.Error("error validating request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -36,14 +36,14 @@ func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httproute
 		return
 	}
 
-	// Check if logged in user is banned by author of the photo
+	// Check if logged-in user is banned by author of the photo
 	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, authorId, ctx.User.UserId)
 	if banned, err := rt.db.ExistsBan(authorId, ctx.User.UserId); err != nil {
 		ctx.Logger.WithError(err).Error("error searching ban in database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	} else if banned {
-		ctx.Logger.Error("requested user is banned by logged in user")
+		ctx.Logger.Error("requested user is banned by logged-in user")
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}

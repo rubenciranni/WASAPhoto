@@ -12,14 +12,14 @@ import (
 	"github.com/rubenciranni/WASAPhoto/service/model/response"
 )
 
-func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) deletePhoto(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
 	photoId := ps.ByName("photoId")
-	var request request.DeletePhotoRequest
-	request.PathParameters.PhotoId = photoId
+	var req request.DeletePhotoRequest
+	req.PathParameters.PhotoId = photoId
 
 	// Validate request
-	if !request.IsValid() {
+	if !req.IsValid() {
 		ctx.Logger.Error("error validating request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -38,10 +38,10 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	// Check if logged in user is the author of the photo
-	ctx.Logger.Debugf("checking if logged in user is the author of the photo")
+	// Check if logged-in user is the author of the photo
+	ctx.Logger.Debugf("checking if logged-in user is the author of the photo")
 	if authorId != ctx.User.UserId {
-		ctx.Logger.Error("error: logged in user is not the author of the photo")
+		ctx.Logger.Error("error: logged-in user is not the author of the photo")
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
@@ -65,7 +65,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Send response
-	response := response.DeletePhotoResponse{PhotoId: photoId}
+	res := response.DeletePhotoResponse{PhotoId: photoId}
 	w.Header().Set("content-type", "application/json")
-	_ = json.NewEncoder(w).Encode(response)
+	_ = json.NewEncoder(w).Encode(res)
 }

@@ -14,12 +14,17 @@ import (
 const (
 	maxSize          = 10 << 20
 	imageFormat      = "image/png"
-	maxCaptionLenght = 2200
+	maxCaptionLength = 2200
 )
 
-func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, _ httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	r.ParseMultipartForm(maxSize)
+	err := r.ParseMultipartForm(maxSize)
+	if err != nil {
+		ctx.Logger.WithError(err).Error("error parsing request")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	ctx.Logger.Debugf("retrieving file and caption")
 	file, fileHeader, err := r.FormFile("photo")
 	if err != nil {
@@ -33,19 +38,19 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// Validate file
 	if fileHeader.Header.Get("Content-Type") != imageFormat {
-		ctx.Logger.WithError(err).Error("error validating file")
+		ctx.Logger.Error("error validating file")
 		w.WriteHeader(http.StatusUnsupportedMediaType)
 		return
 	}
 	if fileHeader.Size > maxSize {
-		ctx.Logger.WithError(err).Error("error validating file")
+		ctx.Logger.Error("error validating file")
 		w.WriteHeader(http.StatusRequestEntityTooLarge)
 		return
 	}
 
 	// Validate caption
-	if len(caption) > 2200 {
-		ctx.Logger.WithError(err).Error("error validating caption")
+	if len(caption) > maxCaptionLength {
+		ctx.Logger.Error("error validating caption")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -79,8 +84,8 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Send response
-	response := response.UploadPhotoResponse{PhotoId: photoId}
+	res := response.UploadPhotoResponse{PhotoId: photoId}
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("content-type", "application/json")
-	_ = json.NewEncoder(w).Encode(response)
+	_ = json.NewEncoder(w).Encode(res)
 }

@@ -13,11 +13,11 @@ import (
 	"github.com/rubenciranni/WASAPhoto/service/model/response"
 )
 
-func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, _ httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	var request request.DoLoginRequest
-	ctx.Logger.Debugf("deconding JSON")
-	err := json.NewDecoder(r.Body).Decode(&request)
+	var req request.DoLoginRequest
+	ctx.Logger.Debugf("decoding JSON")
+	err := json.NewDecoder(r.Body).Decode(&req)
 	_ = r.Body.Close()
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error decoding JSON")
@@ -26,19 +26,19 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 	}
 
 	// Validate request
-	if !request.IsValid() {
+	if !req.IsValid() {
 		ctx.Logger.Error("error validating request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	// Check username existance
-	ctx.Logger.Debugf(`retrieving userId for user "%s"`, request.Username)
-	userId, err := rt.db.GetUserId(request.Username)
+	ctx.Logger.Debugf(`retrieving userId for user "%s"`, req.Username)
+	userId, err := rt.db.GetUserId(req.Username)
 
-	// Create new user if username doesn't exists
+	// Create new user if username doesn't exist
 	if errors.Is(err, sql.ErrNoRows) {
-		ctx.Logger.Debugf(`user "%s" does not exist, creating new user`, request.Username)
+		ctx.Logger.Debugf(`user "%s" does not exist, creating new user`, req.Username)
 		newUserId, err := uuid.NewV4()
 		if err != nil {
 			ctx.Logger.WithError(err).Error("error creating new UUID")
@@ -46,7 +46,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 			return
 		}
 		userId = newUserId.String()
-		err = rt.db.InsertUser(userId, request.Username)
+		err = rt.db.InsertUser(userId, req.Username)
 		if err != nil {
 			ctx.Logger.WithError(err).Error("error inserting new user in database")
 			w.WriteHeader(http.StatusInternalServerError)
@@ -59,8 +59,8 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 	}
 
 	// Send response
-	response := response.DoLoginResponse{UserId: userId}
+	res := response.DoLoginResponse{UserId: userId}
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("content-type", "application/json")
-	_ = json.NewEncoder(w).Encode(response)
+	_ = json.NewEncoder(w).Encode(res)
 }

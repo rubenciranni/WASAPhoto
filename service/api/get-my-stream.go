@@ -11,19 +11,19 @@ import (
 	"github.com/rubenciranni/WASAPhoto/service/model/response"
 )
 
-func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, _ httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
 	startDate := r.URL.Query().Get("startDate")
 	startId := r.URL.Query().Get("startId")
 	if startDate == "" {
 		startDate = globaltime.ToString(globaltime.Now())
 	}
-	var request request.GetMyStreamRequest
-	request.QueryParameters.StartDate = startDate
-	request.QueryParameters.StartId = startId
+	var req request.GetMyStreamRequest
+	req.QueryParameters.StartDate = startDate
+	req.QueryParameters.StartId = startId
 
 	// Validate request
-	if !request.IsValid() {
+	if !req.IsValid() {
 		ctx.Logger.Error("error validating request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -38,16 +38,16 @@ func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	// Send response
-	var response response.GetMyStreamResponse
+	// Send res
+	var res response.GetMyStreamResponse
 	if len(photos) == 0 {
-		response.LastDate = ""
-		response.LastId = ""
+		res.LastDate = ""
+		res.LastId = ""
 	} else {
-		response.LastDate = photos[len(photos)-1].DateTime
-		response.LastId = photos[len(photos)-1].PhotoId
+		res.LastDate = photos[len(photos)-1].DateTime
+		res.LastId = photos[len(photos)-1].PhotoId
 	}
-	response.Records = photos
+	res.Records = photos
 	w.Header().Set("content-type", "application/json")
-	_ = json.NewEncoder(w).Encode(response)
+	_ = json.NewEncoder(w).Encode(res)
 }

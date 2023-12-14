@@ -12,16 +12,16 @@ import (
 	"github.com/rubenciranni/WASAPhoto/service/model/response"
 )
 
-func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
 	username := r.URL.Query().Get("username")
 	startId := r.URL.Query().Get("startId")
-	var request request.SearchUserRequest
-	request.QueryParameters.Username = username
-	request.QueryParameters.StartId = startId
+	var req request.SearchUserRequest
+	req.QueryParameters.Username = username
+	req.QueryParameters.StartId = startId
 
 	// Validate request
-	if !request.IsValid() {
+	if !req.IsValid() {
 		ctx.Logger.Error("error validating request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -41,13 +41,13 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Send response
-	var response response.SearchUserResponse
+	var res response.SearchUserResponse
 	if len(users) == 0 {
-		response.LastId = ""
+		res.LastId = ""
 	} else {
-		response.LastId = users[len(users)-1].UserId
+		res.LastId = users[len(users)-1].UserId
 	}
-	response.Records = users
+	res.Records = users
 	w.Header().Set("content-type", "application/json")
-	_ = json.NewEncoder(w).Encode(response)
+	_ = json.NewEncoder(w).Encode(res)
 }

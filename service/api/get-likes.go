@@ -16,12 +16,12 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 	// Parse request
 	photoId := ps.ByName("photoId")
 	startId := r.URL.Query().Get("startId")
-	var request request.GetLikesRequest
-	request.PathParameters.PhotoId = photoId
-	request.QueryParameters.StartId = startId
+	var req request.GetLikesRequest
+	req.PathParameters.PhotoId = photoId
+	req.QueryParameters.StartId = startId
 
 	// Validate request
-	if !request.IsValid() {
+	if !req.IsValid() {
 		ctx.Logger.Error("error validating request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -40,20 +40,20 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 		return
 	}
 
-	// Check if logged in user is banned by author of the photo
+	// Check if logged-in user is banned by author of the photo
 	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, authorId, ctx.User.UserId)
 	if banned, err := rt.db.ExistsBan(authorId, ctx.User.UserId); err != nil {
 		ctx.Logger.WithError(err).Error("error searching ban in database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	} else if banned {
-		ctx.Logger.Error("requested user is banned by logged in user")
+		ctx.Logger.Error("requested user is banned by logged-in user")
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
 
 	// Get likes from database
-	ctx.Logger.Debugf(`retrieving likes for photoId "%s"`, request.PathParameters.PhotoId)
+	ctx.Logger.Debugf(`retrieving likes for photoId "%s"`, req.PathParameters.PhotoId)
 	likes, err := rt.db.GetLikes(photoId, startId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error retrieving likes from database")
@@ -62,13 +62,13 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 
 	// Send response
-	var response response.GetLikesResponse
+	var res response.GetLikesResponse
 	if len(likes) == 0 {
-		response.LastId = ""
+		res.LastId = ""
 	} else {
-		response.LastId = likes[len(likes)-1].UserId
+		res.LastId = likes[len(likes)-1].UserId
 	}
-	response.Records = likes
+	res.Records = likes
 	w.Header().Set("content-type", "application/json")
-	_ = json.NewEncoder(w).Encode(response)
+	_ = json.NewEncoder(w).Encode(res)
 }

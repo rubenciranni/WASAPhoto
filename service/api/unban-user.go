@@ -8,20 +8,20 @@ import (
 	"github.com/rubenciranni/WASAPhoto/service/model/request"
 )
 
-func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) unbanUser(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
 	userId := ps.ByName("userId")
-	var request request.UnbanUserRequest
-	request.PathParameters.UserId = userId
+	var req request.UnbanUserRequest
+	req.PathParameters.UserId = userId
 
 	// Validate request
-	if !request.IsValid() {
+	if !req.IsValid() {
 		ctx.Logger.Error("error validating request")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	// Check if logged in user is the requested user
+	// Check if logged-in user is the requested user
 	if ctx.User.UserId == userId {
 		ctx.Logger.Error("error: user is trying to unban himself")
 		w.WriteHeader(http.StatusForbidden)
