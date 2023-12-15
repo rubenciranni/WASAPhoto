@@ -67,12 +67,12 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	commentId := commentUUID.String()
+	commentID := commentUUID.String()
 
 	// Insert comment into database
 	ctx.Logger.Debugf("inserting comment into database")
 	dateTime := globaltime.ToString(globaltime.Now())
-	err = rt.db.InsertComment(commentId, photoID, ctx.User.UserID, req.Text, dateTime)
+	err = rt.db.InsertComment(commentID, photoID, ctx.User.UserID, req.Text, dateTime)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error inserting comment into database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -80,7 +80,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	// Send response
-	res := response.CommentPhotoResponse{CommentID: commentId}
+	res := response.CommentPhotoResponse{CommentID: commentID}
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("content-type", "application/json")
 	_ = json.NewEncoder(w).Encode(res)

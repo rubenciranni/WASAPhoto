@@ -2,7 +2,7 @@ package database
 
 import "github.com/rubenciranni/WASAPhoto/service/model/schema"
 
-func (db *appdbimpl) GetFollowing(userID string, startId string) ([]schema.User, error) {
+func (db *appdbimpl) GetFollowing(userID string, startID string) ([]schema.User, error) {
 	var followingList []schema.User
 	rows, err := db.c.Query(
 		`
@@ -14,7 +14,7 @@ func (db *appdbimpl) GetFollowing(userID string, startId string) ([]schema.User,
 		LIMIT 20
 		`,
 		userID,
-		startId,
+		startID,
 	)
 	if err != nil {
 		return followingList, err

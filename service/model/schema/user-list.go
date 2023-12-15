@@ -1,6 +1,6 @@
 package schema
 
 type UserList struct {
-	LastId  string `json:"lastId"`
+	LastID  string `json:"lastID"`
 	Records []User `json:"records"`
 }

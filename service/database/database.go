@@ -56,7 +56,7 @@ const (
 	`
 	createCommentTable = `
 		CREATE TABLE Comment (
-			commentId TEXT PRIMARY KEY,
+			commentID TEXT PRIMARY KEY,
 			photoID TEXT NOT NULL,
 			authorId TEXT NOT NULL,
 			text TEXT,
@@ -99,28 +99,28 @@ type AppDatabase interface {
 	InsertUser(userID string, username string) error
 	InsertPhoto(photoID string, authorId string, caption string, dateTime string) error
 	InsertLike(photoID string, userID string) error
-	InsertComment(commentId string, photoID string, authorId string, text string, dateTime string) error
+	InsertComment(commentID string, photoID string, authorId string, text string, dateTime string) error
 	InsertFollow(followerId string, followedId string) error
 	InsertBan(bannerId string, bannedId string) error
 
 	DeletePhoto(photoID string) error
 	DeleteLike(photoID string, userID string) error
-	DeleteComment(commentId string) error
+	DeleteComment(commentID string) error
 	DeleteFollow(followerId string, followedId string) error
 	DeleteBan(bannerId string, bannedId string) error
 
 	GetUserID(username string) (string, error)
-	GetPhotosByUser(userID string, startDate string, startId string) ([]schema.Photo, error)
+	GetPhotosByUser(userID string, startDate string, startID string) ([]schema.Photo, error)
 	GetPhotoAuthorId(photoID string) (string, error)
-	GetLikes(photoID string, startId string) ([]schema.User, error)
-	GetCommentAuthorId(commentId string) (string, error)
-	GetComments(photoID string, startDate string, startId string) ([]schema.Comment, error)
-	GetUsers(loggedInUserID string, username string, startId string) ([]schema.User, error)
+	GetLikes(photoID string, startID string) ([]schema.User, error)
+	GetCommentAuthorId(commentID string) (string, error)
+	GetComments(photoID string, startDate string, startID string) ([]schema.Comment, error)
+	GetUsers(loggedInUserID string, username string, startID string) ([]schema.User, error)
 	GetUser(userID string) (schema.User, error)
-	GetFollowing(userID string, startId string) ([]schema.User, error)
-	GetFollowers(userID string, startId string) ([]schema.User, error)
+	GetFollowing(userID string, startID string) ([]schema.User, error)
+	GetFollowers(userID string, startID string) ([]schema.User, error)
 	GetUserProfile(userID string) (schema.UserProfile, error)
-	GetStream(userID string, startDate string, startId string) ([]schema.Photo, error)
+	GetStream(userID string, startDate string, startID string) ([]schema.Photo, error)
 
 	SetUserName(userID string, newUserName string) error
 

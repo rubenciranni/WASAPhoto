@@ -13,10 +13,10 @@ import (
 func (rt *_router) getFollowers(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
 	userID := ps.ByName("userID")
-	startId := ps.ByName("startId")
+	startID := ps.ByName("startID")
 	var req request.GetFollowersRequest
 	req.PathParameters.UserID = userID
-	req.QueryParameters.StartId = startId
+	req.QueryParameters.StartID = startID
 
 	// Validate request
 	if !req.IsValid() {
@@ -39,7 +39,7 @@ func (rt *_router) getFollowers(w http.ResponseWriter, _ *http.Request, ps httpr
 
 	// Retrieve followers from database
 	ctx.Logger.Debugf(`retrieving followers of "%s" from database`, userID)
-	followers, err := rt.db.GetFollowers(userID, startId)
+	followers, err := rt.db.GetFollowers(userID, startID)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error retrieving followers from database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -49,9 +49,9 @@ func (rt *_router) getFollowers(w http.ResponseWriter, _ *http.Request, ps httpr
 	// Send response
 	var res response.GetFollowersResponse
 	if len(followers) == 0 {
-		res.LastId = ""
+		res.LastID = ""
 	} else {
-		res.LastId = followers[len(followers)-1].UserID
+		res.LastID = followers[len(followers)-1].UserID
 	}
 	res.Records = followers
 	w.Header().Set("content-type", "application/json")

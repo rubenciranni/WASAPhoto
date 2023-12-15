@@ -3,7 +3,7 @@ package request
 type UncommentPhotoRequest struct {
 	PathParameters struct {
 		PhotoID   string `key:"photoID"`
-		CommentID string `key:"commentId"`
+		CommentID string `key:"commentID"`
 	}
 }
 

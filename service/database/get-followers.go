@@ -2,7 +2,7 @@ package database
 
 import "github.com/rubenciranni/WASAPhoto/service/model/schema"
 
-func (db *appdbimpl) GetFollowers(userID string, startId string) ([]schema.User, error) {
+func (db *appdbimpl) GetFollowers(userID string, startID string) ([]schema.User, error) {
 	var followersList []schema.User
 	rows, err := db.c.Query(
 		`
@@ -10,11 +10,11 @@ func (db *appdbimpl) GetFollowers(userID string, startId string) ([]schema.User,
 		FROM Follow JOIN User
 		ON Follow.followerId = User.userID
 		WHERE Follow.followedId = ? AND Follow.followerId > ?
-		ORDER BY startId
+		ORDER BY startID
 		LIMIT 20
 		`,
 		userID,
-		startId,
+		startID,
 	)
 	if err != nil {
 		return followersList, err

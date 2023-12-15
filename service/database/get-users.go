@@ -2,7 +2,7 @@ package database
 
 import "github.com/rubenciranni/WASAPhoto/service/model/schema"
 
-func (db *appdbimpl) GetUsers(loggedInUserID string, username string, startId string) ([]schema.User, error) {
+func (db *appdbimpl) GetUsers(loggedInUserID string, username string, startID string) ([]schema.User, error) {
 	var userList []schema.User
 	rows, err := db.c.Query(
 		`
@@ -20,7 +20,7 @@ func (db *appdbimpl) GetUsers(loggedInUserID string, username string, startId st
 		LIMIT 20
 		`,
 		username,
-		startId,
+		startID,
 		loggedInUserID,
 	)
 	if err != nil {

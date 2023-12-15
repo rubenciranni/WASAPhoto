@@ -1,7 +1,7 @@
 package database
 
-func (db *appdbimpl) GetCommentAuthorId(commentId string) (string, error) {
+func (db *appdbimpl) GetCommentAuthorId(commentID string) (string, error) {
 	var authorId string
-	err := db.c.QueryRow("SELECT authorId FROM Comment WHERE commentId = ?", commentId).Scan(&authorId)
+	err := db.c.QueryRow("SELECT authorId FROM Comment WHERE commentID = ?", commentID).Scan(&authorId)
 	return authorId, err
 }

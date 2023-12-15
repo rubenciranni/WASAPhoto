@@ -13,10 +13,10 @@ import (
 func (rt *_router) getFollowing(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
 	userID := ps.ByName("userID")
-	startId := ps.ByName("startId")
+	startID := ps.ByName("startID")
 	var req request.GetFollowingRequest
 	req.PathParameters.UserID = userID
-	req.QueryParameters.StartId = startId
+	req.QueryParameters.StartID = startID
 
 	// Validate request
 	if !req.IsValid() {
@@ -39,7 +39,7 @@ func (rt *_router) getFollowing(w http.ResponseWriter, _ *http.Request, ps httpr
 
 	// Retrieve following from database
 	ctx.Logger.Debugf(`retrieving following of "%s" from database`, userID)
-	following, err := rt.db.GetFollowing(userID, startId)
+	following, err := rt.db.GetFollowing(userID, startID)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error retrieving following from database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -49,9 +49,9 @@ func (rt *_router) getFollowing(w http.ResponseWriter, _ *http.Request, ps httpr
 	// Send response
 	var res response.GetFollowingResponse
 	if len(following) == 0 {
-		res.LastId = ""
+		res.LastID = ""
 	} else {
-		res.LastId = following[len(following)-1].UserID
+		res.LastID = following[len(following)-1].UserID
 	}
 	res.Records = following
 	w.Header().Set("content-type", "application/json")

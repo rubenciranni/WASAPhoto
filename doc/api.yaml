@@ -88,7 +88,7 @@ paths:
     get:
       parameters:
         - $ref: "#/components/parameters/StartDate"
-        - $ref: "#/components/parameters/StartId"
+        - $ref: "#/components/parameters/StartID"
         - $ref: "#/components/parameters/QueryStringUserID"
       tags: ["photos"]
       summary: Gets a list of photos
@@ -141,7 +141,7 @@ paths:
       - $ref: "#/components/parameters/PathPhotoID"
     get:
       parameters:
-        - $ref: "#/components/parameters/StartId"
+        - $ref: "#/components/parameters/StartID"
       tags: ["likes"]
       summary: Gets the likes for a photo
       description: |-
@@ -161,7 +161,7 @@ paths:
     get:
       parameters:
         - $ref: "#/components/parameters/StartDate"
-        - $ref: "#/components/parameters/StartId"
+        - $ref: "#/components/parameters/StartID"
       tags: ["comments"]
       summary: Gets the comments for a photo
       description: |-
@@ -191,7 +191,7 @@ paths:
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
-  /photos/{photoID}/comments/{commentId}:
+  /photos/{photoID}/comments/{commentID}:
     parameters:
       - $ref: "#/components/parameters/PathPhotoID"
       - $ref: "#/components/parameters/PathCommentID"
@@ -214,7 +214,7 @@ paths:
       - $ref: "#/components/parameters/QueryStringUsername"
     get:
       parameters:
-        - $ref: "#/components/parameters/StartId"
+        - $ref: "#/components/parameters/StartID"
       tags: ["users"]
       summary: Gets users matching given username
       description: |-
@@ -247,7 +247,7 @@ paths:
       - $ref: "#/components/parameters/PathUserID"
     get:
       parameters:
-        - $ref: "#/components/parameters/StartId"
+        - $ref: "#/components/parameters/StartID"
       tags: ["users"]
       summary: Gets the following of a user
       description: |-
@@ -266,7 +266,7 @@ paths:
       - $ref: "#/components/parameters/PathUserID"
     get:
       parameters:
-        - $ref: "#/components/parameters/StartId"
+        - $ref: "#/components/parameters/StartID"
       tags: ["users"]
       summary: Gets the followers of a user
       description: |-
@@ -379,7 +379,7 @@ paths:
     get:
       parameters:
         - $ref: "#/components/parameters/StartDate"
-        - $ref: "#/components/parameters/StartId"
+        - $ref: "#/components/parameters/StartID"
       tags: ["stream"]
       summary: Gets the stream of the logged-in user
       description: |-
@@ -437,7 +437,7 @@ components:
       pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
       minLength: 36
       maxLength: 36
-    commentId:
+    commentID:
       description: UUID associated with a unique comment.
       type: string
       format: uuid
@@ -457,7 +457,7 @@ components:
           pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
           minLength: 20
           maxLength: 20
-        lastId:
+        lastID:
           description: |-
             The id of the last record in the current response.
           type: string
@@ -542,7 +542,7 @@ components:
       description: A comment.
       type: object
       properties:
-        commentId: { $ref: "#/components/schemas/commentId" }
+        commentID: { $ref: "#/components/schemas/commentID" }
         text: { $ref: "#/components/schemas/text" }
         author: { $ref: "#/components/schemas/User" }
         dateTime: { $ref: "#/components/schemas/dateTime" }
@@ -682,7 +682,7 @@ components:
             description: The UUID of the newly added comment.
             type: object
             properties:
-              commentId: { $ref: "#/components/schemas/commentId" }
+              commentID: { $ref: "#/components/schemas/commentID" }
     SuccessfulUncommentPhoto:
       description: The comment was successfully removed from the photo.
       content:
@@ -691,7 +691,7 @@ components:
             description: The UUID of the deleted comment.
             type: object
             properties:
-              commentId: { $ref: "#/components/schemas/commentId" }
+              commentID: { $ref: "#/components/schemas/commentID" }
     SuccessfulSearchUser:
       description: A list of users matching the given username.
       content:
@@ -756,9 +756,9 @@ components:
       required: true
     PathCommentID:
       description: Comment identifier passed in path.
-      name: commentId
+      name: commentID
       in: path
-      schema: { $ref: "#/components/schemas/commentId" }
+      schema: { $ref: "#/components/schemas/commentID" }
       required: true
     StartDate:
       description: |-
@@ -775,12 +775,12 @@ components:
         minLength: 20
         maxLength: 20
       required: false 
-    StartId:
+    StartID:
       description: |-
         The id of the last record in the previous response.
         It is used for keyset pagination.
         It starts from the first id if it is not specified.
-      name: startId
+      name: startID
       in: query
       schema:
         description: The id of the last record.

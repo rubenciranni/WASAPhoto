@@ -5,7 +5,7 @@ type GetFollowingRequest struct {
 		UserID string `key:"userID"`
 	}
 	QueryParameters struct {
-		StartId string `key:"startId"`
+		StartID string `key:"startID"`
 	}
 }
 

@@ -6,12 +6,12 @@ type GetCommentsRequest struct {
 	}
 	QueryParameters struct {
 		StartDate string `key:"startDate"`
-		StartId   string `key:"startId"`
+		StartID   string `key:"startID"`
 	}
 }
 
 func (request *GetCommentsRequest) IsValid() bool {
 	return isValidUUID(request.PathParameters.PhotoID) &&
 		isValidDateTime(request.QueryParameters.StartDate) &&
-		(request.QueryParameters.StartId == "" || isValidUUID(request.QueryParameters.StartId))
+		(request.QueryParameters.StartID == "" || isValidUUID(request.QueryParameters.StartID))
 }

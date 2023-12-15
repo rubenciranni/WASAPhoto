@@ -17,14 +17,14 @@ func (rt *_router) getPhotos(w http.ResponseWriter, r *http.Request, _ httproute
 	// Parse request
 	userID := r.URL.Query().Get("userID")
 	startDate := r.URL.Query().Get("startDate")
-	startId := r.URL.Query().Get("startId")
+	startID := r.URL.Query().Get("startID")
 	if startDate == "" {
 		startDate = globaltime.ToString(globaltime.Now())
 	}
 	var req request.GetPhotosRequest
 	req.QueryParameters.UserID = userID
 	req.QueryParameters.StartDate = startDate
-	req.QueryParameters.StartId = startId
+	req.QueryParameters.StartID = startID
 
 	// Validate request
 	if !req.IsValid() {
@@ -59,7 +59,7 @@ func (rt *_router) getPhotos(w http.ResponseWriter, r *http.Request, _ httproute
 
 	// Retrieve photos from database
 	ctx.Logger.Debugf(`retrieving photos by userID "%s"`, req.QueryParameters.UserID)
-	photos, err := rt.db.GetPhotosByUser(userID, startDate, startId)
+	photos, err := rt.db.GetPhotosByUser(userID, startDate, startID)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error retrieving photos from database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -70,10 +70,10 @@ func (rt *_router) getPhotos(w http.ResponseWriter, r *http.Request, _ httproute
 	var res response.GetPhotosResponse
 	if len(photos) == 0 {
 		res.LastDate = ""
-		res.LastId = ""
+		res.LastID = ""
 	} else {
 		res.LastDate = photos[len(photos)-1].DateTime
-		res.LastId = photos[len(photos)-1].PhotoID
+		res.LastID = photos[len(photos)-1].PhotoID
 	}
 	res.Records = photos
 	w.Header().Set("content-type", "application/json")

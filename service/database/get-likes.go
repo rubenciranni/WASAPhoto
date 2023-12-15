@@ -4,7 +4,7 @@ import (
 	"github.com/rubenciranni/WASAPhoto/service/model/schema"
 )
 
-func (db *appdbimpl) GetLikes(photoID string, startId string) ([]schema.User, error) {
+func (db *appdbimpl) GetLikes(photoID string, startID string) ([]schema.User, error) {
 	var userList []schema.User
 	rows, err := db.c.Query(
 		`
@@ -16,7 +16,7 @@ func (db *appdbimpl) GetLikes(photoID string, startId string) ([]schema.User, er
 		LIMIT 20
 		 `,
 		photoID,
-		startId,
+		startID,
 	)
 	if err != nil {
 		return userList, err

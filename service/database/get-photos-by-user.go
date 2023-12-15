@@ -2,7 +2,7 @@ package database
 
 import "github.com/rubenciranni/WASAPhoto/service/model/schema"
 
-func (db *appdbimpl) GetPhotosByUser(userID string, startDate string, startId string) ([]schema.Photo, error) {
+func (db *appdbimpl) GetPhotosByUser(userID string, startDate string, startID string) ([]schema.Photo, error) {
 	var photoList []schema.Photo
 	rows, err := db.c.Query(
 		`
@@ -26,7 +26,7 @@ func (db *appdbimpl) GetPhotosByUser(userID string, startDate string, startId st
 		userID,
 		startDate,
 		startDate,
-		startId,
+		startID,
 	)
 	if err != nil {
 		return photoList, err

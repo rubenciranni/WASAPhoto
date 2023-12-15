@@ -15,10 +15,10 @@ import (
 func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
 	photoID := ps.ByName("photoID")
-	startId := r.URL.Query().Get("startId")
+	startID := r.URL.Query().Get("startID")
 	var req request.GetLikesRequest
 	req.PathParameters.PhotoID = photoID
-	req.QueryParameters.StartId = startId
+	req.QueryParameters.StartID = startID
 
 	// Validate request
 	if !req.IsValid() {
@@ -54,7 +54,7 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 
 	// Get likes from database
 	ctx.Logger.Debugf(`retrieving likes for photoID "%s"`, req.PathParameters.PhotoID)
-	likes, err := rt.db.GetLikes(photoID, startId)
+	likes, err := rt.db.GetLikes(photoID, startID)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error retrieving likes from database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -64,9 +64,9 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 	// Send response
 	var res response.GetLikesResponse
 	if len(likes) == 0 {
-		res.LastId = ""
+		res.LastID = ""
 	} else {
-		res.LastId = likes[len(likes)-1].UserID
+		res.LastID = likes[len(likes)-1].UserID
 	}
 	res.Records = likes
 	w.Header().Set("content-type", "application/json")
