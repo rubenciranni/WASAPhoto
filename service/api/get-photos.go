@@ -15,16 +15,16 @@ import (
 
 func (rt *_router) getPhotos(w http.ResponseWriter, r *http.Request, _ httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	userID := r.URL.Query().Get("userID")
+	userId := r.URL.Query().Get("userId")
 	startDate := r.URL.Query().Get("startDate")
-	startID := r.URL.Query().Get("startID")
+	startId := r.URL.Query().Get("startId")
 	if startDate == "" {
 		startDate = globaltime.ToString(globaltime.Now())
 	}
 	var req request.GetPhotosRequest
-	req.QueryParameters.UserID = userID
+	req.QueryParameters.UserId = userId
 	req.QueryParameters.StartDate = startDate
-	req.QueryParameters.StartID = startID
+	req.QueryParameters.StartId = startId
 
 	// Validate request
 	if !req.IsValid() {
@@ -33,21 +33,21 @@ func (rt *_router) getPhotos(w http.ResponseWriter, r *http.Request, _ httproute
 		return
 	}
 
-	// Check if provided userID exists
-	ctx.Logger.Debugf(`retrieving user for userID "%s"`, req.QueryParameters.UserID)
-	if _, err := rt.db.GetUser(userID); errors.Is(err, sql.ErrNoRows) {
-		ctx.Logger.WithError(err).Error("userID does not exist in database")
+	// Check if provided userId exists
+	ctx.Logger.Debugf(`retrieving user for userId "%s"`, req.QueryParameters.UserId)
+	if _, err := rt.db.GetUser(userId); errors.Is(err, sql.ErrNoRows) {
+		ctx.Logger.WithError(err).Error("userId does not exist in database")
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {
-		ctx.Logger.WithError(err).Error("error searching userID in database")
+		ctx.Logger.WithError(err).Error("error searching userId in database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	// Check if logged-in user is banned by requested user
-	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, req.QueryParameters.UserID, ctx.User.UserID)
-	if banned, err := rt.db.ExistsBan(userID, ctx.User.UserID); err != nil {
+	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, req.QueryParameters.UserId, ctx.User.UserId)
+	if banned, err := rt.db.ExistsBan(userId, ctx.User.UserId); err != nil {
 		ctx.Logger.WithError(err).Error("error searching ban in database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -58,8 +58,8 @@ func (rt *_router) getPhotos(w http.ResponseWriter, r *http.Request, _ httproute
 	}
 
 	// Retrieve photos from database
-	ctx.Logger.Debugf(`retrieving photos by userID "%s"`, req.QueryParameters.UserID)
-	photos, err := rt.db.GetPhotosByUser(userID, startDate, startID)
+	ctx.Logger.Debugf(`retrieving photos by userId "%s"`, req.QueryParameters.UserId)
+	photos, err := rt.db.GetPhotosByUser(userId, startDate, startId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error retrieving photos from database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -70,10 +70,10 @@ func (rt *_router) getPhotos(w http.ResponseWriter, r *http.Request, _ httproute
 	var res response.GetPhotosResponse
 	if len(photos) == 0 {
 		res.LastDate = ""
-		res.LastID = ""
+		res.LastId = ""
 	} else {
 		res.LastDate = photos[len(photos)-1].DateTime
-		res.LastID = photos[len(photos)-1].PhotoID
+		res.LastId = photos[len(photos)-1].PhotoId
 	}
 	res.Records = photos
 	w.Header().Set("content-type", "application/json")

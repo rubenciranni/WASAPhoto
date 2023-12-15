@@ -3,11 +3,11 @@ package request
 type SearchUserRequest struct {
 	QueryParameters struct {
 		Username string `key:"username"`
-		StartID  string `key:"startID"`
+		StartId  string `key:"startId"`
 	}
 }
 
 func (request *SearchUserRequest) IsValid() bool {
-	return request.QueryParameters.StartID == "" ||
-		isValidUUID(request.QueryParameters.StartID)
+	return request.QueryParameters.StartId == "" ||
+		isValidUUID(request.QueryParameters.StartId)
 }

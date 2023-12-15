@@ -1,12 +1,12 @@
 package database
 
-func (db *appdbimpl) InsertUser(userID string, username string) error {
+func (db *appdbimpl) InsertUser(userId string, username string) error {
 	_, err := db.c.Exec(
 		`
-		INSERT INTO User (userID, username)
+		INSERT INTO User (userId, username)
 		VALUES (?, ?)
 		`,
-		userID,
+		userId,
 		username)
 	return err
 }

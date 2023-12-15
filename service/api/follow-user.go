@@ -10,9 +10,9 @@ import (
 
 func (rt *_router) followUser(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	userID := ps.ByName("userID")
+	userId := ps.ByName("userId")
 	var req request.FollowUserRequest
-	req.PathParameters.UserID = userID
+	req.PathParameters.UserId = userId
 
 	// Validate request
 	if !req.IsValid() {
@@ -22,15 +22,15 @@ func (rt *_router) followUser(w http.ResponseWriter, _ *http.Request, ps httprou
 	}
 
 	// Check if logged-in user is the requested user
-	if ctx.User.UserID == userID {
+	if ctx.User.UserId == userId {
 		ctx.Logger.Error("error: user is trying to follow himself")
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
 
 	// Check if logged-in user is banned by requested user
-	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, req.PathParameters.UserID, ctx.User.UserID)
-	if banned, err := rt.db.ExistsBan(userID, ctx.User.UserID); err != nil {
+	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, req.PathParameters.UserId, ctx.User.UserId)
+	if banned, err := rt.db.ExistsBan(userId, ctx.User.UserId); err != nil {
 		ctx.Logger.WithError(err).Error("error searching ban in database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -41,8 +41,8 @@ func (rt *_router) followUser(w http.ResponseWriter, _ *http.Request, ps httprou
 	}
 
 	// Insert follow into database
-	ctx.Logger.Debugf(`Inserting follow (followerId: "%s", followedId: "%s") into database`, ctx.User.UserID, userID)
-	err := rt.db.InsertFollow(ctx.User.UserID, userID)
+	ctx.Logger.Debugf(`Inserting follow (followerId: "%s", followedId: "%s") into database`, ctx.User.UserId, userId)
+	err := rt.db.InsertFollow(ctx.User.UserId, userId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error inserting follow into database")
 		w.WriteHeader(http.StatusInternalServerError)

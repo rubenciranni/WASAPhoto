@@ -2,10 +2,10 @@ package request
 
 type DeletePhotoRequest struct {
 	PathParameters struct {
-		PhotoID string `key:"photoID"`
+		PhotoId string `key:"photoId"`
 	}
 }
 
 func (request *DeletePhotoRequest) IsValid() bool {
-	return isValidUUID(request.PathParameters.PhotoID)
+	return isValidUUID(request.PathParameters.PhotoId)
 }

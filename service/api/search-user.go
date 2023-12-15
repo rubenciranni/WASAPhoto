@@ -15,10 +15,10 @@ import (
 func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
 	username := r.URL.Query().Get("username")
-	startID := r.URL.Query().Get("startID")
+	startId := r.URL.Query().Get("startId")
 	var req request.SearchUserRequest
 	req.QueryParameters.Username = username
-	req.QueryParameters.StartID = startID
+	req.QueryParameters.StartId = startId
 
 	// Validate request
 	if !req.IsValid() {
@@ -29,7 +29,7 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, _ httprout
 
 	// Retrieve users from database
 	ctx.Logger.Debug("retrieving users from database")
-	users, err := rt.db.GetUsers(ctx.User.UserID, username, startID)
+	users, err := rt.db.GetUsers(ctx.User.UserId, username, startId)
 	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("error retrieving users from database")
 		w.WriteHeader(http.StatusNotFound)
@@ -43,9 +43,9 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, _ httprout
 	// Send response
 	var res response.SearchUserResponse
 	if len(users) == 0 {
-		res.LastID = ""
+		res.LastId = ""
 	} else {
-		res.LastID = users[len(users)-1].UserID
+		res.LastId = users[len(users)-1].UserId
 	}
 	res.Records = users
 	w.Header().Set("content-type", "application/json")

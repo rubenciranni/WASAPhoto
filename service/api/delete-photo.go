@@ -14,9 +14,9 @@ import (
 
 func (rt *_router) deletePhoto(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	photoID := ps.ByName("photoID")
+	photoId := ps.ByName("photoId")
 	var req request.DeletePhotoRequest
-	req.PathParameters.PhotoID = photoID
+	req.PathParameters.PhotoId = photoId
 
 	// Validate request
 	if !req.IsValid() {
@@ -27,7 +27,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, _ *http.Request, ps httpro
 
 	// Retrieve author of the photo
 	ctx.Logger.Debugf("retrieving photo authorId from database")
-	authorId, err := rt.db.GetPhotoAuthorId(photoID)
+	authorId, err := rt.db.GetPhotoAuthorId(photoId)
 	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("error retrieving photo authorId from database")
 		w.WriteHeader(http.StatusNotFound)
@@ -40,7 +40,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, _ *http.Request, ps httpro
 
 	// Check if logged-in user is the author of the photo
 	ctx.Logger.Debugf("checking if logged-in user is the author of the photo")
-	if authorId != ctx.User.UserID {
+	if authorId != ctx.User.UserId {
 		ctx.Logger.Error("error: logged-in user is not the author of the photo")
 		w.WriteHeader(http.StatusForbidden)
 		return
@@ -48,7 +48,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, _ *http.Request, ps httpro
 
 	// Delete photo from file system
 	ctx.Logger.Debugf("deleting photo from filesystem")
-	err = rt.fs.DeletePhoto(photoID)
+	err = rt.fs.DeletePhoto(photoId)
 	if err != nil {
 		ctx.Logger.Error("error deleting photo from file system")
 		w.WriteHeader(http.StatusNotFound)
@@ -57,7 +57,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, _ *http.Request, ps httpro
 
 	// Delete photo from database
 	ctx.Logger.Debugf("deleting photo from database")
-	err = rt.db.DeletePhoto(photoID)
+	err = rt.db.DeletePhoto(photoId)
 	if err != nil {
 		ctx.Logger.Error("error deleting photo from database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -65,7 +65,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, _ *http.Request, ps httpro
 	}
 
 	// Send response
-	res := response.DeletePhotoResponse{PhotoID: photoID}
+	res := response.DeletePhotoResponse{PhotoId: photoId}
 	w.Header().Set("content-type", "application/json")
 	_ = json.NewEncoder(w).Encode(res)
 }

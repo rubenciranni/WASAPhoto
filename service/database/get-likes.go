@@ -4,19 +4,19 @@ import (
 	"github.com/rubenciranni/WASAPhoto/service/model/schema"
 )
 
-func (db *appdbimpl) GetLikes(photoID string, startID string) ([]schema.User, error) {
+func (db *appdbimpl) GetLikes(photoId string, startId string) ([]schema.User, error) {
 	var userList []schema.User
 	rows, err := db.c.Query(
 		`
 		SELECT User.* 
 		FROM Like JOIN User
-		ON User.userID = Like.userID
-		WHERE Like.photoID = ? AND User.userID > ?
-		ORDER BY User.userID
+		ON User.userId = Like.userId
+		WHERE Like.photoId = ? AND User.userId > ?
+		ORDER BY User.userId
 		LIMIT 20
 		 `,
-		photoID,
-		startID,
+		photoId,
+		startId,
 	)
 	if err != nil {
 		return userList, err
@@ -25,14 +25,14 @@ func (db *appdbimpl) GetLikes(photoID string, startID string) ([]schema.User, er
 
 	for rows.Next() {
 		var (
-			userID   string
+			userId   string
 			username string
 		)
-		if err := rows.Scan(&userID, &username); err != nil {
+		if err := rows.Scan(&userId, &username); err != nil {
 			return userList, err
 		}
 		userList = append(userList, schema.User{
-			UserID:   userID,
+			UserId:   userId,
 			Username: username,
 		})
 	}

@@ -41,37 +41,37 @@ import (
 const (
 	createUsersTable = `
 		CREATE TABLE User (
-			userID TEXT PRIMARY KEY,
+			userId TEXT PRIMARY KEY,
 			username TEXT NOT NULL
 		);
 	`
 	createPhotoTable = `
 		CREATE TABLE Photo (
-			photoID TEXT PRIMARY KEY,
+			photoId TEXT PRIMARY KEY,
 			authorId TEXT NOT NULL,
 			caption TEXT,
 			dateTime TEXT,
-			FOREIGN KEY (authorId) REFERENCES User(userID)
+			FOREIGN KEY (authorId) REFERENCES User(userId)
 		);
 	`
 	createCommentTable = `
 		CREATE TABLE Comment (
-			commentID TEXT PRIMARY KEY,
-			photoID TEXT NOT NULL,
+			commentId TEXT PRIMARY KEY,
+			photoId TEXT NOT NULL,
 			authorId TEXT NOT NULL,
 			text TEXT,
 			dateTime TEXT,
-			FOREIGN KEY (photoID) REFERENCES Photo(photoID),
-			FOREIGN KEY (authorId) REFERENCES User(userID)
+			FOREIGN KEY (photoId) REFERENCES Photo(photoId),
+			FOREIGN KEY (authorId) REFERENCES User(userId)
 		);
 	`
 	createLikeTable = `
 		CREATE TABLE Like (
-			photoID TEXT NOT NULL,
-			userID TEXT NOT NULL,
-			PRIMARY KEY (photoID, userID),
-			FOREIGN KEY (photoID) REFERENCES Photo(photoID),
-			FOREIGN KEY (userID) REFERENCES User(userID)
+			photoId TEXT NOT NULL,
+			userId TEXT NOT NULL,
+			PRIMARY KEY (photoId, userId),
+			FOREIGN KEY (photoId) REFERENCES Photo(photoId),
+			FOREIGN KEY (userId) REFERENCES User(userId)
 		);
 	`
 	createFollowTable = `
@@ -79,8 +79,8 @@ const (
 			followerId TEXT NOT NULL,
 			followedId TEXT NOT NULL,
 			PRIMARY KEY (followerId, followedId),
-			FOREIGN KEY (followerId) REFERENCES User(userID),
-			FOREIGN KEY (followedId) REFERENCES User(userID)
+			FOREIGN KEY (followerId) REFERENCES User(userId),
+			FOREIGN KEY (followedId) REFERENCES User(userId)
 		);
 	`
 	createBanTable = `
@@ -88,41 +88,41 @@ const (
 			bannerId TEXT NOT NULL,
 			bannedId TEXT NOT NULL,
 			PRIMARY KEY (bannerId, bannedId),
-			FOREIGN KEY (bannerId) REFERENCES User(userID),
-			FOREIGN KEY (bannedId) REFERENCES User(userID)
+			FOREIGN KEY (bannerId) REFERENCES User(userId),
+			FOREIGN KEY (bannedId) REFERENCES User(userId)
 		);
 	`
 )
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-	InsertUser(userID string, username string) error
-	InsertPhoto(photoID string, authorId string, caption string, dateTime string) error
-	InsertLike(photoID string, userID string) error
-	InsertComment(commentID string, photoID string, authorId string, text string, dateTime string) error
+	InsertUser(userId string, username string) error
+	InsertPhoto(photoId string, authorId string, caption string, dateTime string) error
+	InsertLike(photoId string, userId string) error
+	InsertComment(commentId string, photoId string, authorId string, text string, dateTime string) error
 	InsertFollow(followerId string, followedId string) error
 	InsertBan(bannerId string, bannedId string) error
 
-	DeletePhoto(photoID string) error
-	DeleteLike(photoID string, userID string) error
-	DeleteComment(commentID string) error
+	DeletePhoto(photoId string) error
+	DeleteLike(photoId string, userId string) error
+	DeleteComment(commentId string) error
 	DeleteFollow(followerId string, followedId string) error
 	DeleteBan(bannerId string, bannedId string) error
 
-	GetUserID(username string) (string, error)
-	GetPhotosByUser(userID string, startDate string, startID string) ([]schema.Photo, error)
-	GetPhotoAuthorId(photoID string) (string, error)
-	GetLikes(photoID string, startID string) ([]schema.User, error)
-	GetCommentAuthorId(commentID string) (string, error)
-	GetComments(photoID string, startDate string, startID string) ([]schema.Comment, error)
-	GetUsers(loggedInUserID string, username string, startID string) ([]schema.User, error)
-	GetUser(userID string) (schema.User, error)
-	GetFollowing(userID string, startID string) ([]schema.User, error)
-	GetFollowers(userID string, startID string) ([]schema.User, error)
-	GetUserProfile(userID string) (schema.UserProfile, error)
-	GetStream(userID string, startDate string, startID string) ([]schema.Photo, error)
+	GetUserId(username string) (string, error)
+	GetPhotosByUser(userId string, startDate string, startId string) ([]schema.Photo, error)
+	GetPhotoAuthorId(photoId string) (string, error)
+	GetLikes(photoId string, startId string) ([]schema.User, error)
+	GetCommentAuthorId(commentId string) (string, error)
+	GetComments(photoId string, startDate string, startId string) ([]schema.Comment, error)
+	GetUsers(loggedInUserId string, username string, startId string) ([]schema.User, error)
+	GetUser(userId string) (schema.User, error)
+	GetFollowing(userId string, startId string) ([]schema.User, error)
+	GetFollowers(userId string, startId string) ([]schema.User, error)
+	GetUserProfile(userId string) (schema.UserProfile, error)
+	GetStream(userId string, startDate string, startId string) ([]schema.Photo, error)
 
-	SetUserName(userID string, newUserName string) error
+	SetUserName(userId string, newUserName string) error
 
 	ExistsBan(bannerId string, bannedId string) (bool, error)
 

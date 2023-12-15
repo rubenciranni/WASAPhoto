@@ -1,6 +1,6 @@
 package schema
 
 type User struct {
-	UserID   string `json:"userID"`
+	UserId   string `json:"userId"`
 	Username string `json:"username"`
 }

@@ -12,9 +12,9 @@ import (
 
 func (rt *_router) likePhoto(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	photoID := ps.ByName("photoID")
+	photoId := ps.ByName("photoId")
 	var req request.LikePhotoRequest
-	req.PathParameters.PhotoID = photoID
+	req.PathParameters.PhotoId = photoId
 
 	// Validate request
 	if !req.IsValid() {
@@ -25,7 +25,7 @@ func (rt *_router) likePhoto(w http.ResponseWriter, _ *http.Request, ps httprout
 
 	// Retrieve author of the photo
 	ctx.Logger.Debugf("retrieving photo authorId from database")
-	authorId, err := rt.db.GetPhotoAuthorId(photoID)
+	authorId, err := rt.db.GetPhotoAuthorId(photoId)
 	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("error retrieving photo authorId from database")
 		w.WriteHeader(http.StatusNotFound)
@@ -37,8 +37,8 @@ func (rt *_router) likePhoto(w http.ResponseWriter, _ *http.Request, ps httprout
 	}
 
 	// Check if logged-in user is banned by author of the photo
-	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, authorId, ctx.User.UserID)
-	if banned, err := rt.db.ExistsBan(authorId, ctx.User.UserID); err != nil {
+	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, authorId, ctx.User.UserId)
+	if banned, err := rt.db.ExistsBan(authorId, ctx.User.UserId); err != nil {
 		ctx.Logger.WithError(err).Error("error searching ban in database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -49,8 +49,8 @@ func (rt *_router) likePhoto(w http.ResponseWriter, _ *http.Request, ps httprout
 	}
 
 	// Insert Like
-	ctx.Logger.Debugf(`Adding like to photo "%s"`, photoID)
-	err = rt.db.InsertLike(photoID, ctx.User.UserID)
+	ctx.Logger.Debugf(`Adding like to photo "%s"`, photoId)
+	err = rt.db.InsertLike(photoId, ctx.User.UserId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error inserting like into database")
 		w.WriteHeader(http.StatusInternalServerError)

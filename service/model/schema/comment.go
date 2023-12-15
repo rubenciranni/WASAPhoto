@@ -1,7 +1,7 @@
 package schema
 
 type Comment struct {
-	CommentID string `json:"commentID"`
+	CommentId string `json:"commentId"`
 	Text      string `json:"text"`
 	Author    User   `json:"author"`
 	DateTime  string `json:"dateTime"`

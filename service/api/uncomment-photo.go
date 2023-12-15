@@ -14,11 +14,11 @@ import (
 
 func (rt *_router) uncommentPhoto(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	photoID := ps.ByName("photoID")
-	commentID := ps.ByName("commentID")
+	photoId := ps.ByName("photoId")
+	commentId := ps.ByName("commentId")
 	var req request.UncommentPhotoRequest
-	req.PathParameters.PhotoID = photoID
-	req.PathParameters.CommentID = commentID
+	req.PathParameters.PhotoId = photoId
+	req.PathParameters.CommentId = commentId
 
 	// Validate request
 	if !req.IsValid() {
@@ -29,7 +29,7 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, _ *http.Request, ps htt
 
 	// Retrieve author of the comment
 	ctx.Logger.Debugf("retrieving comment authorId from database")
-	authorId, err := rt.db.GetCommentAuthorId(commentID)
+	authorId, err := rt.db.GetCommentAuthorId(commentId)
 	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("error retrieving comment authorId from database")
 		w.WriteHeader(http.StatusNotFound)
@@ -42,7 +42,7 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, _ *http.Request, ps htt
 
 	// Check if logged-in user is the author of the comment
 	ctx.Logger.Debugf("checking if logged-in user is the author of the comment")
-	if authorId != ctx.User.UserID {
+	if authorId != ctx.User.UserId {
 		ctx.Logger.Error("error: logged-in user is not the author of the comment")
 		w.WriteHeader(http.StatusForbidden)
 		return
@@ -50,7 +50,7 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, _ *http.Request, ps htt
 
 	// Delete comment from database
 	ctx.Logger.Debugf("deleting comment from database")
-	err = rt.db.DeleteComment(commentID)
+	err = rt.db.DeleteComment(commentId)
 	if err != nil {
 		ctx.Logger.Error("error deleting comment from database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -58,7 +58,7 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, _ *http.Request, ps htt
 	}
 
 	// Send response
-	res := response.UncommentPhotoResponse{CommentID: commentID}
+	res := response.UncommentPhotoResponse{CommentId: commentId}
 	w.Header().Set("content-type", "application/json")
 	_ = json.NewEncoder(w).Encode(res)
 }

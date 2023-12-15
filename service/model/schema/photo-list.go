@@ -2,6 +2,6 @@ package schema
 
 type PhotoList struct {
 	LastDate string  `json:"lastDate"`
-	LastID   string  `json:"lastID"`
+	LastId   string  `json:"lastId"`
 	Records  []Photo `json:"records"`
 }

@@ -2,7 +2,7 @@ package database
 
 import "github.com/rubenciranni/WASAPhoto/service/model/schema"
 
-func (db *appdbimpl) GetUsers(loggedInUserID string, username string, startID string) ([]schema.User, error) {
+func (db *appdbimpl) GetUsers(loggedInUserId string, username string, startId string) ([]schema.User, error) {
 	var userList []schema.User
 	rows, err := db.c.Query(
 		`
@@ -10,18 +10,18 @@ func (db *appdbimpl) GetUsers(loggedInUserID string, username string, startID st
 		FROM User
 		WHERE 
 			username LIKE '%' || ? || '%' COLLATE NOCASE AND
-			userID > ? AND
-			userID NOT IN (
-				SELECT userID
+			userId > ? AND
+			userId NOT IN (
+				SELECT userId
 				FROM BAN
 				WHERE bannedId = ?
 			)
-		ORDER BY userID
+		ORDER BY userId
 		LIMIT 20
 		`,
 		username,
-		startID,
-		loggedInUserID,
+		startId,
+		loggedInUserId,
 	)
 	if err != nil {
 		return userList, err
@@ -30,14 +30,14 @@ func (db *appdbimpl) GetUsers(loggedInUserID string, username string, startID st
 
 	for rows.Next() {
 		var (
-			userID   string
+			userId   string
 			username string
 		)
-		if err := rows.Scan(&userID, &username); err != nil {
+		if err := rows.Scan(&userId, &username); err != nil {
 			return userList, err
 		}
 		userList = append(userList, schema.User{
-			UserID:   userID,
+			UserId:   userId,
 			Username: username,
 		})
 	}

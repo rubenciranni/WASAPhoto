@@ -2,34 +2,34 @@ package database
 
 import "github.com/rubenciranni/WASAPhoto/service/model/schema"
 
-func (db *appdbimpl) GetStream(userID string, startDate string, startID string) ([]schema.Photo, error) {
+func (db *appdbimpl) GetStream(userId string, startDate string, startId string) ([]schema.Photo, error) {
 	var photoList []schema.Photo
 	rows, err := db.c.Query(
 		`
 		SELECT 
-			Photo.photoID,
+			Photo.photoId,
 			Photo.authorId,
 			User.username AS authorUsername,
 			Photo.caption,
 			Photo.dateTime,
-			(SELECT COUNT(*) FROM Like WHERE photoID = Photo.photoID) AS numberOfLikes,
-			(SELECT COUNT(*) FROM Comment WHERE photoID = Photo.photoID) AS numberOfComments
+			(SELECT COUNT(*) FROM Like WHERE photoId = Photo.photoId) AS numberOfLikes,
+			(SELECT COUNT(*) FROM Comment WHERE photoId = Photo.photoId) AS numberOfComments
 		FROM 
 			Photo
 		JOIN 
-			User ON Photo.authorId = User.userID
+			User ON Photo.authorId = User.userId
 		WHERE 
 			Photo.authorId IN (
 				SELECT followedId FROM Follow WHERE followerId = ?
 			) AND
-			Photo.dateTime < ?  OR (Photo.dateTime = ? AND Photo.photoID > ?)
-		ORDER BY Photo.dateTime DESC, Photo.photoID ASC
+			Photo.dateTime < ?  OR (Photo.dateTime = ? AND Photo.photoId > ?)
+		ORDER BY Photo.dateTime DESC, Photo.photoId ASC
 		LIMIT 20
 		`,
-		userID,
+		userId,
 		startDate,
 		startDate,
-		startID,
+		startId,
 	)
 	if err != nil {
 		return photoList, err
@@ -38,7 +38,7 @@ func (db *appdbimpl) GetStream(userID string, startDate string, startID string) 
 
 	for rows.Next() {
 		var (
-			photoID          string
+			photoId          string
 			authorId         string
 			authorUsername   string
 			caption          string
@@ -46,12 +46,12 @@ func (db *appdbimpl) GetStream(userID string, startDate string, startID string) 
 			numberOfLikes    int
 			numberOfComments int
 		)
-		if err := rows.Scan(&photoID, &authorId, &authorUsername, &caption, &dateTime, &numberOfLikes, &numberOfComments); err != nil {
+		if err := rows.Scan(&photoId, &authorId, &authorUsername, &caption, &dateTime, &numberOfLikes, &numberOfComments); err != nil {
 			return photoList, err
 		}
 		photoList = append(photoList, schema.Photo{
-			PhotoID:          photoID,
-			Author:           schema.User{UserID: authorId, Username: authorUsername},
+			PhotoId:          photoId,
+			Author:           schema.User{UserId: authorId, Username: authorUsername},
 			Caption:          caption,
 			DateTime:         dateTime,
 			NumberOfLikes:    numberOfLikes,

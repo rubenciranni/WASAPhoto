@@ -1,5 +1,5 @@
 package response
 
 type UncommentPhotoResponse struct {
-	CommentID string `json:"commentID"`
+	CommentId string `json:"commentId"`
 }

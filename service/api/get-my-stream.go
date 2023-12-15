@@ -14,13 +14,13 @@ import (
 func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, _ httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
 	startDate := r.URL.Query().Get("startDate")
-	startID := r.URL.Query().Get("startID")
+	startId := r.URL.Query().Get("startId")
 	if startDate == "" {
 		startDate = globaltime.ToString(globaltime.Now())
 	}
 	var req request.GetMyStreamRequest
 	req.QueryParameters.StartDate = startDate
-	req.QueryParameters.StartID = startID
+	req.QueryParameters.StartId = startId
 
 	// Validate request
 	if !req.IsValid() {
@@ -30,8 +30,8 @@ func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, _ httprou
 	}
 
 	// Retrieve photos from database
-	ctx.Logger.Debugf(`retrieving stream of "%s"`, ctx.User.UserID)
-	photos, err := rt.db.GetStream(ctx.User.UserID, startDate, startID)
+	ctx.Logger.Debugf(`retrieving stream of "%s"`, ctx.User.UserId)
+	photos, err := rt.db.GetStream(ctx.User.UserId, startDate, startId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error retrieving photos from database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -42,10 +42,10 @@ func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, _ httprou
 	var res response.GetMyStreamResponse
 	if len(photos) == 0 {
 		res.LastDate = ""
-		res.LastID = ""
+		res.LastId = ""
 	} else {
 		res.LastDate = photos[len(photos)-1].DateTime
-		res.LastID = photos[len(photos)-1].PhotoID
+		res.LastId = photos[len(photos)-1].PhotoId
 	}
 	res.Records = photos
 	w.Header().Set("content-type", "application/json")

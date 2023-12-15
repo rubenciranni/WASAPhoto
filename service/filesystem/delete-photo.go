@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 )
 
-func (fs *appfsimpl) DeletePhoto(photoID string) error {
-	filename := fmt.Sprintf("%s.png", photoID)
+func (fs *appfsimpl) DeletePhoto(photoId string) error {
+	filename := fmt.Sprintf("%s.png", photoId)
 	path := filepath.Join(fs.root, fs.photos, filename)
 	err := os.Remove(path)
 	return err

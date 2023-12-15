@@ -15,20 +15,20 @@ import (
 
 func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	photoID := ps.ByName("photoID")
-	startID := r.URL.Query().Get("startID")
+	photoId := ps.ByName("photoId")
+	startId := r.URL.Query().Get("startId")
 	startDate := r.URL.Query().Get("startDate")
 	if startDate == "" {
 		startDate = globaltime.ToString(globaltime.Now())
 	}
 	var req request.GetCommentsRequest
-	req.PathParameters.PhotoID = photoID
-	req.QueryParameters.StartID = startID
+	req.PathParameters.PhotoId = photoId
+	req.QueryParameters.StartId = startId
 	req.QueryParameters.StartDate = startDate
 
 	// Validate request
-	ctx.Logger.Debug(photoID)
-	ctx.Logger.Debug(startID)
+	ctx.Logger.Debug(photoId)
+	ctx.Logger.Debug(startId)
 	ctx.Logger.Debug(startDate)
 	if !req.IsValid() {
 		ctx.Logger.Error("error validating request")
@@ -38,7 +38,7 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// Retrieve author of the photo
 	ctx.Logger.Debugf("retrieving photo authorId from database")
-	authorId, err := rt.db.GetPhotoAuthorId(photoID)
+	authorId, err := rt.db.GetPhotoAuthorId(photoId)
 	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("error retrieving photo authorId from database")
 		w.WriteHeader(http.StatusNotFound)
@@ -50,8 +50,8 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Check if logged-in user is banned by author of the photo
-	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, authorId, ctx.User.UserID)
-	if banned, err := rt.db.ExistsBan(authorId, ctx.User.UserID); err != nil {
+	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, authorId, ctx.User.UserId)
+	if banned, err := rt.db.ExistsBan(authorId, ctx.User.UserId); err != nil {
 		ctx.Logger.WithError(err).Error("error searching ban in database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -62,8 +62,8 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Get comments from database
-	ctx.Logger.Debugf(`retrieving comments for photoID "%s"`, req.PathParameters.PhotoID)
-	comments, err := rt.db.GetComments(photoID, startDate, startID)
+	ctx.Logger.Debugf(`retrieving comments for photoId "%s"`, req.PathParameters.PhotoId)
+	comments, err := rt.db.GetComments(photoId, startDate, startId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error retrieving comments from database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -74,10 +74,10 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	var res response.GetCommentsResponse
 	if len(comments) == 0 {
 		res.LastDate = ""
-		res.LastID = ""
+		res.LastId = ""
 	} else {
 		res.LastDate = comments[len(comments)-1].DateTime
-		res.LastID = comments[len(comments)-1].CommentID
+		res.LastId = comments[len(comments)-1].CommentId
 	}
 	res.Records = comments
 	w.Header().Set("content-type", "application/json")

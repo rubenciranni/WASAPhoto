@@ -28,7 +28,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, _ httpr
 
 	// Check if newUsername is already taken by another user
 	ctx.Logger.Debugf(`checking username "%s" availability`, req.NewUsername)
-	if userID, err := rt.db.GetUserID(req.NewUsername); err == nil && userID != ctx.User.UserID {
+	if userId, err := rt.db.GetUserId(req.NewUsername); err == nil && userId != ctx.User.UserId {
 		ctx.Logger.Errorf(`username "%s" is already taken`, req.NewUsername)
 		w.WriteHeader(http.StatusForbidden)
 		return
@@ -36,7 +36,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, _ httpr
 
 	// Update username
 	ctx.Logger.Debugf("updating username")
-	err = rt.db.SetUserName(ctx.User.UserID, req.NewUsername)
+	err = rt.db.SetUserName(ctx.User.UserId, req.NewUsername)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error updating username")
 		w.WriteHeader(http.StatusInternalServerError)

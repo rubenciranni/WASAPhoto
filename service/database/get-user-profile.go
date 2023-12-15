@@ -2,7 +2,7 @@ package database
 
 import "github.com/rubenciranni/WASAPhoto/service/model/schema"
 
-func (db *appdbimpl) GetUserProfile(userID string) (schema.UserProfile, error) {
+func (db *appdbimpl) GetUserProfile(userId string) (schema.UserProfile, error) {
 	var (
 		username          string
 		numberOfPhotos    int
@@ -19,15 +19,15 @@ func (db *appdbimpl) GetUserProfile(userID string) (schema.UserProfile, error) {
 		FROM 
 			User
 		WHERE 
-			User.userID = ?
+			User.userId = ?
 		`,
-		userID,
-		userID,
-		userID,
-		userID).Scan(&username, &numberOfPhotos, &numberOfFollowers, &numberOfFollowing)
+		userId,
+		userId,
+		userId,
+		userId).Scan(&username, &numberOfPhotos, &numberOfFollowers, &numberOfFollowing)
 
 	userProfile := schema.UserProfile{
-		UserID:            userID,
+		UserId:            userId,
 		Username:          username,
 		NumberOfPhotos:    numberOfPhotos,
 		NumberOfFollowers: numberOfFollowers,

@@ -2,10 +2,10 @@ package request
 
 type UnbanUserRequest struct {
 	PathParameters struct {
-		UserID string `key:"userID"`
+		UserId string `key:"userId"`
 	}
 }
 
 func (request *UnbanUserRequest) IsValid() bool {
-	return isValidUUID(request.PathParameters.UserID)
+	return isValidUUID(request.PathParameters.UserId)
 }

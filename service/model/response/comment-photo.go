@@ -1,5 +1,5 @@
 package response
 
 type CommentPhotoResponse struct {
-	CommentID string `json:"commentID"`
+	CommentId string `json:"commentId"`
 }

@@ -2,6 +2,6 @@ package schema
 
 type CommentList struct {
 	LastDate string    `json:"lastDate"`
-	LastID   string    `json:"lastID"`
+	LastId   string    `json:"lastId"`
 	Records  []Comment `json:"records"`
 }
