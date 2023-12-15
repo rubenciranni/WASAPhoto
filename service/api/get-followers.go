@@ -12,10 +12,10 @@ import (
 
 func (rt *_router) getFollowers(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	userId := ps.ByName("userId")
+	userID := ps.ByName("userID")
 	startId := ps.ByName("startId")
 	var req request.GetFollowersRequest
-	req.PathParameters.UserId = userId
+	req.PathParameters.UserID = userID
 	req.QueryParameters.StartId = startId
 
 	// Validate request
@@ -26,8 +26,8 @@ func (rt *_router) getFollowers(w http.ResponseWriter, _ *http.Request, ps httpr
 	}
 
 	// Check if logged-in user is banned by requested user
-	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, req.PathParameters.UserId, ctx.User.UserId)
-	if banned, err := rt.db.ExistsBan(userId, ctx.User.UserId); err != nil {
+	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, req.PathParameters.UserID, ctx.User.UserID)
+	if banned, err := rt.db.ExistsBan(userID, ctx.User.UserID); err != nil {
 		ctx.Logger.WithError(err).Error("error searching ban in database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -38,8 +38,8 @@ func (rt *_router) getFollowers(w http.ResponseWriter, _ *http.Request, ps httpr
 	}
 
 	// Retrieve followers from database
-	ctx.Logger.Debugf(`retrieving followers of "%s" from database`, userId)
-	followers, err := rt.db.GetFollowers(userId, startId)
+	ctx.Logger.Debugf(`retrieving followers of "%s" from database`, userID)
+	followers, err := rt.db.GetFollowers(userID, startId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error retrieving followers from database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -51,7 +51,7 @@ func (rt *_router) getFollowers(w http.ResponseWriter, _ *http.Request, ps httpr
 	if len(followers) == 0 {
 		res.LastId = ""
 	} else {
-		res.LastId = followers[len(followers)-1].UserId
+		res.LastId = followers[len(followers)-1].UserID
 	}
 	res.Records = followers
 	w.Header().Set("content-type", "application/json")

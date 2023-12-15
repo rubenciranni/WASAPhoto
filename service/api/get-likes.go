@@ -14,10 +14,10 @@ import (
 
 func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	photoId := ps.ByName("photoId")
+	photoID := ps.ByName("photoID")
 	startId := r.URL.Query().Get("startId")
 	var req request.GetLikesRequest
-	req.PathParameters.PhotoId = photoId
+	req.PathParameters.PhotoID = photoID
 	req.QueryParameters.StartId = startId
 
 	// Validate request
@@ -29,7 +29,7 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 
 	// Retrieve author of the photo
 	ctx.Logger.Debugf("retrieving photo authorId from database")
-	authorId, err := rt.db.GetPhotoAuthorId(photoId)
+	authorId, err := rt.db.GetPhotoAuthorId(photoID)
 	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("error retrieving photo authorId from database")
 		w.WriteHeader(http.StatusNotFound)
@@ -41,8 +41,8 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 
 	// Check if logged-in user is banned by author of the photo
-	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, authorId, ctx.User.UserId)
-	if banned, err := rt.db.ExistsBan(authorId, ctx.User.UserId); err != nil {
+	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, authorId, ctx.User.UserID)
+	if banned, err := rt.db.ExistsBan(authorId, ctx.User.UserID); err != nil {
 		ctx.Logger.WithError(err).Error("error searching ban in database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -53,8 +53,8 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 
 	// Get likes from database
-	ctx.Logger.Debugf(`retrieving likes for photoId "%s"`, req.PathParameters.PhotoId)
-	likes, err := rt.db.GetLikes(photoId, startId)
+	ctx.Logger.Debugf(`retrieving likes for photoID "%s"`, req.PathParameters.PhotoID)
+	likes, err := rt.db.GetLikes(photoID, startId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error retrieving likes from database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -66,7 +66,7 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 	if len(likes) == 0 {
 		res.LastId = ""
 	} else {
-		res.LastId = likes[len(likes)-1].UserId
+		res.LastId = likes[len(likes)-1].UserID
 	}
 	res.Records = likes
 	w.Header().Set("content-type", "application/json")

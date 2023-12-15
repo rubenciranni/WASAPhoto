@@ -2,10 +2,10 @@ package request
 
 type LikePhotoRequest struct {
 	PathParameters struct {
-		PhotoId string `key:"photoId"`
+		PhotoID string `key:"photoID"`
 	}
 }
 
 func (request *LikePhotoRequest) IsValid() bool {
-	return isValidUUID(request.PathParameters.PhotoId)
+	return isValidUUID(request.PathParameters.PhotoID)
 }

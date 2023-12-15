@@ -89,11 +89,11 @@ paths:
       parameters:
         - $ref: "#/components/parameters/StartDate"
         - $ref: "#/components/parameters/StartId"
-        - $ref: "#/components/parameters/QueryStringUserId"
+        - $ref: "#/components/parameters/QueryStringUserID"
       tags: ["photos"]
       summary: Gets a list of photos
       description: |-
-        If the logged-in user is not banned by the user with `userId` specified
+        If the logged-in user is not banned by the user with `userID` specified
         in query string, it returns a list of photos authored by that user;
         otherwise it returns an error.
       operationId: getPhotos
@@ -104,9 +104,9 @@ paths:
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
-  /photos/{photoId}:
+  /photos/{photoID}:
     parameters:
-      - $ref: "#/components/parameters/PathPhotoId"
+      - $ref: "#/components/parameters/PathPhotoID"
     get:
       tags: ["photos"]
       summary: Gets a photo
@@ -126,7 +126,7 @@ paths:
       summary: Deletes a photo
       description: |-
         If the logged-in user is the author of the photo
-        with `photoId` given in path, it deletes the photo;
+        with `photoID` given in path, it deletes the photo;
         otherwise, it returns an error.
       operationId: deletePhoto
       responses:
@@ -136,9 +136,9 @@ paths:
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
-  /photos/{photoId}/likes/:
+  /photos/{photoID}/likes/:
     parameters:
-      - $ref: "#/components/parameters/PathPhotoId"
+      - $ref: "#/components/parameters/PathPhotoID"
     get:
       parameters:
         - $ref: "#/components/parameters/StartId"
@@ -155,9 +155,9 @@ paths:
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
-  /photos/{photoId}/comments/:
+  /photos/{photoID}/comments/:
     parameters:
-      - $ref: "#/components/parameters/PathPhotoId"
+      - $ref: "#/components/parameters/PathPhotoID"
     get:
       parameters:
         - $ref: "#/components/parameters/StartDate"
@@ -191,10 +191,10 @@ paths:
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
-  /photos/{photoId}/comments/{commentId}:
+  /photos/{photoID}/comments/{commentId}:
     parameters:
-      - $ref: "#/components/parameters/PathPhotoId"
-      - $ref: "#/components/parameters/PathCommentId"
+      - $ref: "#/components/parameters/PathPhotoID"
+      - $ref: "#/components/parameters/PathCommentID"
     delete:
       tags: ["comments"]
       summary: Removes a comment from a photo
@@ -225,14 +225,14 @@ paths:
         '400': { $ref: "#/components/responses/BadRequest" }
         '401': { $ref: "#/components/responses/Unauthorized" }
         '500': { $ref: "#/components/responses/InternalServerError" }
-  /users/{userId}:
+  /users/{userID}:
     parameters:
-      - $ref: "#/components/parameters/PathUserId"
+      - $ref: "#/components/parameters/PathUserID"
     get:
       tags: ["profile"] 
       summary: Gets a user profile
       description: |-
-        If the logged-in user is not banned by the user with `userId` given in path,
+        If the logged-in user is not banned by the user with `userID` given in path,
         it returns its profile; otherwise it returns an error.
       operationId: getUserProfile
       responses:
@@ -242,16 +242,16 @@ paths:
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
-  /users/{userId}/following/:
+  /users/{userID}/following/:
     parameters:
-      - $ref: "#/components/parameters/PathUserId"
+      - $ref: "#/components/parameters/PathUserID"
     get:
       parameters:
         - $ref: "#/components/parameters/StartId"
       tags: ["users"]
       summary: Gets the following of a user
       description: |-
-        If the logged-in user is not banned by the user with `userId` given in path,
+        If the logged-in user is not banned by the user with `userID` given in path,
         it returns the list of its following; otherwise it returns an error.
       operationId: getFollowing
       responses:
@@ -261,16 +261,16 @@ paths:
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
-  /users/{userId}/followers/:
+  /users/{userID}/followers/:
     parameters:
-      - $ref: "#/components/parameters/PathUserId"
+      - $ref: "#/components/parameters/PathUserID"
     get:
       parameters:
         - $ref: "#/components/parameters/StartId"
       tags: ["users"]
       summary: Gets the followers of a user
       description: |-
-        If the logged-in user is not banned by the user with `userId` given in path,
+        If the logged-in user is not banned by the user with `userID` given in path,
         it returns the list of its followers; otherwise it returns an error.
       operationId: getFollowers
       responses:
@@ -280,15 +280,15 @@ paths:
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
-  /liked-photos/{photoId}:
+  /liked-photos/{photoID}:
     parameters:
-      - $ref: "#/components/parameters/PathPhotoId"
+      - $ref: "#/components/parameters/PathPhotoID"
     put:
       tags: ["likes"]
       summary: Adds a like to a photo
       description: |-
         If the logged-in user is not banned by the author of the the photo with
-        `photoId` given in path, it adds a like to the photo;
+        `photoID` given in path, it adds a like to the photo;
         otherwise it returns an error.
       operationId: likePhoto
       responses:
@@ -302,7 +302,7 @@ paths:
       tags: ["likes"]
       summary: Removes the like from a photo
       description: |-
-        It removes the like from the photo with `photoId` given in path
+        It removes the like from the photo with `photoID` given in path
         (or does nothing if the photo already does not have a like);
         otherwise it returns an error.
       operationId: unlikePhoto
@@ -313,14 +313,14 @@ paths:
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
-  /following/{userId}:
+  /following/{userID}:
     parameters:
-       - $ref: "#/components/parameters/PathUserId"
+       - $ref: "#/components/parameters/PathUserID"
     put:
       tags: ["following"]
       summary: Adds a user to following
       description: |-
-        If the logged-in user is not banned by the user with `userId` given in path,
+        If the logged-in user is not banned by the user with `userID` given in path,
         it adds him/her to the following of the logged-in user;
         otherwise it returns an error.
       operationId: followUser
@@ -335,7 +335,7 @@ paths:
       tags: ["following"]
       summary: Removes a user from following
       description: |-
-        It unfollows the user with `userId` given in path
+        It unfollows the user with `userID` given in path
         (or does nothing if it is already not followed);
         otherwise it returns an error.
       operationId: unfollowUser
@@ -346,14 +346,14 @@ paths:
         '403': { $ref: "#/components/responses/Forbidden" }
         '404': { $ref: "#/components/responses/NotFound" }
         '500': { $ref: "#/components/responses/InternalServerError" }
-  /bans/{userId}:
+  /bans/{userID}:
     parameters:
-       - $ref: "#/components/parameters/PathUserId"
+       - $ref: "#/components/parameters/PathUserID"
     put:
       tags: ["bans"]
       summary: Adds a user to bans
       description: |-
-        It adds the user with `userId` given in path to the bans of the logged-in user.
+        It adds the user with `userID` given in path to the bans of the logged-in user.
       operationId: banUser
       responses:
         '204': { $ref: "#/components/responses/SuccessfulBanUser" }
@@ -366,7 +366,7 @@ paths:
       tags: ["bans"]
       summary: Removes a user from bans
       description: |-
-        It removes the user with `userId` given in path from the bans of the logged-in user.
+        It removes the user with `userID` given in path from the bans of the logged-in user.
       operationId: unbanUser
       responses:
         '204': { $ref: "#/components/responses/SuccessfulUnbanUser" }
@@ -423,14 +423,14 @@ components:
       pattern: '^[a-zA-Z0-9_-]{3,16}$' 
       minLength: 3
       maxLength: 16
-    userId:
+    userID:
       description: UUID associated with a unique user.
       type: string
       format: uuid
       pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
       minLength: 36
       maxLength: 36
-    photoId:
+    photoID:
       description: UUID associated with a unique photo.
       type: string
       format: uuid
@@ -469,7 +469,7 @@ components:
       description: An existing user.
       type: object
       properties:
-        userId: { $ref: "#/components/schemas/userId" }
+        userID: { $ref: "#/components/schemas/userID" }
         username: { $ref: "#/components/schemas/username" }
     UserList:
       description: A list of users.
@@ -487,7 +487,7 @@ components:
       description: A user profile.
       type: object
       properties:
-        userId: { $ref: "#/components/schemas/userId" }
+        userID: { $ref: "#/components/schemas/userID" }
         username: { $ref: "#/components/schemas/username" }
         numberOfPhotos:
           description: The number of photos posted by the user.
@@ -510,7 +510,7 @@ components:
     Photo:
       description: An existing photo.
       properties:
-        photoId: { $ref: "#/components/schemas/photoId" }
+        photoID: { $ref: "#/components/schemas/photoID" }
         author: { $ref: "#/components/schemas/User" }
         dateTime: { $ref: "#/components/schemas/dateTime" }
         caption: { $ref: "#/components/schemas/text" }
@@ -627,7 +627,7 @@ components:
             description: The requested user UUID.
             type: object
             properties:
-              userId: { $ref: "#/components/schemas/userId" }
+              userID: { $ref: "#/components/schemas/userID" }
     SuccessfulSetMyUserName:
       description: Username updated successfully.
     SuccessfulUploadPhoto:
@@ -638,7 +638,7 @@ components:
             description: The UUID of the uploaded photo.
             type: object
             properties:
-              photoId: { $ref: "#/components/schemas/photoId" }
+              photoID: { $ref: "#/components/schemas/photoID" }
     SuccessfulGetPhoto:
       description: The requested photo.
       content:
@@ -650,7 +650,7 @@ components:
         application/json:
           schema: { $ref: "#/components/schemas/PhotoList" }
       links:
-        GetPhotoByPhotoId: { $ref: "#/components/links/GetPhotoByPhotoId"}
+        GetPhotoByPhotoID: { $ref: "#/components/links/GetPhotoByPhotoID"}
     SuccessfulDeletePhoto:
       description: Photo was deleted successfully.
       content:
@@ -659,7 +659,7 @@ components:
             description: The UUID of the deleted photo.
             type: object
             properties:
-              photoId: { $ref: "#/components/schemas/photoId" }
+              photoID: { $ref: "#/components/schemas/photoID" }
     SuccessfulLikePhoto:
       description: A like was added to the photo.
     SuccessfulUnlikePhoto:
@@ -703,7 +703,7 @@ components:
         application/json:
           schema: { $ref: "#/components/schemas/UserProfile" }
       links:
-        GetUserPhotosByUserId: { $ref: "#/components/links/GetUserPhotosByUserId" }
+        GetUserPhotosByUserID: { $ref: "#/components/links/GetUserPhotosByUserID" }
     SuccessfulGetFollowing:
       description: The list of following of the user.
       content:
@@ -728,7 +728,7 @@ components:
         application/json:
           schema: { $ref: "#/components/schemas/PhotoList" }
       links:
-        GetPhotoByPhotoId: { $ref: "#/components/links/GetPhotoByPhotoId" }
+        GetPhotoByPhotoID: { $ref: "#/components/links/GetPhotoByPhotoID" }
   parameters:
     QueryStringUsername:
       description: Username passed in query string.
@@ -736,25 +736,25 @@ components:
       in: query
       schema: { $ref: "#/components/schemas/username" }
       required: true
-    QueryStringUserId:
+    QueryStringUserID:
       description: User identifier passed in query string.
-      name: userId
+      name: userID
       in: query
-      schema: { $ref: "#/components/schemas/userId" }
+      schema: { $ref: "#/components/schemas/userID" }
       required: true
-    PathUserId:
+    PathUserID:
       description: User identifier passed in path.
-      name: userId
+      name: userID
       in: path
-      schema: { $ref: "#/components/schemas/userId" }
+      schema: { $ref: "#/components/schemas/userID" }
       required: true
-    PathPhotoId:
+    PathPhotoID:
       description: Photo identifier passed in path.
-      name: photoId
+      name: photoID
       in: path
-      schema: { $ref: "#/components/schemas/photoId" }
+      schema: { $ref: "#/components/schemas/photoID" }
       required: true
-    PathCommentId:
+    PathCommentID:
       description: Comment identifier passed in path.
       name: commentId
       in: path
@@ -791,20 +791,20 @@ components:
         maxLength: 36
       required: false
   links:
-    GetPhotoByPhotoId:
+    GetPhotoByPhotoID:
       description: |-
-        The `photoId` value in response can be used as `photoId` path parameter in
-        `GET /photos/{photoId}`.
+        The `photoID` value in response can be used as `photoID` path parameter in
+        `GET /photos/{photoID}`.
       operationId: getPhoto
       parameters:
-        photoId: $response.body#/records/photoId
-    GetUserPhotosByUserId:
+        photoID: $response.body#/records/photoID
+    GetUserPhotosByUserID:
         description: |-
-          The `userId` value in response can be used as `userId` query string
+          The `userID` value in response can be used as `userID` query string
           parameter in `GET /photos/`.
         operationId: getPhotos
         parameters:
-          userId: $response.body#/records/userId
+          userID: $response.body#/records/userID
 
   securitySchemes:
     bearerAuth:

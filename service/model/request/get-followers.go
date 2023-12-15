@@ -2,7 +2,7 @@ package request
 
 type GetFollowersRequest struct {
 	PathParameters struct {
-		UserId string `key:"userId"`
+		UserID string `key:"userID"`
 	}
 	QueryParameters struct {
 		StartId string `key:"startId"`
@@ -10,5 +10,5 @@ type GetFollowersRequest struct {
 }
 
 func (request *GetFollowersRequest) IsValid() bool {
-	return isValidUUID(request.PathParameters.UserId)
+	return isValidUUID(request.PathParameters.UserID)
 }

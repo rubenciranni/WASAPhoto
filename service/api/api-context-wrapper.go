@@ -64,7 +64,7 @@ func (rt *_router) wrap(fn httpRouterHandler, operationId string, requiresAuth b
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			} else if err != nil {
-				ctx.Logger.WithError(err).Error("error getting the userId by username from database")
+				ctx.Logger.WithError(err).Error("error getting the userID by username from database")
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			} else {

@@ -29,7 +29,7 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, _ httprout
 
 	// Retrieve users from database
 	ctx.Logger.Debug("retrieving users from database")
-	users, err := rt.db.GetUsers(ctx.User.UserId, username, startId)
+	users, err := rt.db.GetUsers(ctx.User.UserID, username, startId)
 	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("error retrieving users from database")
 		w.WriteHeader(http.StatusNotFound)
@@ -45,7 +45,7 @@ func (rt *_router) searchUser(w http.ResponseWriter, r *http.Request, _ httprout
 	if len(users) == 0 {
 		res.LastId = ""
 	} else {
-		res.LastId = users[len(users)-1].UserId
+		res.LastId = users[len(users)-1].UserID
 	}
 	res.Records = users
 	w.Header().Set("content-type", "application/json")

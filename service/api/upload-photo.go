@@ -62,11 +62,11 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, _ httprou
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	photoId := photoUUID.String()
+	photoID := photoUUID.String()
 
 	// Save photo to file system
 	ctx.Logger.Debugf("saving photo to file system")
-	err = rt.fs.SavePhoto(&file, photoId)
+	err = rt.fs.SavePhoto(&file, photoID)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error saving photo to file system")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -76,7 +76,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, _ httprou
 	// Save record to database
 	ctx.Logger.Debugf("inserting photo record into database")
 	dateTime := globaltime.ToString(globaltime.Now())
-	err = rt.db.InsertPhoto(photoId, ctx.User.UserId, caption, dateTime)
+	err = rt.db.InsertPhoto(photoID, ctx.User.UserID, caption, dateTime)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error inserting photo record into database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -84,7 +84,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, _ httprou
 	}
 
 	// Send response
-	res := response.UploadPhotoResponse{PhotoId: photoId}
+	res := response.UploadPhotoResponse{PhotoID: photoID}
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("content-type", "application/json")
 	_ = json.NewEncoder(w).Encode(res)

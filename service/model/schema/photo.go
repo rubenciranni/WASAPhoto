@@ -1,7 +1,7 @@
 package schema
 
 type Photo struct {
-	PhotoId          string `json:"photoId"`
+	PhotoID          string `json:"photoID"`
 	Author           User   `json:"author"`
 	DateTime         string `json:"dateTime"`
 	Caption          string `json:"caption"`

@@ -2,10 +2,10 @@ package request
 
 type FollowUserRequest struct {
 	PathParameters struct {
-		UserId string `key:"userId"`
+		UserID string `key:"userID"`
 	}
 }
 
 func (request *FollowUserRequest) IsValid() bool {
-	return isValidUUID(request.PathParameters.UserId)
+	return isValidUUID(request.PathParameters.UserID)
 }

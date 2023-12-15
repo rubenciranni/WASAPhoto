@@ -8,9 +8,9 @@ import (
 )
 
 type AppFileSystem interface {
-	SavePhoto(file *multipart.File, photoId string) error
-	GetPhotoPath(photoId string) (string, error)
-	DeletePhoto(photoId string) error
+	SavePhoto(file *multipart.File, photoID string) error
+	GetPhotoPath(photoID string) (string, error)
+	DeletePhoto(photoID string) error
 }
 
 type appfsimpl struct {

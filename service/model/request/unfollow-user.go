@@ -2,10 +2,10 @@ package request
 
 type UnfollowUserRequest struct {
 	PathParameters struct {
-		UserId string `key:"photoId"`
+		UserID string `key:"photoID"`
 	}
 }
 
 func (request *UnfollowUserRequest) IsValid() bool {
-	return isValidUUID(request.PathParameters.UserId)
+	return isValidUUID(request.PathParameters.UserID)
 }

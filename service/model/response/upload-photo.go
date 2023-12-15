@@ -1,5 +1,5 @@
 package response
 
 type UploadPhotoResponse struct {
-	PhotoId string `json:"photoId"`
+	PhotoID string `json:"photoID"`
 }

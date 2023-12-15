@@ -853,7 +853,7 @@ type nwmConnEntry struct {
 	proto             byte
 	targetAppl        [8]byte
 	luName            [8]byte
-	clientUserId      [8]byte
+	clientUserID      [8]byte
 	logMode           [8]byte
 	timeStamp         uint32
 	timeStampAge      uint32

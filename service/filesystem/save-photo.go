@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 )
 
-func (fs *appfsimpl) SavePhoto(file *multipart.File, photoId string) error {
-	filename := fmt.Sprintf("%s.png", photoId)
+func (fs *appfsimpl) SavePhoto(file *multipart.File, photoID string) error {
+	filename := fmt.Sprintf("%s.png", photoID)
 
 	// Create the file on the file system
 	dst, err := os.Create(filepath.Join(fs.root, fs.photos, filename))

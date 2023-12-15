@@ -1,7 +1,7 @@
 package schema
 
 type UserProfile struct {
-	UserId            string `json:"userId"`
+	UserID            string `json:"userID"`
 	Username          string `json:"username"`
 	NumberOfPhotos    int    `json:"numberOfPhotos"`
 	NumberOfFollowers int    `json:"numberOfFollowers"`

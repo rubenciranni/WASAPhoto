@@ -30,8 +30,8 @@ func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, _ httprou
 	}
 
 	// Retrieve photos from database
-	ctx.Logger.Debugf(`retrieving stream of "%s"`, ctx.User.UserId)
-	photos, err := rt.db.GetStream(ctx.User.UserId, startDate, startId)
+	ctx.Logger.Debugf(`retrieving stream of "%s"`, ctx.User.UserID)
+	photos, err := rt.db.GetStream(ctx.User.UserID, startDate, startId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error retrieving photos from database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -45,7 +45,7 @@ func (rt *_router) getMyStream(w http.ResponseWriter, r *http.Request, _ httprou
 		res.LastId = ""
 	} else {
 		res.LastDate = photos[len(photos)-1].DateTime
-		res.LastId = photos[len(photos)-1].PhotoId
+		res.LastId = photos[len(photos)-1].PhotoID
 	}
 	res.Records = photos
 	w.Header().Set("content-type", "application/json")

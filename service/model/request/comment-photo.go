@@ -2,11 +2,11 @@ package request
 
 type CommentPhotoRequest struct {
 	PathParameters struct {
-		PhotoId string `key:"photoId"`
+		PhotoID string `key:"photoID"`
 	}
 	Text string `json:"text"`
 }
 
 func (request *CommentPhotoRequest) IsValid() bool {
-	return isValidUUID(request.PathParameters.PhotoId) && isValidText(request.Text)
+	return isValidUUID(request.PathParameters.PhotoID) && isValidText(request.Text)
 }

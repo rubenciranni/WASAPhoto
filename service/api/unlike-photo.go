@@ -12,9 +12,9 @@ import (
 
 func (rt *_router) unlikePhoto(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	photoId := ps.ByName("photoId")
+	photoID := ps.ByName("photoID")
 	var req request.LikePhotoRequest
-	req.PathParameters.PhotoId = photoId
+	req.PathParameters.PhotoID = photoID
 
 	// Validate request
 	if !req.IsValid() {
@@ -25,7 +25,7 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, _ *http.Request, ps httpro
 
 	// Retrieve author of the photo
 	ctx.Logger.Debugf("retrieving photo authorId from database")
-	authorId, err := rt.db.GetPhotoAuthorId(photoId)
+	authorId, err := rt.db.GetPhotoAuthorId(photoID)
 	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("error retrieving photo authorId from database")
 		w.WriteHeader(http.StatusNotFound)
@@ -37,8 +37,8 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, _ *http.Request, ps httpro
 	}
 
 	// Check if logged-in user is banned by author of the photo
-	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, authorId, ctx.User.UserId)
-	if banned, err := rt.db.ExistsBan(authorId, ctx.User.UserId); err != nil {
+	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, authorId, ctx.User.UserID)
+	if banned, err := rt.db.ExistsBan(authorId, ctx.User.UserID); err != nil {
 		ctx.Logger.WithError(err).Error("error searching ban in database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -49,8 +49,8 @@ func (rt *_router) unlikePhoto(w http.ResponseWriter, _ *http.Request, ps httpro
 	}
 
 	// Delete Like
-	ctx.Logger.Debugf(`Deleting like from photo "%s"`, photoId)
-	err = rt.db.DeleteLike(photoId, ctx.User.UserId)
+	ctx.Logger.Debugf(`Deleting like from photo "%s"`, photoID)
+	err = rt.db.DeleteLike(photoID, ctx.User.UserID)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error deleting like into database")
 		w.WriteHeader(http.StatusInternalServerError)

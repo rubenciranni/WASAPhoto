@@ -2,18 +2,18 @@ package database
 
 import "github.com/rubenciranni/WASAPhoto/service/model/schema"
 
-func (db *appdbimpl) GetFollowers(userId string, startId string) ([]schema.User, error) {
+func (db *appdbimpl) GetFollowers(userID string, startId string) ([]schema.User, error) {
 	var followersList []schema.User
 	rows, err := db.c.Query(
 		`
 		SELECT User.*
 		FROM Follow JOIN User
-		ON Follow.followerId = User.userId
+		ON Follow.followerId = User.userID
 		WHERE Follow.followedId = ? AND Follow.followerId > ?
 		ORDER BY startId
 		LIMIT 20
 		`,
-		userId,
+		userID,
 		startId,
 	)
 	if err != nil {
@@ -23,14 +23,14 @@ func (db *appdbimpl) GetFollowers(userId string, startId string) ([]schema.User,
 
 	for rows.Next() {
 		var (
-			userId   string
+			userID   string
 			username string
 		)
-		if err := rows.Scan(&userId, &username); err != nil {
+		if err := rows.Scan(&userID, &username); err != nil {
 			return followersList, err
 		}
 		followersList = append(followersList, schema.User{
-			UserId:   userId,
+			UserID:   userID,
 			Username: username,
 		})
 	}

@@ -10,9 +10,9 @@ import (
 
 func (rt *_router) banUser(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	userId := ps.ByName("userId")
+	userID := ps.ByName("userID")
 	var req request.BanUserRequest
-	req.PathParameters.UserId = userId
+	req.PathParameters.UserID = userID
 
 	// Validate request
 	if !req.IsValid() {
@@ -22,15 +22,15 @@ func (rt *_router) banUser(w http.ResponseWriter, _ *http.Request, ps httprouter
 	}
 
 	// Check if logged-in user is the requested user
-	if ctx.User.UserId == userId {
+	if ctx.User.UserID == userID {
 		ctx.Logger.Error("error: user is trying to ban himself")
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
 
 	// Insert ban into database
-	ctx.Logger.Debugf(`Inserting ban (bannerId: "%s", bannedId: "%s") into database`, ctx.User.UserId, userId)
-	err := rt.db.InsertBan(ctx.User.UserId, userId)
+	ctx.Logger.Debugf(`Inserting ban (bannerId: "%s", bannedId: "%s") into database`, ctx.User.UserID, userID)
+	err := rt.db.InsertBan(ctx.User.UserID, userID)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error inserting ban into database")
 		w.WriteHeader(http.StatusInternalServerError)

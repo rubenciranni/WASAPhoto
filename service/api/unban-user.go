@@ -10,9 +10,9 @@ import (
 
 func (rt *_router) unbanUser(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	userId := ps.ByName("userId")
+	userID := ps.ByName("userID")
 	var req request.UnbanUserRequest
-	req.PathParameters.UserId = userId
+	req.PathParameters.UserID = userID
 
 	// Validate request
 	if !req.IsValid() {
@@ -22,15 +22,15 @@ func (rt *_router) unbanUser(w http.ResponseWriter, _ *http.Request, ps httprout
 	}
 
 	// Check if logged-in user is the requested user
-	if ctx.User.UserId == userId {
+	if ctx.User.UserID == userID {
 		ctx.Logger.Error("error: user is trying to unban himself")
 		w.WriteHeader(http.StatusForbidden)
 		return
 	}
 
 	// Deleting ban from database
-	ctx.Logger.Debugf(`Deleting ban (bannerId: "%s", bannedId: "%s") from database`, ctx.User.UserId, userId)
-	err := rt.db.DeleteBan(ctx.User.UserId, userId)
+	ctx.Logger.Debugf(`Deleting ban (bannerId: "%s", bannedId: "%s") from database`, ctx.User.UserID, userID)
+	err := rt.db.DeleteBan(ctx.User.UserID, userID)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error deleting ban into database")
 		w.WriteHeader(http.StatusInternalServerError)

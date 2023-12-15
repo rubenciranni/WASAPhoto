@@ -33,33 +33,33 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, _ httprouter.
 	}
 
 	// Check username existance
-	ctx.Logger.Debugf(`retrieving userId for user "%s"`, req.Username)
-	userId, err := rt.db.GetUserId(req.Username)
+	ctx.Logger.Debugf(`retrieving userID for user "%s"`, req.Username)
+	userID, err := rt.db.GetUserID(req.Username)
 
 	// Create new user if username doesn't exist
 	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.Debugf(`user "%s" does not exist, creating new user`, req.Username)
-		newUserId, err := uuid.NewV4()
+		newUserID, err := uuid.NewV4()
 		if err != nil {
 			ctx.Logger.WithError(err).Error("error creating new UUID")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		userId = newUserId.String()
-		err = rt.db.InsertUser(userId, req.Username)
+		userID = newUserID.String()
+		err = rt.db.InsertUser(userID, req.Username)
 		if err != nil {
 			ctx.Logger.WithError(err).Error("error inserting new user in database")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	} else if err != nil {
-		ctx.Logger.WithError(err).Error("error getting userId from database")
+		ctx.Logger.WithError(err).Error("error getting userID from database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	// Send response
-	res := response.DoLoginResponse{UserId: userId}
+	res := response.DoLoginResponse{UserID: userID}
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("content-type", "application/json")
 	_ = json.NewEncoder(w).Encode(res)

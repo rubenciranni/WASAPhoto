@@ -14,11 +14,11 @@ import (
 
 func (rt *_router) uncommentPhoto(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
-	photoId := ps.ByName("photoId")
+	photoID := ps.ByName("photoID")
 	commentId := ps.ByName("commentId")
 	var req request.UncommentPhotoRequest
-	req.PathParameters.PhotoId = photoId
-	req.PathParameters.CommentId = commentId
+	req.PathParameters.PhotoID = photoID
+	req.PathParameters.CommentID = commentId
 
 	// Validate request
 	if !req.IsValid() {
@@ -42,7 +42,7 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, _ *http.Request, ps htt
 
 	// Check if logged-in user is the author of the comment
 	ctx.Logger.Debugf("checking if logged-in user is the author of the comment")
-	if authorId != ctx.User.UserId {
+	if authorId != ctx.User.UserID {
 		ctx.Logger.Error("error: logged-in user is not the author of the comment")
 		w.WriteHeader(http.StatusForbidden)
 		return
@@ -58,7 +58,7 @@ func (rt *_router) uncommentPhoto(w http.ResponseWriter, _ *http.Request, ps htt
 	}
 
 	// Send response
-	res := response.UncommentPhotoResponse{CommentId: commentId}
+	res := response.UncommentPhotoResponse{CommentID: commentId}
 	w.Header().Set("content-type", "application/json")
 	_ = json.NewEncoder(w).Encode(res)
 }

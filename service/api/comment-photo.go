@@ -25,8 +25,8 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 	_ = r.Body.Close()
-	photoId := ps.ByName("photoId")
-	req.PathParameters.PhotoId = photoId
+	photoID := ps.ByName("photoID")
+	req.PathParameters.PhotoID = photoID
 
 	// Validate request
 	if !req.IsValid() {
@@ -37,7 +37,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 
 	// Retrieve author of the photo
 	ctx.Logger.Debugf("retrieving photo authorId from database")
-	authorId, err := rt.db.GetPhotoAuthorId(photoId)
+	authorId, err := rt.db.GetPhotoAuthorId(photoID)
 	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("error retrieving photo authorId from database")
 		w.WriteHeader(http.StatusNotFound)
@@ -49,8 +49,8 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	// Check if logged-in user is banned by author of the photo
-	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, authorId, ctx.User.UserId)
-	if banned, err := rt.db.ExistsBan(authorId, ctx.User.UserId); err != nil {
+	ctx.Logger.Debugf(`checking if ban (bannerId: "%s", bannedId "%s") exists in database`, authorId, ctx.User.UserID)
+	if banned, err := rt.db.ExistsBan(authorId, ctx.User.UserID); err != nil {
 		ctx.Logger.WithError(err).Error("error searching ban in database")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -72,7 +72,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 	// Insert comment into database
 	ctx.Logger.Debugf("inserting comment into database")
 	dateTime := globaltime.ToString(globaltime.Now())
-	err = rt.db.InsertComment(commentId, photoId, ctx.User.UserId, req.Text, dateTime)
+	err = rt.db.InsertComment(commentId, photoID, ctx.User.UserID, req.Text, dateTime)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error inserting comment into database")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -80,7 +80,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 	}
 
 	// Send response
-	res := response.CommentPhotoResponse{CommentId: commentId}
+	res := response.CommentPhotoResponse{CommentID: commentId}
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("content-type", "application/json")
 	_ = json.NewEncoder(w).Encode(res)

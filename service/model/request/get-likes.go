@@ -2,7 +2,7 @@ package request
 
 type GetLikesRequest struct {
 	PathParameters struct {
-		PhotoId string `key:"photoId"`
+		PhotoID string `key:"photoID"`
 	}
 	QueryParameters struct {
 		StartId string `key:"startId"`
@@ -10,6 +10,6 @@ type GetLikesRequest struct {
 }
 
 func (request *GetLikesRequest) IsValid() bool {
-	return isValidUUID(request.PathParameters.PhotoId) &&
+	return isValidUUID(request.PathParameters.PhotoID) &&
 		(request.QueryParameters.StartId == "" || isValidUUID(request.QueryParameters.StartId))
 }

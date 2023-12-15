@@ -1,16 +1,16 @@
 package database
 
-func (db *appdbimpl) DeletePhoto(photoId string) error {
+func (db *appdbimpl) DeletePhoto(photoID string) error {
 	_, err := db.c.Exec(
 		`
 		BEGIN TRANSACTION;
-		DELETE FROM Photo WHERE photoId = ?;
-		DELETE FROM Comment WHERE photoId = ?;
-		DELETE FROM Like WHERE photoId = ?;
+		DELETE FROM Photo WHERE photoID = ?;
+		DELETE FROM Comment WHERE photoID = ?;
+		DELETE FROM Like WHERE photoID = ?;
 		COMMIT;
 		`,
-		photoId,
-		photoId,
-		photoId)
+		photoID,
+		photoID,
+		photoID)
 	return err
 }
