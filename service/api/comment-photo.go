@@ -15,7 +15,7 @@ import (
 )
 
 func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	// Parse req
+	// Parse request
 	var req request.CommentPhotoRequest
 	ctx.Logger.Debugf("decoding JSON")
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -81,7 +81,7 @@ func (rt *_router) commentPhoto(w http.ResponseWriter, r *http.Request, ps httpr
 
 	// Send response
 	res := response.CommentPhotoResponse{CommentId: commentId}
-	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("content-type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 	_ = json.NewEncoder(w).Encode(res)
 }

@@ -85,7 +85,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, _ httprou
 
 	// Send response
 	res := response.UploadPhotoResponse{PhotoId: photoId}
-	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("content-type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 	_ = json.NewEncoder(w).Encode(res)
 }
