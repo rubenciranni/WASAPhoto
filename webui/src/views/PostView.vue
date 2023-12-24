@@ -1,6 +1,6 @@
 <script>
 export default {
-  data: function() {
+  data: function () {
     return {
       errormsg: null,
       loading: false,
@@ -20,18 +20,18 @@ export default {
         window.location.reload();
       } catch (e) {
         if (e.response && e.response.status === 400) {
-					this.errormsg = "Invalid username."
-				} else if (e.response && e.response.status === 401) {
-					this.errormsg = "Unauthorized."
+          this.errormsg = "Invalid username."
+        } else if (e.response && e.response.status === 401) {
+          this.errormsg = "Unauthorized."
         } else if (e.response && e.response.status === 413) {
-					this.errormsg = "Photo size too large, please upload a photo smaller than 10 MB."
+          this.errormsg = "Photo size too large, please upload a photo smaller than 10 MB."
         } else if (e.response && e.response.status === 415) {
-					this.errormsg = "Wrong photo format, please upload a png photo."
+          this.errormsg = "Wrong photo format, please upload a png photo."
         } else if (e.response && e.response.status === 500) {
-					this.errormsg = "An internal error occurred. Please try again later."
-				} else {
-					this.errormsg = e.toString()
-				}
+          this.errormsg = "An internal error occurred. Please try again later."
+        } else {
+          this.errormsg = e.toString()
+        }
       } finally {
         this.loading = false
       }
@@ -57,18 +57,22 @@ export default {
     <form @submit.prevent="upload">
       <div class="mb-3">
         <label for="formFile" class="form-label">Photo</label>
-        <input ref="fileInput" class="form-control" type="file" id="formFile" accept=".png" @change="validateFile" :class="{ 'is-invalid': fileError }">
+        <input ref="fileInput" class="form-control" type="file" id="formFile" accept=".png" @change="validateFile"
+          :class="{ 'is-invalid': fileError }">
         <div v-if="fileError" class="invalid-feedback">Wrong file format, please upload a photo in png format.</div>
         <label for="captionArea" class="form-label">Caption</label>
-        <textarea class="form-control" id="captionArea" rows="3" v-model="caption" :class="{ 'is-invalid': !isCaptionValid() }"></textarea>
+        <textarea class="form-control" id="captionArea" rows="3" v-model="caption"
+          :class="{ 'is-invalid': !isCaptionValid() }"></textarea>
         <div v-if="!isCaptionValid()" class="invalid-feedback">Caption must be less than 2200 characters.</div>
       </div>
       <!-- Button trigger modal -->
-      <button :disabled="!photoSelected || !isCaptionValid() || loading" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadConfirmationModal">
-          Post
+      <button :disabled="!photoSelected || !isCaptionValid() || loading" type="button" class="btn btn-primary"
+        data-bs-toggle="modal" data-bs-target="#uploadConfirmationModal">
+        Post
       </button>
       <!-- Modal -->
-      <div class="modal fade" id="uploadConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="uploadConfirmationModalLabel" aria-hidden="true">
+      <div class="modal fade" id="uploadConfirmationModal" tabindex="-1" role="dialog"
+        aria-labelledby="uploadConfirmationModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -91,5 +95,4 @@ export default {
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

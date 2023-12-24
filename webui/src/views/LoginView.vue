@@ -1,6 +1,6 @@
 <script>
 export default {
-	data: function() {
+	data: function () {
 		return {
 			errormsg: null,
 			loading: false,
@@ -12,7 +12,7 @@ export default {
 			this.loading = true
 			this.errormsg = null
 			try {
-				let response = await this.$axios.post("/session", {username: this.username})
+				let response = await this.$axios.post("/session", { username: this.username })
 				let userId = response.data.userId
 				localStorage.setItem("userId", userId)
 				this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userId}`
@@ -31,7 +31,7 @@ export default {
 		},
 		isUsernameValid() {
 			const usernameRegex = /^[a-zA-Z0-9_-]{3,16}$/
-      		return usernameRegex.test(this.username)
+			return usernameRegex.test(this.username)
 		}
 	}
 }
@@ -41,23 +41,25 @@ export default {
 	<div>
 		<div
 			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    		<h2>Login</h2>
-  		</div>
+			<h2>Login</h2>
+		</div>
 		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 		<form @submit.prevent="login">
 			<div class="mb-3">
 				<label for="username" class="form-label">Username</label>
-				<input type="text" class="form-control" id="username" aria-describedby="usernameHelp" v-model="username" :class="{ 'is-invalid': !isUsernameValid() }">
+				<input type="text" class="form-control" id="username" aria-describedby="usernameHelp" v-model="username"
+					:class="{ 'is-invalid': !isUsernameValid() }">
 				<div id="usernameHelp" class="form-text">
-					Your username must be 3-16 characters long, containing only letters (a-z, A-Z), numbers (0-9), hyphens (-), and underscores (_).
+					Your username must be 3-16 characters long, containing only letters (a-z, A-Z), numbers (0-9), hyphens
+					(-), and underscores (_).
 				</div>
 			</div>
-			<button :disabled="!username || !isUsernameValid() || loading" type="submit" class="btn btn-primary" @click="login">Login</button>
+			<button :disabled="!username || !isUsernameValid() || loading" type="submit" class="btn btn-primary"
+				@click="login">Login</button>
 			<LoadingSpinner :loading="loading"></LoadingSpinner>
 		</form>
 	</div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
   
