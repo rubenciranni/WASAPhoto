@@ -6,4 +6,5 @@ type UserProfile struct {
 	NumberOfPhotos    int    `json:"numberOfPhotos"`
 	NumberOfFollowers int    `json:"numberOfFollowers"`
 	NumberOfFollowing int    `json:"numberOfFollowing"`
+	IsFollowed        bool   `json:"isFollowed"`
 }

@@ -59,7 +59,7 @@ func (rt *_router) getPhotos(w http.ResponseWriter, r *http.Request, _ httproute
 
 	// Retrieve photos from database
 	ctx.Logger.Debugf(`retrieving photos by userId "%s"`, req.QueryParameters.UserId)
-	photos, err := rt.db.GetPhotosByUser(userId, startDate, startId)
+	photos, err := rt.db.GetPhotosByUser(ctx.User.UserId, userId, startDate, startId)
 	if err != nil {
 		ctx.Logger.WithError(err).Error("error retrieving photos from database")
 		w.WriteHeader(http.StatusInternalServerError)

@@ -1,7 +1,7 @@
-openapi: '3.0.2'
+openapi: "3.0.2"
 info:
   title: WASAPhoto Backend API
-  version: '1.0'
+  version: "1.0"
   description: |-
     The WASAPhoto Backend API allows to perform the following operations:
     - Log in by specifying a username.
@@ -22,7 +22,7 @@ info:
 
 servers:
   - url: http://localhost:3000
-  
+
 security:
   - bearerAuth: []
 
@@ -42,7 +42,7 @@ paths:
   /session:
     post:
       tags: ["login"]
-      summary: Logs in the user 
+      summary: Logs in the user
       description: |-
         If the user does not exist, it will be created,
         and an identifier is returned.
@@ -51,9 +51,9 @@ paths:
       requestBody: { $ref: "#/components/requestBodies/DoLogin" }
       security: []
       responses:
-        '201': { $ref: "#/components/responses/SuccessfulDoLogin" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "201": { $ref: "#/components/responses/SuccessfulDoLogin" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
   /settings/username:
     put:
       tags: ["settings"]
@@ -65,11 +65,11 @@ paths:
       operationId: setMyUserName
       requestBody: { $ref: "#/components/requestBodies/SetMyUserName" }
       responses:
-        '204': { $ref: "#/components/responses/SuccessfulSetMyUserName" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "204": { $ref: "#/components/responses/SuccessfulSetMyUserName" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
   /photos/:
     post:
       tags: ["photos"]
@@ -79,12 +79,12 @@ paths:
       operationId: uploadPhoto
       requestBody: { $ref: "#/components/requestBodies/UploadPhoto" }
       responses:
-        '201': { $ref: "#/components/responses/SuccessfulUploadPhoto" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '413': { $ref: "#/components/responses/RequestEntityTooLarge" }
-        '415': { $ref: "#/components/responses/UnsupportedMediaType" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "201": { $ref: "#/components/responses/SuccessfulUploadPhoto" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "413": { $ref: "#/components/responses/RequestEntityTooLarge" }
+        "415": { $ref: "#/components/responses/UnsupportedMediaType" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
     get:
       parameters:
         - $ref: "#/components/parameters/StartDate"
@@ -98,12 +98,12 @@ paths:
         otherwise it returns an error.
       operationId: getPhotos
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulGetPhotos" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "200": { $ref: "#/components/responses/SuccessfulGetPhotos" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
   /photos/{photoId}:
     parameters:
       - $ref: "#/components/parameters/PathPhotoId"
@@ -115,12 +115,12 @@ paths:
         it returns the requested photo; otherwise it returns an error.
       operationId: getPhoto
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulGetPhoto" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "200": { $ref: "#/components/responses/SuccessfulGetPhoto" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
     delete:
       tags: ["photos"]
       summary: Deletes a photo
@@ -130,12 +130,12 @@ paths:
         otherwise, it returns an error.
       operationId: deletePhoto
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulDeletePhoto" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "200": { $ref: "#/components/responses/SuccessfulDeletePhoto" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
   /photos/{photoId}/likes/:
     parameters:
       - $ref: "#/components/parameters/PathPhotoId"
@@ -149,12 +149,12 @@ paths:
         the list of users who liked the photo; otherwise it returns an error.
       operationId: getLikes
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulGetLikes" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "200": { $ref: "#/components/responses/SuccessfulGetLikes" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
   /photos/{photoId}/comments/:
     parameters:
       - $ref: "#/components/parameters/PathPhotoId"
@@ -169,12 +169,12 @@ paths:
         the list of comments of the photo; otherwise it returns an error.
       operationId: getComments
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulGetComments" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "200": { $ref: "#/components/responses/SuccessfulGetComments" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
     post:
       tags: ["comments"]
       summary: Adds a comment to a photo
@@ -185,12 +185,12 @@ paths:
       operationId: commentPhoto
       requestBody: { $ref: "#/components/requestBodies/CommentPhoto" }
       responses:
-        '201': { $ref: "#/components/responses/SuccessfulCommentPhoto" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "201": { $ref: "#/components/responses/SuccessfulCommentPhoto" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
   /photos/{photoId}/comments/{commentId}:
     parameters:
       - $ref: "#/components/parameters/PathPhotoId"
@@ -203,12 +203,12 @@ paths:
         otherwise it returns an error.
       operationId: uncommentPhoto
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulUncommentPhoto" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "200": { $ref: "#/components/responses/SuccessfulUncommentPhoto" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
   /users/:
     parameters:
       - $ref: "#/components/parameters/QueryStringUsername"
@@ -221,27 +221,27 @@ paths:
         Returns an array of users that match the `username` given in query.
       operationId: searchUser
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulSearchUser" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "200": { $ref: "#/components/responses/SuccessfulSearchUser" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
   /users/{userId}:
     parameters:
       - $ref: "#/components/parameters/PathUserId"
     get:
-      tags: ["profile"] 
+      tags: ["profile"]
       summary: Gets a user profile
       description: |-
         If the logged-in user is not banned by the user with `userId` given in path,
         it returns its profile; otherwise it returns an error.
       operationId: getUserProfile
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulGetUserProfile" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "200": { $ref: "#/components/responses/SuccessfulGetUserProfile" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
   /users/{userId}/following/:
     parameters:
       - $ref: "#/components/parameters/PathUserId"
@@ -255,12 +255,12 @@ paths:
         it returns the list of its following; otherwise it returns an error.
       operationId: getFollowing
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulGetFollowing" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "200": { $ref: "#/components/responses/SuccessfulGetFollowing" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
   /users/{userId}/followers/:
     parameters:
       - $ref: "#/components/parameters/PathUserId"
@@ -274,12 +274,12 @@ paths:
         it returns the list of its followers; otherwise it returns an error.
       operationId: getFollowers
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulGetFollowers" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "200": { $ref: "#/components/responses/SuccessfulGetFollowers" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
   /liked-photos/{photoId}:
     parameters:
       - $ref: "#/components/parameters/PathPhotoId"
@@ -292,12 +292,12 @@ paths:
         otherwise it returns an error.
       operationId: likePhoto
       responses:
-        '204': { $ref: "#/components/responses/SuccessfulLikePhoto" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "204": { $ref: "#/components/responses/SuccessfulLikePhoto" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
     delete:
       tags: ["likes"]
       summary: Removes the like from a photo
@@ -307,15 +307,15 @@ paths:
         otherwise it returns an error.
       operationId: unlikePhoto
       responses:
-        '204': { $ref: "#/components/responses/SuccessfulUnlikePhoto" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "204": { $ref: "#/components/responses/SuccessfulUnlikePhoto" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
   /following/{userId}:
     parameters:
-       - $ref: "#/components/parameters/PathUserId"
+      - $ref: "#/components/parameters/PathUserId"
     put:
       tags: ["following"]
       summary: Adds a user to following
@@ -325,12 +325,12 @@ paths:
         otherwise it returns an error.
       operationId: followUser
       responses:
-        '204': { $ref: "#/components/responses/SuccessfulFollowUser" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "204": { $ref: "#/components/responses/SuccessfulFollowUser" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
     delete:
       tags: ["following"]
       summary: Removes a user from following
@@ -340,15 +340,15 @@ paths:
         otherwise it returns an error.
       operationId: unfollowUser
       responses:
-        '204': { $ref: "#/components/responses/SuccessfulUnfollowUser" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "204": { $ref: "#/components/responses/SuccessfulUnfollowUser" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
   /bans/{userId}:
     parameters:
-       - $ref: "#/components/parameters/PathUserId"
+      - $ref: "#/components/parameters/PathUserId"
     put:
       tags: ["bans"]
       summary: Adds a user to bans
@@ -356,12 +356,12 @@ paths:
         It adds the user with `userId` given in path to the bans of the logged-in user.
       operationId: banUser
       responses:
-        '204': { $ref: "#/components/responses/SuccessfulBanUser" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "204": { $ref: "#/components/responses/SuccessfulBanUser" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
     delete:
       tags: ["bans"]
       summary: Removes a user from bans
@@ -369,12 +369,12 @@ paths:
         It removes the user with `userId` given in path from the bans of the logged-in user.
       operationId: unbanUser
       responses:
-        '204': { $ref: "#/components/responses/SuccessfulUnbanUser" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '403': { $ref: "#/components/responses/Forbidden" }
-        '404': { $ref: "#/components/responses/NotFound" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "204": { $ref: "#/components/responses/SuccessfulUnbanUser" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
   /stream:
     get:
       parameters:
@@ -387,10 +387,10 @@ paths:
         order.
       operationId: getMyStream
       responses:
-        '200': { $ref: "#/components/responses/SuccessfulGetMyStream" }
-        '400': { $ref: "#/components/responses/BadRequest" }
-        '401': { $ref: "#/components/responses/Unauthorized" }
-        '500': { $ref: "#/components/responses/InternalServerError" }
+        "200": { $ref: "#/components/responses/SuccessfulGetMyStream" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
 
 components:
   schemas:
@@ -406,42 +406,42 @@ components:
       description: A generic text that does not exceed 2200 characters.
       type: string
       example: lorem ipsum dolor sit amet.
-      pattern: '.*'
+      pattern: ".*"
       minLength: 0
       maxLength: 2200
     photo:
       description: A png photo of 10 MB maximum size in binary format.
       type: string
       format: binary
-      pattern: '^[01]+$'
+      pattern: "^[01]+$"
       minLength: 536
       maxLength: 10485760 # 10MB
     username:
       description: Username associated with a unique user.
       type: string
       example: Maria_03
-      pattern: '^[a-zA-Z0-9_-]{3,16}$' 
+      pattern: "^[a-zA-Z0-9_-]{3,16}$"
       minLength: 3
       maxLength: 16
     userId:
       description: UUID associated with a unique user.
       type: string
       format: uuid
-      pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
       minLength: 36
       maxLength: 36
     photoId:
       description: UUID associated with a unique photo.
       type: string
       format: uuid
-      pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
       minLength: 36
       maxLength: 36
     commentId:
       description: UUID associated with a unique comment.
       type: string
       format: uuid
-      pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+      pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
       minLength: 36
       maxLength: 36
     # Objects
@@ -462,7 +462,7 @@ components:
             The id of the last record in the current response.
           type: string
           format: uuid
-          pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+          pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
           minLength: 36
           maxLength: 36
     User:
@@ -507,6 +507,9 @@ components:
           format: int32
           minimum: 0
           example: 253
+        isFollowed:
+          description: Wheter the user is followed by the logged-in user.
+          type: boolean
     Photo:
       description: An existing photo.
       properties:
@@ -526,6 +529,9 @@ components:
           format: int32
           minimum: 0
           example: 9
+        isLiked:
+          description: Wheter the photo is liked by the logged-in user.
+          type: boolean
     PhotoList:
       description: A list of photos.
       allOf:
@@ -650,7 +656,7 @@ components:
         application/json:
           schema: { $ref: "#/components/schemas/PhotoList" }
       links:
-        GetPhotoByPhotoId: { $ref: "#/components/links/GetPhotoByPhotoId"}
+        GetPhotoByPhotoId: { $ref: "#/components/links/GetPhotoByPhotoId" }
     SuccessfulDeletePhoto:
       description: Photo was deleted successfully.
       content:
@@ -703,7 +709,8 @@ components:
         application/json:
           schema: { $ref: "#/components/schemas/UserProfile" }
       links:
-        GetUserPhotosByUserId: { $ref: "#/components/links/GetUserPhotosByUserId" }
+        GetUserPhotosByUserId:
+          { $ref: "#/components/links/GetUserPhotosByUserId" }
     SuccessfulGetFollowing:
       description: The list of following of the user.
       content:
@@ -774,7 +781,7 @@ components:
         pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
         minLength: 20
         maxLength: 20
-      required: false 
+      required: false
     StartId:
       description: |-
         The id of the last record in the previous response.
@@ -786,7 +793,7 @@ components:
         description: The id of the last record.
         type: string
         format: uuid
-        pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+        pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         minLength: 36
         maxLength: 36
       required: false
@@ -799,12 +806,12 @@ components:
       parameters:
         photoId: $response.body#/records/photoId
     GetUserPhotosByUserId:
-        description: |-
-          The `userId` value in response can be used as `userId` query string
-          parameter in `GET /photos/`.
-        operationId: getPhotos
-        parameters:
-          userId: $response.body#/records/userId
+      description: |-
+        The `userId` value in response can be used as `userId` query string
+        parameter in `GET /photos/`.
+      operationId: getPhotos
+      parameters:
+        userId: $response.body#/records/userId
 
   securitySchemes:
     bearerAuth:

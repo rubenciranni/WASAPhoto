@@ -110,7 +110,7 @@ type AppDatabase interface {
 	DeleteBan(bannerId string, bannedId string) error
 
 	GetUserId(username string) (string, error)
-	GetPhotosByUser(userId string, startDate string, startId string) ([]schema.Photo, error)
+	GetPhotosByUser(loggedInUserId string, userId string, startDate string, startId string) ([]schema.Photo, error)
 	GetPhotoAuthorId(photoId string) (string, error)
 	GetLikes(photoId string, startId string) ([]schema.User, error)
 	GetCommentAuthorId(commentId string) (string, error)
@@ -119,7 +119,7 @@ type AppDatabase interface {
 	GetUser(userId string) (schema.User, error)
 	GetFollowing(userId string, startId string) ([]schema.User, error)
 	GetFollowers(userId string, startId string) ([]schema.User, error)
-	GetUserProfile(userId string) (schema.UserProfile, error)
+	GetUserProfile(loggedInUserId string, userId string) (schema.UserProfile, error)
 	GetStream(userId string, startDate string, startId string) ([]schema.Photo, error)
 
 	SetUserName(userId string, newUserName string) error

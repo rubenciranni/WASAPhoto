@@ -7,4 +7,5 @@ type Photo struct {
 	Caption          string `json:"caption"`
 	NumberOfLikes    int    `json:"numberOfLikes"`
 	NumberOfComments int    `json:"numberOfComments"`
+	IsLiked          bool   `json:"isLiked"`
 }

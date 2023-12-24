@@ -13,7 +13,8 @@ func (db *appdbimpl) GetStream(userId string, startDate string, startId string) 
 			Photo.caption,
 			Photo.dateTime,
 			(SELECT COUNT(*) FROM Like WHERE photoId = Photo.photoId) AS numberOfLikes,
-			(SELECT COUNT(*) FROM Comment WHERE photoId = Photo.photoId) AS numberOfComments
+			(SELECT COUNT(*) FROM Comment WHERE photoId = Photo.photoId) AS numberOfComments,
+			(SELECT COUNT(*) FROM Like WHERE photoId = Photo.photoId AND userId = ?) AS isLiked
 		FROM 
 			Photo
 		JOIN 
@@ -26,6 +27,7 @@ func (db *appdbimpl) GetStream(userId string, startDate string, startId string) 
 		ORDER BY Photo.dateTime DESC, Photo.photoId ASC
 		LIMIT 20
 		`,
+		userId,
 		userId,
 		startDate,
 		startDate,
@@ -45,8 +47,9 @@ func (db *appdbimpl) GetStream(userId string, startDate string, startId string) 
 			dateTime         string
 			numberOfLikes    int
 			numberOfComments int
+			isLiked          bool
 		)
-		if err := rows.Scan(&photoId, &authorId, &authorUsername, &caption, &dateTime, &numberOfLikes, &numberOfComments); err != nil {
+		if err := rows.Scan(&photoId, &authorId, &authorUsername, &caption, &dateTime, &numberOfLikes, &numberOfComments, &isLiked); err != nil {
 			return photoList, err
 		}
 		photoList = append(photoList, schema.Photo{
@@ -56,6 +59,7 @@ func (db *appdbimpl) GetStream(userId string, startDate string, startId string) 
 			DateTime:         dateTime,
 			NumberOfLikes:    numberOfLikes,
 			NumberOfComments: numberOfComments,
+			IsLiked:          isLiked,
 		})
 	}
 

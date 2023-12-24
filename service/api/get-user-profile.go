@@ -38,7 +38,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, _ *http.Request, ps htt
 	}
 
 	// Retrieve user profile from database
-	profile, err := rt.db.GetUserProfile(userId)
+	profile, err := rt.db.GetUserProfile(ctx.User.UserId, userId)
 	if errors.Is(err, sql.ErrNoRows) {
 		ctx.Logger.WithError(err).Error("error retrieving user profile from database")
 		w.WriteHeader(http.StatusNotFound)

@@ -2,7 +2,7 @@ package database
 
 import "github.com/rubenciranni/WASAPhoto/service/model/schema"
 
-func (db *appdbimpl) GetPhotosByUser(userId string, startDate string, startId string) ([]schema.Photo, error) {
+func (db *appdbimpl) GetPhotosByUser(loggedInUserId string, userId string, startDate string, startId string) ([]schema.Photo, error) {
 	var photoList []schema.Photo
 	rows, err := db.c.Query(
 		`
@@ -12,7 +12,8 @@ func (db *appdbimpl) GetPhotosByUser(userId string, startDate string, startId st
 			Photo.caption,
 			Photo.dateTime,
 			(SELECT COUNT(*) FROM Like WHERE photoId = Photo.photoId) AS numberOfLikes,
-			(SELECT COUNT(*) FROM Comment WHERE photoId = Photo.photoId) AS numberOfComments
+			(SELECT COUNT(*) FROM Comment WHERE photoId = Photo.photoId) AS numberOfComments,
+			(SELECT COUNT(*) FROM Like WHERE photoId = Photo.photoId AND userId = ?) AS isLiked
 		FROM 
 			Photo
 		JOIN 
@@ -23,6 +24,7 @@ func (db *appdbimpl) GetPhotosByUser(userId string, startDate string, startId st
 		ORDER BY Photo.dateTime DESC, Photo.photoId ASC
 		LIMIT 20;
 		`,
+		loggedInUserId,
 		userId,
 		startDate,
 		startDate,
@@ -41,8 +43,9 @@ func (db *appdbimpl) GetPhotosByUser(userId string, startDate string, startId st
 			dateTime         string
 			numberOfLikes    int
 			numberOfComments int
+			isLiked          bool
 		)
-		if err := rows.Scan(&photoId, &authorUsername, &caption, &dateTime, &numberOfLikes, &numberOfComments); err != nil {
+		if err := rows.Scan(&photoId, &authorUsername, &caption, &dateTime, &numberOfLikes, &numberOfComments, &isLiked); err != nil {
 			return photoList, err
 		}
 		photoList = append(photoList, schema.Photo{
@@ -52,6 +55,7 @@ func (db *appdbimpl) GetPhotosByUser(userId string, startDate string, startId st
 			DateTime:         dateTime,
 			NumberOfLikes:    numberOfLikes,
 			NumberOfComments: numberOfComments,
+			IsLiked:          isLiked,
 		})
 	}
 
