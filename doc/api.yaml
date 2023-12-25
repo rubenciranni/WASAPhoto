@@ -114,6 +114,7 @@ paths:
         If the logged-in user is not banned by the author of the photo,
         it returns the requested photo; otherwise it returns an error.
       operationId: getPhoto
+      security: []
       responses:
         "200": { $ref: "#/components/responses/SuccessfulGetPhoto" }
         "400": { $ref: "#/components/responses/BadRequest" }
