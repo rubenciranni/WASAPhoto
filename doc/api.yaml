@@ -446,8 +446,8 @@ components:
       minLength: 36
       maxLength: 36
     # Objects
-    Paginator:
-      description: A generic paginated list.
+    DateAndIdPaginator:
+      description: A generic paginated list, ordered by date.
       type: object
       properties:
         lastDate:
@@ -466,6 +466,18 @@ components:
           pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
           minLength: 36
           maxLength: 36
+    IdPaginator:
+      description: A generic paginated list.
+      type: object
+      properties:
+        lastId:
+          description: |-
+            The id of the last record in the current response.
+          type: string
+          format: uuid
+          pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          minLength: 36
+          maxLength: 36
     User:
       description: An existing user.
       type: object
@@ -475,7 +487,7 @@ components:
     UserList:
       description: A list of users.
       allOf:
-        - $ref: "#/components/schemas/Paginator"
+        - $ref: "#/components/schemas/IdPaginator"
         - type: object
           properties:
             records:
@@ -536,7 +548,7 @@ components:
     PhotoList:
       description: A list of photos.
       allOf:
-        - $ref: "#/components/schemas/Paginator"
+        - $ref: "#/components/schemas/DateAndIdPaginator"
         - type: object
           properties:
             records:
@@ -556,7 +568,7 @@ components:
     CommentList:
       description: A list of comments.
       allOf:
-        - $ref: "#/components/schemas/Paginator"
+        - $ref: "#/components/schemas/DateAndIdPaginator"
         - type: object
           properties:
             records:
