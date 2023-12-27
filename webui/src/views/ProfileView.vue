@@ -105,6 +105,9 @@ export default {
                     this.photos.records = this.photos.records.concat(response.data.records)
                     this.photos.lastDate = response.data.lastDate
                     this.photos.lastId = response.data.lastId
+                    if (response.data.records.length < this.$paginationLimit) {
+                        this.photos.hasNext = false
+                    }
                 } else {
                     this.photos.hasNext = false
                 }
@@ -134,6 +137,9 @@ export default {
                 if (response.data.records) {
                     this.followers.records = this.followers.records.concat(response.data.records)
                     this.followers.lastId = response.data.lastId
+                    if (response.data.records.length < this.$paginationLimit) {
+                        this.followers.hasNext = false
+                    }
                 } else {
                     this.followers.hasNext = false
                 }
@@ -174,6 +180,9 @@ export default {
                 if (response.data.records) {
                     this.following.records = this.following.records.concat(response.data.records)
                     this.following.lastId = response.data.lastId
+                    if (response.data.records.length < this.$paginationLimit) {
+                        this.following.hasNext = false
+                    }
                 } else {
                     this.following.hasNext = false
                 }

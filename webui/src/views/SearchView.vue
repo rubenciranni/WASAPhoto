@@ -28,6 +28,9 @@ export default {
         if (response.data.records) {
           this.users.records = this.users.records.concat(response.data.records)
           this.users.lastId = response.data.lastId
+          if (response.data.records.length < this.$paginationLimit) {
+            this.users.hasNext = false
+          }
         } else {
           this.users.hasNext = false
         }

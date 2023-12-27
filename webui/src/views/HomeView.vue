@@ -27,6 +27,9 @@ export default {
 					this.photos.records = this.photos.records.concat(response.data.records)
 					this.photos.lastDate = response.data.lastDate
 					this.photos.lastId = response.data.lastId
+					if (response.data.records.length < this.$paginationLimit) {
+						this.photos.hasNext = false
+					}
 				} else {
 					this.photos.hasNext = false
 				}

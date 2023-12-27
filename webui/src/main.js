@@ -14,6 +14,7 @@ import './assets/main.css'
 
 const app = createApp(App)
 app.config.globalProperties.$axios = axios
+app.config.globalProperties.$paginationLimit = 20
 app.component("ErrorMsg", ErrorMsg)
 app.component("LoadingSpinner", LoadingSpinner)
 app.component("Post", Post)

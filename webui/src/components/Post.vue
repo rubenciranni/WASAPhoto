@@ -64,6 +64,9 @@ export default {
                     this.comments.records = this.comments.records.concat(response.data.records)
                     this.comments.lastDate = response.data.lastDate
                     this.comments.lastId = response.data.lastId
+                    if (response.data.records.length < this.$paginationLimit) {
+                        this.comments.hasNext = false
+                    }
                 } else {
                     this.comments.hasNext = false
                 }
@@ -147,6 +150,9 @@ export default {
                     this.likes.records = this.likes.records.concat(response.data.records)
                     this.likes.lastDate = response.data.lastDate
                     this.likes.lastId = response.data.lastId
+                    if (response.data.records.length < this.$paginationLimit) {
+                        this.likes.hasNext = false
+                    }
                 } else {
                     this.likes.hasNext = false
                 }
@@ -229,7 +235,7 @@ export default {
                                 </span>
                             </button>
                             <button @click="loadComments" type="button" data-bs-toggle="modal"
-                                data-bs-target="#commentModal" class="btn btn-secondary me-2">
+                                :data-bs-target="'#commentModal' + postData.photoId" class="btn btn-secondary me-2">
                                 <svg class="feather">
                                     <use href="/feather-sprite-v4.29.0.svg#message-circle" />
                                 </svg>
@@ -251,11 +257,12 @@ export default {
 
         </div>
     </div>
-    <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+    <div class="modal fade" :id="'commentModal' + postData.photoId" tabindex="-1"
+        aria-labelledby="'commentModalLabel' + postData.photoId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="commentModalLabel">Comments</h5>
+                    <h5 class="modal-title" :id="'commentModalLabel' + postData.photoId">Comments</h5>
                     <button @click="resetComments" type="button" class="btn-close" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>

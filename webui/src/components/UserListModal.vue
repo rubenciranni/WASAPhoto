@@ -1,24 +1,29 @@
 <script>
 export default {
     emits: ["updateUsers", "resetUsers"],
-    props: ["usersData", "title"]
+    props: ["usersData", "title"],
+    data() {
+        return {
+            modalId: crypto.randomUUID()
+        }
+    }
 }
 </script>
 
 <template>
     <button @click="$emit('update-users')" type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
-        :data-bs-target="'#users' + title + 'Modal'">
+        :data-bs-target="'#usersModal' + modalId">
         <svg class="feather">
             <use href="/feather-sprite-v4.29.0.svg#eye" />
         </svg>
     </button>
 
-    <div class="modal fade" :id="'users' + title + 'Modal'" tabindex="-1" role="dialog"
-        :aria-labelledby="'users' + title + 'ModalLabel'" aria-hidden="true">
+    <div class="modal fade" :id="'usersModal' + modalId" tabindex="-1" role="dialog"
+        :aria-labelledby="'usersModalLabel' + modalId" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" :id="'users' + title + 'ModalLabel'"> {{ title }} </h5>
+                    <h5 class="modal-title" :id="'usersModalLabel' + modalId"> {{ title }} </h5>
                     <button @click="$emit('reset-users')" type="button" class="close" data-bs-dismiss="modal"
                         aria-label="Close">
                         <span aria-hidden="true">&times;</span>
