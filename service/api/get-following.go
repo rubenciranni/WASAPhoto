@@ -10,10 +10,10 @@ import (
 	"github.com/rubenciranni/WASAPhoto/service/model/response"
 )
 
-func (rt *_router) getFollowing(w http.ResponseWriter, _ *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) getFollowing(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Parse request
 	userId := ps.ByName("userId")
-	startId := ps.ByName("startId")
+	startId := r.URL.Query().Get("startId")
 	var req request.GetFollowingRequest
 	req.PathParameters.UserId = userId
 	req.QueryParameters.StartId = startId

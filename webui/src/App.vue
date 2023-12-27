@@ -5,7 +5,8 @@ import { RouterLink, RouterView } from 'vue-router'
 export default {
 	data: function () {
 		return {
-			loggedIn: false
+			loggedIn: false,
+			username: null
 		}
 	},
 	methods: {
@@ -18,6 +19,7 @@ export default {
 			this.loading = false
 		},
 		handleLoggedIn() {
+			this.username = localStorage.getItem("username")
 			this.loggedIn = true
 		}
 	}
@@ -38,6 +40,14 @@ export default {
 			<nav v-if="loggedIn" id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
 				<div class="position-sticky pt-3 sidebar-sticky">
 					<ul class="nav flex-column">
+						<li class="nav-item">
+							<RouterLink :to="`/${this.username}`" class="nav-link">
+								<svg class="feather">
+									<use href="/feather-sprite-v4.29.0.svg#user" />
+								</svg>
+								Your profile
+							</RouterLink>
+						</li>
 						<li class="nav-item">
 							<RouterLink to="/" class="nav-link">
 								<svg class="feather">

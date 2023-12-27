@@ -10,7 +10,7 @@ func (db *appdbimpl) GetFollowers(userId string, startId string) ([]schema.User,
 		FROM Follow JOIN User
 		ON Follow.followerId = User.userId
 		WHERE Follow.followedId = ? AND Follow.followerId > ?
-		ORDER BY startId
+		ORDER BY Follow.followerId
 		LIMIT 20
 		`,
 		userId,

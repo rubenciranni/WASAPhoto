@@ -13,6 +13,12 @@ export default {
                 lastId: null,
                 hasNext: true,
             },
+            likes: {
+                records: [],
+                lastDate: null,
+                lastId: null,
+                hasNext: true,
+            },
             newCommentText: ""
         }
     },
@@ -20,17 +26,13 @@ export default {
         this.isAuthorLoggedInUser = (localStorage.getItem("userId") == this.postData.author.userId)
     },
     methods: {
-        async toggleLike() {
+        async addComment() {
+            this.loading = true
+            this.errormsg = null
             try {
-                if (!this.postData.isLiked) {
-                    await this.$axios.put(`/liked-photos/${this.postData.photoId}`)
-                    this.postData.numberOfLikes++
-                    this.postData.isLiked = true
-                } else {
-                    await this.$axios.delete(`/liked-photos/${this.postData.photoId}`)
-                    this.postData.numberOfLikes--
-                    this.postData.isLiked = false
-                }
+                await this.$axios.post(`/photos/${this.postData.photoId}/comments/`, { text: this.newCommentText })
+                this.reloadComments()
+                this.postData.numberOfComments++
             } catch (e) {
                 if (e.response && e.response.status === 400) {
                     this.errormsg = "Bad request."
@@ -39,13 +41,14 @@ export default {
                 } else if (e.response && e.response.status === 403) {
                     this.errormsg = "Forbidden."
                 } else if (e.response && e.response.status === 404) {
-                    this.errormsg = "Not found."
+                    this.errormsg = "Not Found."
                 } else if (e.response && e.response.status === 500) {
                     this.errormsg = "An internal error occurred. Please try again later."
                 } else {
                     this.errormsg = e.toString()
                 }
             }
+            this.loading = false
         },
         async loadComments() {
             this.loading = true
@@ -80,8 +83,92 @@ export default {
             }
             this.loading = false
         },
+        reloadComments() {
+            this.comments = {
+                records: [],
+                lastDate: null,
+                lastId: null,
+                hasNext: true,
+            }
+            this.newCommentText = ""
+            this.loadComments()
+        },
         resetComments() {
             this.comments = {
+                records: [],
+                lastDate: null,
+                lastId: null,
+                hasNext: true,
+            }
+        },
+        async handleCommentDeleted() {
+            this.reloadComments()
+            this.postData.numberOfComments--
+        },
+        async toggleLike() {
+            try {
+                if (!this.postData.isLiked) {
+                    await this.$axios.put(`/liked-photos/${this.postData.photoId}`)
+                    this.resetLikes()
+                    this.postData.numberOfLikes++
+                    this.postData.isLiked = true
+                } else {
+                    await this.$axios.delete(`/liked-photos/${this.postData.photoId}`)
+                    this.resetLikes()
+                    this.postData.numberOfLikes--
+                    this.postData.isLiked = false
+                }
+            } catch (e) {
+                if (e.response && e.response.status === 400) {
+                    this.errormsg = "Bad request."
+                } else if (e.response && e.response.status === 401) {
+                    this.errormsg = "Unauthorized."
+                } else if (e.response && e.response.status === 403) {
+                    this.errormsg = "Forbidden."
+                } else if (e.response && e.response.status === 404) {
+                    this.errormsg = "Not found."
+                } else if (e.response && e.response.status === 500) {
+                    this.errormsg = "An internal error occurred. Please try again later."
+                } else {
+                    this.errormsg = e.toString()
+                }
+            }
+        },
+        async loadLikes() {
+            this.loading = true
+            this.errormsg = null
+            try {
+                let response = await this.$axios.get(`/photos/${this.postData.photoId}/likes/`, {
+                    params: {
+                        startId: this.likes.lastId,
+                    }
+                })
+                if (response.data.records) {
+                    this.likes.records = this.likes.records.concat(response.data.records)
+                    this.likes.lastDate = response.data.lastDate
+                    this.likes.lastId = response.data.lastId
+                } else {
+                    this.likes.hasNext = false
+                }
+
+            } catch (e) {
+                if (e.response && e.response.status === 400) {
+                    this.errormsg = "Bad request."
+                } else if (e.response && e.response.status === 401) {
+                    this.errormsg = "Unauthorized."
+                } else if (e.response && e.response.status === 403) {
+                    this.errormsg = "Forbidden."
+                } else if (e.response && e.response.status === 500) {
+                    this.errormsg = "An internal error occurred. Please try again later."
+                } else {
+                    this.errormsg = e.toString()
+                }
+            } finally {
+                this.loading = false
+            }
+        },
+        resetLikes() {
+            this.likes = {
                 records: [],
                 lastDate: null,
                 lastId: null,
@@ -107,44 +194,6 @@ export default {
                     this.errormsg = e.toString()
                 }
             }
-        },
-        reloadComments() {
-            this.comments = {
-                records: [],
-                lastDate: null,
-                lastId: null,
-                hasNext: true,
-            }
-            this.newCommentText = ""
-            this.loadComments()
-        },
-        async addComment() {
-            this.loading = true
-            this.errormsg = null
-            try {
-                await this.$axios.post(`/photos/${this.postData.photoId}/comments/`, { text: this.newCommentText })
-                this.reloadComments()
-                this.postData.numberOfComments++
-            } catch (e) {
-                if (e.response && e.response.status === 400) {
-                    this.errormsg = "Bad request."
-                } else if (e.response && e.response.status === 401) {
-                    this.errormsg = "Unauthorized."
-                } else if (e.response && e.response.status === 403) {
-                    this.errormsg = "Forbidden."
-                } else if (e.response && e.response.status === 404) {
-                    this.errormsg = "Not Found."
-                } else if (e.response && e.response.status === 500) {
-                    this.errormsg = "An internal error occurred. Please try again later."
-                } else {
-                    this.errormsg = e.toString()
-                }
-            }
-            this.loading = false
-        },
-        async handleCommentDeleted() {
-            this.reloadComments()
-            this.postData.numberOfComments--
         }
     },
 }
@@ -158,7 +207,9 @@ export default {
                     <img :src="`${$axios.defaults.baseURL}/photos/${postData.photoId}`" class="card-img-top"
                         alt="Post Image" />
                     <div class="card-body">
-                        <h6 class="card-title">{{ postData.author.username }}</h6>
+                        <a :href="`#/${postData.author.username}`">
+                            <h6 class="card-title">{{ postData.author.username }}</h6>
+                        </a>
                         <p class="card-text">{{ postData.caption }}</p>
                         <p class="card-text">
                             <small class="text-muted">{{ postData.dateTime }}</small>
@@ -166,6 +217,8 @@ export default {
                     </div>
                     <div class="card-footer">
                         <div class="flex-row">
+                            <UserListModal title="Likes" :users-data="likes" @reset-users="resetLikes"
+                                @update-users="loadLikes"></UserListModal>
                             <button @click="toggleLike" type="button" class="btn btn-primary me-2">
                                 <svg class="feather">
                                     <use href="/feather-sprite-v4.29.0.svg#heart" />

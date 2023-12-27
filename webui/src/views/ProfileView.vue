@@ -15,8 +15,26 @@ export default {
                 lastDate: null,
                 lastId: null,
                 hasNext: true
+            },
+            followers: {
+                records: [],
+                lastId: null,
+                hasNext: true
+            },
+            following: {
+                records: [],
+                lastId: null,
+                hasNext: true
             }
         }
+    },
+    created() {
+        this.$watch(
+            () => this.$route.params,
+            (toParams, previousParams) => {
+                location.reload()
+            }
+        )
     },
     async mounted() {
         this.$emit("logged-in")
@@ -105,6 +123,86 @@ export default {
                 this.loading = false
             }
         },
+        async loadFollowers() {
+            this.loading = true
+            try {
+                let response = await this.$axios.get(`/users/${this.user.userId}/followers/`, {
+                    params: {
+                        startId: this.followers.lastId
+                    }
+                })
+                if (response.data.records) {
+                    this.followers.records = this.followers.records.concat(response.data.records)
+                    this.followers.lastId = response.data.lastId
+                } else {
+                    this.followers.hasNext = false
+                }
+            } catch (e) {
+                if (e.response && e.response.status === 400) {
+                    this.errormsg = "Bad request."
+                } else if (e.response && e.response.status === 401) {
+                    this.errormsg = "Unauthorized."
+                } else if (e.response && e.response.status === 403) {
+                    this.errormsg = "Forbidden."
+                } else if (e.response && e.response.status === 404) {
+                    this.errormsg = "Not Found."
+                } else if (e.response && e.response.status === 500) {
+                    this.errormsg = "An internal error occurred. Please try again later."
+                } else {
+                    this.errormsg = e.toString()
+                }
+            } finally {
+                this.loading = false
+            }
+        },
+        resetFollowers() {
+            this.followers = {
+                records: [],
+                lastDate: null,
+                lastId: null,
+                hasNext: true,
+            }
+        },
+        async loadFollowing() {
+            this.loading = true
+            try {
+                let response = await this.$axios.get(`/users/${this.user.userId}/following/`, {
+                    params: {
+                        startId: this.following.lastId
+                    }
+                })
+                if (response.data.records) {
+                    this.following.records = this.following.records.concat(response.data.records)
+                    this.following.lastId = response.data.lastId
+                } else {
+                    this.following.hasNext = false
+                }
+            } catch (e) {
+                if (e.response && e.response.status === 400) {
+                    this.errormsg = "Bad request."
+                } else if (e.response && e.response.status === 401) {
+                    this.errormsg = "Unauthorized."
+                } else if (e.response && e.response.status === 403) {
+                    this.errormsg = "Forbidden."
+                } else if (e.response && e.response.status === 404) {
+                    this.errormsg = "Not Found."
+                } else if (e.response && e.response.status === 500) {
+                    this.errormsg = "An internal error occurred. Please try again later."
+                } else {
+                    this.errormsg = e.toString()
+                }
+            } finally {
+                this.loading = false
+            }
+        },
+        resetFollowing() {
+            this.following = {
+                records: [],
+                lastDate: null,
+                lastId: null,
+                hasNext: true,
+            }
+        },
         async toggleFollow() {
             this.loading = true
             try {
@@ -167,6 +265,8 @@ export default {
             try {
                 await this.$axios.put("settings/username", { newUsername: this.newUsername })
                 this.user.username = this.newUsername
+                localStorage.setItem("username", this.newUsername)
+                this.$router.replace(`/${this.newUsername}`)
             } catch (e) {
                 if (e.response && e.response.status === 400) {
                     this.errormsg = "Bad request."
@@ -203,18 +303,28 @@ export default {
     <div>
         <div class="container pt-3 pb-2 mt-3 mb-3 border-bottom">
             <h2 class=""> {{ this.user.username }}</h2>
-            <div class="flex-row mb-2">
-                <div class="d-inline me-4">
-                    {{ this.user.numberOfPhotos }}
-                    <strong>Posts</strong>
+            <div class="row mb-3">
+                <div class="col-2">
+                    <span class="ml-2">
+                        {{ this.user.numberOfPhotos }}
+                        <strong>Posts</strong>
+                    </span>
                 </div>
-                <div class="d-inline me-4">
-                    {{ this.user.numberOfFollowers }}
-                    <strong>Followers</strong>
+                <div class="col-2">
+                    <UserListModal title="Followers" :users-data="followers" @reset-users="resetFollowers"
+                        @update-users="loadFollowers"></UserListModal>
+                    <span>
+                        {{ this.user.numberOfFollowers }}
+                        <strong>Followers</strong>
+                    </span>
                 </div>
-                <div class="d-inline">
-                    {{ this.user.numberOfFollowing }}
-                    <strong>Following</strong>
+                <div class="col-2">
+                    <UserListModal title="Following" :users-data="following" @reset-users="resetFollowing"
+                        @update-users="loadFollowing"></UserListModal>
+                    <span>
+                        {{ this.user.numberOfFollowing }}
+                        <strong>Following</strong>
+                    </span>
                 </div>
             </div>
             <div v-if="!isUserLoggedInUser" class="flex-row mb-2">
@@ -241,7 +351,7 @@ export default {
             <div v-else>
                 <button type="button" data-bs-toggle="modal" data-bs-target="#setUsernameModal" class="btn btn-secondary">
                     <svg class="feather">
-                        <use href="/feather-sprite-v4.29.0.svg#settings" />
+                        <use href="/feather-sprite-v4.29.0.svg#edit" />
                     </svg>
                     Set new username
                 </button>

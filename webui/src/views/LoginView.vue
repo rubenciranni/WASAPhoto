@@ -15,6 +15,7 @@ export default {
 				let response = await this.$axios.post("/session", { username: this.username })
 				let userId = response.data.userId
 				localStorage.setItem("userId", userId)
+				localStorage.setItem("username", this.username)
 				this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userId}`
 				this.$emit("logged-in")
 				this.$router.push("home")
@@ -42,7 +43,7 @@ export default {
 	<div class="container">
 		<div class="d-flex justify-content-center align-items-center vh-100">
 			<div class="text-center">
-				<h2>Login</h2>
+				<h2 class="mb-4">Login</h2>
 				<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 				<form @submit.prevent="login" style="max-width: 300px; margin: auto;">
 					<div class="mb-3">
