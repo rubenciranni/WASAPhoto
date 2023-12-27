@@ -9,6 +9,7 @@ func (db *appdbimpl) GetUserProfile(loggedInUserId string, userId string) (schem
 		numberOfFollowers int
 		numberOfFollowing int
 		isFollowed        bool
+		isBanned          bool
 	)
 	err := db.c.QueryRow(
 		`
@@ -17,7 +18,8 @@ func (db *appdbimpl) GetUserProfile(loggedInUserId string, userId string) (schem
 			(SELECT COUNT(*) FROM Photo WHERE authorId = ?) AS numberOfPhotos,
 			(SELECT COUNT(*) FROM Follow WHERE followedId = ?) AS numberOfFollowers,
 			(SELECT COUNT(*) FROM Follow WHERE followerId = ?) AS numberOfFollowing,
-			(SELECT COUNT(*) FROM Follow WHERE followerId = ? AND followedId = ?) AS isFollowed
+			(SELECT COUNT(*) FROM Follow WHERE followerId = ? AND followedId = ?) AS isFollowed,
+			(SELECT COUNT(*) FROM Ban WHERE bannerId = ? AND bannedId = ?) AS isBanned
 		FROM 
 			User
 		WHERE 
@@ -27,7 +29,8 @@ func (db *appdbimpl) GetUserProfile(loggedInUserId string, userId string) (schem
 		userId,
 		userId,
 		loggedInUserId, userId,
-		userId).Scan(&username, &numberOfPhotos, &numberOfFollowers, &numberOfFollowing, &isFollowed)
+		loggedInUserId, userId,
+		userId).Scan(&username, &numberOfPhotos, &numberOfFollowers, &numberOfFollowing, &isFollowed, &isBanned)
 
 	userProfile := schema.UserProfile{
 		UserId:            userId,
@@ -36,6 +39,7 @@ func (db *appdbimpl) GetUserProfile(loggedInUserId string, userId string) (schem
 		NumberOfFollowers: numberOfFollowers,
 		NumberOfFollowing: numberOfFollowing,
 		IsFollowed:        isFollowed,
+		IsBanned:          isBanned,
 	}
 
 	return userProfile, err

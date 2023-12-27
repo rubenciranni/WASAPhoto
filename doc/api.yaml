@@ -523,6 +523,9 @@ components:
         isFollowed:
           description: Wheter the user is followed by the logged-in user.
           type: boolean
+        isBanned:
+          description: Wheter the user is banned by the logged-in user.
+          type: boolean
     Photo:
       description: An existing photo.
       properties:

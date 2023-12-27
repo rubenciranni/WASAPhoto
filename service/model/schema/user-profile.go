@@ -7,4 +7,5 @@ type UserProfile struct {
 	NumberOfFollowers int    `json:"numberOfFollowers"`
 	NumberOfFollowing int    `json:"numberOfFollowing"`
 	IsFollowed        bool   `json:"isFollowed"`
+	IsBanned          bool   `json:"isBanned"`
 }

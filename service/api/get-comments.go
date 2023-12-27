@@ -27,9 +27,6 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	req.QueryParameters.StartDate = startDate
 
 	// Validate request
-	ctx.Logger.Debug(photoId)
-	ctx.Logger.Debug(startId)
-	ctx.Logger.Debug(startDate)
 	if !req.IsValid() {
 		ctx.Logger.Error("error validating request")
 		w.WriteHeader(http.StatusBadRequest)
