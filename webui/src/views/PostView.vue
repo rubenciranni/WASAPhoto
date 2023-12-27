@@ -45,6 +45,9 @@ export default {
       this.photoSelected = !this.fileError
     },
   },
+  mounted() {
+    this.$emit("logged-in")
+  },
 }
 </script>
 

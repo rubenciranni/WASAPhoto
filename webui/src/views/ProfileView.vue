@@ -1,0 +1,303 @@
+<script>
+export default {
+    data: function () {
+        return {
+            errormsg: null,
+            loading: false,
+            isUserLoggedInUser: null,
+            newUsername: null,
+            user: {
+                username: null,
+                userId: null
+            },
+            photos: {
+                records: [],
+                lastDate: null,
+                lastId: null,
+                hasNext: true
+            }
+        }
+    },
+    async mounted() {
+        this.$emit("logged-in")
+        await this.getUser()
+        this.isUserLoggedInUser = (localStorage.getItem("userId") == this.user.userId)
+        if (!this.user.username) {
+            this.errormsg = "Not Found."
+        } else {
+            await this.loadProfile()
+            this.loadPhotos()
+        }
+    },
+    methods: {
+        async getUser() {
+            try {
+                let response = await this.$axios.get("/users/", { params: { username: this.$route.params.username } })
+                if (response.data.records.length == 1) {
+                    this.user = response.data.records[0]
+                } else {
+                    this.errormsg = "Not Found."
+                }
+            } catch (e) {
+                if (e.response && e.response.status === 400) {
+                    this.errormsg = "Bad request."
+                } else if (e.response && e.response.status === 401) {
+                    this.errormsg = "Unauthorized."
+                } else if (e.response && e.response.status === 500) {
+                    this.errormsg = "An internal error occurred. Please try again later."
+                } else {
+                    this.errormsg = e.toString()
+                }
+            }
+        },
+        async loadProfile() {
+            this.loading = true
+            try {
+                let response = await this.$axios.get(`/users/${this.user.userId}`)
+                this.user = response.data
+            } catch (e) {
+                if (e.response && e.response.status === 400) {
+                    this.errormsg = "Bad request."
+                } else if (e.response && e.response.status === 401) {
+                    this.errormsg = "Unauthorized."
+                } else if (e.response && e.response.status === 403) {
+                    this.errormsg = "Forbidden."
+                } else if (e.response && e.response.status === 404) {
+                    this.errormsg = "Not Found."
+                } else if (e.response && e.response.status === 500) {
+                    this.errormsg = "An internal error occurred. Please try again later."
+                } else {
+                    this.errormsg = e.toString()
+                }
+            } finally {
+                this.loading = false
+            }
+        },
+        async loadPhotos() {
+            this.loading = true
+            try {
+                let response = await this.$axios.get("/photos/", {
+                    params: {
+                        startDate: this.photos.lastDate,
+                        startId: this.photos.lastId,
+                        userId: this.user.userId
+                    }
+                })
+                if (response.data.records) {
+                    this.photos.records = this.photos.records.concat(response.data.records)
+                    this.photos.lastDate = response.data.lastDate
+                    this.photos.lastId = response.data.lastId
+                } else {
+                    this.photos.hasNext = false
+                }
+
+            } catch (e) {
+                if (e.response && e.response.status === 400) {
+                    this.errormsg = "Bad request."
+                } else if (e.response && e.response.status === 401) {
+                    this.errormsg = "Unauthorized."
+                } else if (e.response && e.response.status === 500) {
+                    this.errormsg = "An internal error occurred. Please try again later."
+                } else {
+                    this.errormsg = e.toString()
+                }
+            } finally {
+                this.loading = false
+            }
+        },
+        async toggleFollow() {
+            this.loading = true
+            try {
+                if (!this.user.isFollowed) {
+                    await this.$axios.put(`/following/${this.user.userId}`)
+                    this.user.numberOfFollowers++
+                    this.user.isFollowed = true
+                } else {
+                    await this.$axios.delete(`/following/${this.user.userId}`)
+                    this.user.numberOfFollowers--
+                    this.user.isFollowed = false
+                }
+            } catch (e) {
+                if (e.response && e.response.status === 400) {
+                    this.errormsg = "Bad request."
+                } else if (e.response && e.response.status === 401) {
+                    this.errormsg = "Unauthorized."
+                } else if (e.response && e.response.status === 403) {
+                    this.errormsg = "Forbidden."
+                } else if (e.response && e.response.status === 404) {
+                    this.errormsg = "Not Found."
+                } else if (e.response && e.response.status === 500) {
+                    this.errormsg = "An internal error occurred. Please try again later."
+                } else {
+                    this.errormsg = e.toString()
+                }
+            } finally {
+                this.loading = false
+            }
+        },
+        async toggleBan() {
+            this.loading = true
+            try {
+                if (!this.user.isBanned) {
+                    await this.$axios.put(`/bans/${this.user.userId}`)
+                    this.user.isBanned = true
+                } else {
+                    await this.$axios.delete(`/bans/${this.user.userId}`)
+                    this.user.isBanned = false
+                }
+            } catch (error) {
+                if (e.response && e.response.status === 400) {
+                    this.errormsg = "Bad request."
+                } else if (e.response && e.response.status === 401) {
+                    this.errormsg = "Unauthorized."
+                } else if (e.response && e.response.status === 403) {
+                    this.errormsg = "Forbidden."
+                } else if (e.response && e.response.status === 404) {
+                    this.errormsg = "Not Found."
+                } else if (e.response && e.response.status === 500) {
+                    this.errormsg = "An internal error occurred. Please try again later."
+                } else {
+                    this.errormsg = e.toString()
+                }
+            } finally {
+                this.loading = false
+            }
+        },
+        async updateUsername() {
+            try {
+                await this.$axios.put("settings/username", { newUsername: this.newUsername })
+                this.user.username = this.newUsername
+            } catch (e) {
+                if (e.response && e.response.status === 400) {
+                    this.errormsg = "Bad request."
+                } else if (e.response && e.response.status === 401) {
+                    this.errormsg = "Unauthorized."
+                } else if (e.response && e.response.status === 403) {
+                    this.errormsg = "New username is already taken."
+                } else if (e.response && e.response.status === 500) {
+                    this.errormsg = "An internal error occurred. Please try again later."
+                } else {
+                    this.errormsg = e.toString()
+                }
+            }
+
+        },
+        handlePostDeleted() {
+            this.photos = {
+                records: [],
+                lastDate: null,
+                lastId: null,
+                hasNext: true
+            }
+            this.loadPhotos()
+        },
+        isUsernameValid() {
+            const usernameRegex = /^[a-zA-Z0-9_-]{3,16}$/
+            return usernameRegex.test(this.newUsername)
+        }
+    }
+}
+</script>
+
+<template>
+    <div>
+        <div class="container pt-3 pb-2 mt-3 mb-3 border-bottom">
+            <h2 class=""> {{ this.user.username }}</h2>
+            <div class="flex-row mb-2">
+                <div class="d-inline me-4">
+                    {{ this.user.numberOfPhotos }}
+                    <strong>Posts</strong>
+                </div>
+                <div class="d-inline me-4">
+                    {{ this.user.numberOfFollowers }}
+                    <strong>Followers</strong>
+                </div>
+                <div class="d-inline">
+                    {{ this.user.numberOfFollowing }}
+                    <strong>Following</strong>
+                </div>
+            </div>
+            <div v-if="!isUserLoggedInUser" class="flex-row mb-2">
+                <button @click="toggleFollow" type="button" class="btn btn-primary me-2">
+                    <svg v-if="!user.isFollowed" class="feather">
+                        <use href="/feather-sprite-v4.29.0.svg#user-plus" />
+                    </svg>
+                    <svg v-else class="feather">
+                        <use href="/feather-sprite-v4.29.0.svg#user-minus" />
+                    </svg>
+                    {{ user.isFollowed ? "Unfollow" : "Follow" }}
+                </button>
+                <button @click="toggleBan" type="button"
+                    :class="!user.isBanned ? 'btn btn-danger me-2' : 'btn btn-success'">
+                    <svg v-if="!user.isBanned" class="feather">
+                        <use href="/feather-sprite-v4.29.0.svg#user-x" />
+                    </svg>
+                    <svg v-else class="feather">
+                        <use href="/feather-sprite-v4.29.0.svg#user-check" />
+                    </svg>
+                    {{ user.isBanned ? "Unban" : "Ban" }}
+                </button>
+            </div>
+            <div v-else>
+                <button type="button" data-bs-toggle="modal" data-bs-target="#setUsernameModal" class="btn btn-secondary">
+                    <svg class="feather">
+                        <use href="/feather-sprite-v4.29.0.svg#settings" />
+                    </svg>
+                    Set new username
+                </button>
+                <div class="modal fade" id="setUsernameModal" tabindex="-1" aria-labelledby="setUsernameModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="setUsernameModalLabel">Set new username</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form @submit.prevent="updateUsername">
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label">Username</label>
+                                        <input type="text" class="form-control" id="username"
+                                            aria-describedby="usernameHelp" v-model="newUsername"
+                                            :class="{ 'is-invalid': !isUsernameValid() }">
+                                        <div id="usernameHelp" class="form-text">
+                                            Your username must be 3-16 characters long, containing only letters (a-z, A-Z),
+                                            numbers (0-9),
+                                            hyphens (-), and underscores (_).
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button :disabled="!newUsername || !isUsernameValid() || loading" type="submit"
+                                        class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="container">
+            <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+            <ul class="list-group">
+                <li class="list-group-item" v-for="photo in photos.records">
+                    <Post @post-deleted="handlePostDeleted" :post-data="photo" />
+                </li>
+            </ul>
+            <div class="text-center">
+                <button v-if="user !== null && photos.hasNext" @click="loadPhotos" class="btn btn-primary mt-3 mb-3">Load
+                    More</button>
+                <LoadingSpinner :loading="loading"></LoadingSpinner>
+                <div v-if="!photos.hasNext" class="alert alert-secondary mt-3 mb-3" role="alert">
+                    No more photos to show.
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style scoped></style>

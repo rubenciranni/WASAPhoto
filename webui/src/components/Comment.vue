@@ -1,5 +1,6 @@
 <script>
 export default {
+    emits: ['commentDeleted'],
     props: ["commentData", "postData"],
     data() {
         return {

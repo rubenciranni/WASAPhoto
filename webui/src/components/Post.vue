@@ -1,5 +1,6 @@
 <script>
 export default {
+    emits: ['postDeleted'],
     props: ["postData"],
     data() {
         return {
@@ -16,7 +17,6 @@ export default {
         }
     },
     mounted() {
-        this.loadComments()
         this.isAuthorLoggedInUser = (localStorage.getItem("userId") == this.postData.author.userId)
     },
     methods: {
@@ -80,6 +80,34 @@ export default {
             }
             this.loading = false
         },
+        resetComments() {
+            this.comments = {
+                records: [],
+                lastDate: null,
+                lastId: null,
+                hasNext: true,
+            }
+        },
+        async deletePost() {
+            try {
+                await this.$axios.delete(`/photos/${this.postData.photoId}`)
+                this.$emit('post-deleted')
+            } catch (e) {
+                if (e.response && e.response.status === 400) {
+                    this.errormsg = "Bad request."
+                } else if (e.response && e.response.status === 401) {
+                    this.errormsg = "Unauthorized."
+                } else if (e.response && e.response.status === 403) {
+                    this.errormsg = "Forbidden."
+                } else if (e.response && e.response.status === 404) {
+                    this.errormsg = "Not Found."
+                } else if (e.response && e.response.status === 500) {
+                    this.errormsg = "An internal error occurred. Please try again later."
+                } else {
+                    this.errormsg = e.toString()
+                }
+            }
+        },
         reloadComments() {
             this.comments = {
                 records: [],
@@ -127,8 +155,6 @@ export default {
         <div class="row">
             <div class="col-md-5 mx-auto">
                 <div class="card">
-                    <button v-if="isAuthorLoggedInUser" type="button" class="btn-close btn-danger" aria-label="Close"
-                        @click="deleteComment"></button>
                     <img :src="`${$axios.defaults.baseURL}/photos/${postData.photoId}`" class="card-img-top"
                         alt="Post Image" />
                     <div class="card-body">
@@ -149,13 +175,19 @@ export default {
                                     {{ postData.numberOfLikes }}
                                 </span>
                             </button>
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#commentModal"
-                                class="btn btn-secondary">
+                            <button @click="loadComments" type="button" data-bs-toggle="modal"
+                                data-bs-target="#commentModal" class="btn btn-secondary me-2">
                                 <svg class="feather">
                                     <use href="/feather-sprite-v4.29.0.svg#message-circle" />
                                 </svg>
                                 Comment
                                 <span class="badge badge-light"> {{ postData.numberOfComments }}</span>
+                            </button>
+                            <button v-if="isAuthorLoggedInUser" type="button" class="btn btn-danger" aria-label="Close"
+                                @click="deletePost">
+                                <svg class="feather">
+                                    <use href="/feather-sprite-v4.29.0.svg#trash-2" />
+                                </svg>
                             </button>
                         </div>
                         <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
@@ -171,7 +203,8 @@ export default {
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="commentModalLabel">Comments</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button @click="resetComments" type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <ul class="list-group">

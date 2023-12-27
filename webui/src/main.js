@@ -6,6 +6,7 @@ import ErrorMsg from './components/ErrorMsg.vue'
 import LoadingSpinner from './components/LoadingSpinner.vue'
 import Post from './components/Post.vue'
 import Comment from './components/Comment.vue'
+import User from './components/User.vue'
 
 import './assets/dashboard.css'
 import './assets/main.css'
@@ -16,6 +17,7 @@ app.component("ErrorMsg", ErrorMsg)
 app.component("LoadingSpinner", LoadingSpinner)
 app.component("Post", Post)
 app.component("Comment", Comment)
+app.component("User", User)
 
 router.beforeEach(async (to, from) => {
     const authToken = axios.defaults.headers.common['Authorization']

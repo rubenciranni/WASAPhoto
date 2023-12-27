@@ -44,8 +44,18 @@ export default {
 			}
 			this.loading = false
 		},
+		handlePostDeleted() {
+			this.photos = {
+				records: [],
+				lastDate: null,
+				lastId: null,
+				hasNext: true
+			}
+			this.loadPhotos()
+		}
 	},
 	mounted() {
+		this.$emit("logged-in")
 		this.loadPhotos()
 	}
 }
@@ -59,7 +69,7 @@ export default {
 		</div>
 		<ul class="list-group">
 			<li class="list-group-item" v-for="photo in photos.records">
-				<Post :post-data="photo" />
+				<Post @post-deleted="handlePostDeleted" :post-data="photo" />
 			</li>
 		</ul>
 		<div class="text-center">
