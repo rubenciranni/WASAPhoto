@@ -41,7 +41,7 @@ export default {
 				<div class="position-sticky pt-3 sidebar-sticky">
 					<ul class="nav flex-column">
 						<li class="nav-item">
-							<RouterLink :to="`/${this.username}`" class="nav-link">
+							<RouterLink :to="`/${username}`" class="nav-link">
 								<svg class="feather">
 									<use href="/feather-sprite-v4.29.0.svg#user" />
 								</svg>

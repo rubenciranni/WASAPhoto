@@ -320,12 +320,12 @@ export default {
     <div v-if="!errormsg.userNotFound">
         <!-- Profile info -->
         <div class="container pt-3 pb-2 mt-3 mb-3 border-bottom">
-            <h2 class=""> {{ this.user.username }}</h2>
+            <h2 class=""> {{ user.username }}</h2>
             <ErrorMsg v-if="errormsg.profile" :msg="errormsg.profile"></ErrorMsg>
             <div class="row mb-3">
                 <div class="col-2">
                     <span class="ml-2">
-                        {{ this.user.numberOfPhotos }}
+                        {{ user.numberOfPhotos }}
                         <strong>Posts</strong>
                     </span>
                 </div>
@@ -333,7 +333,7 @@ export default {
                     <UserListModal title="Followers" :users-data="followers" @reset-users="resetFollowers"
                         @update-users="loadFollowers"></UserListModal>
                     <span>
-                        {{ this.user.numberOfFollowers }}
+                        {{ user.numberOfFollowers }}
                         <strong>Followers</strong>
                     </span>
                 </div>
@@ -341,7 +341,7 @@ export default {
                     <UserListModal title="Following" :users-data="following" @reset-users="resetFollowing"
                         @update-users="loadFollowing"></UserListModal>
                     <span>
-                        {{ this.user.numberOfFollowing }}
+                        {{ user.numberOfFollowing }}
                         <strong>Following</strong>
                     </span>
                 </div>
