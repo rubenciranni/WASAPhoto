@@ -57,8 +57,8 @@ export default {
 					</div>
 					<button :disabled="!username || !isUsernameValid() || loading" type="submit"
 						class="btn btn-primary">Login</button>
-					<LoadingSpinner :loading="loading"></LoadingSpinner>
 				</form>
+				<LoadingSpinner :loading="loading"></LoadingSpinner>
 			</div>
 		</div>
 	</div>

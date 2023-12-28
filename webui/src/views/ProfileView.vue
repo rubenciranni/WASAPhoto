@@ -2,8 +2,15 @@
 export default {
     data: function () {
         return {
-            errormsg: null,
-            loading: false,
+            errormsg: {
+                userNotFound: false,
+                profile: null,
+                photos: null
+            },
+            loading: {
+                profile: false,
+                photos: false,
+            },
             isUserLoggedInUser: null,
             newUsername: null,
             user: {
@@ -41,7 +48,7 @@ export default {
         await this.getUser()
         this.isUserLoggedInUser = (localStorage.getItem("userId") == this.user.userId)
         if (!this.user.username) {
-            this.errormsg = "Not Found."
+            this.errormsg.userNotFound = true
         } else {
             await this.loadProfile()
             this.loadPhotos()
@@ -49,50 +56,53 @@ export default {
     },
     methods: {
         async getUser() {
+            this.errormsg.profile = null
             try {
                 let response = await this.$axios.get("/users/", { params: { username: this.$route.params.username } })
                 if (response.data.records.length == 1) {
                     this.user = response.data.records[0]
                 } else {
-                    this.errormsg = "Not Found."
+                    this.errormsg.profile = "Not Found."
                 }
             } catch (e) {
                 if (e.response && e.response.status === 400) {
-                    this.errormsg = "Bad request."
+                    this.errormsg.profile = "Bad request."
                 } else if (e.response && e.response.status === 401) {
-                    this.errormsg = "Unauthorized."
+                    this.errormsg.profile = "Unauthorized."
                 } else if (e.response && e.response.status === 500) {
-                    this.errormsg = "An internal error occurred. Please try again later."
+                    this.errormsg.profile = "An internal error occurred. Please try again later."
                 } else {
-                    this.errormsg = e.toString()
+                    this.errormsg.profile = e.toString()
                 }
             }
         },
         async loadProfile() {
-            this.loading = true
+            this.loading.profile = true
+            this.errormsg.profile = null
             try {
                 let response = await this.$axios.get(`/users/${this.user.userId}`)
                 this.user = response.data
             } catch (e) {
                 if (e.response && e.response.status === 400) {
-                    this.errormsg = "Bad request."
+                    this.errormsg.profile = "Bad request."
                 } else if (e.response && e.response.status === 401) {
-                    this.errormsg = "Unauthorized."
+                    this.errormsg.profile = "Unauthorized."
                 } else if (e.response && e.response.status === 403) {
-                    this.errormsg = "Forbidden."
+                    this.errormsg.profile = "Forbidden."
                 } else if (e.response && e.response.status === 404) {
-                    this.errormsg = "Not Found."
+                    this.errormsg.profile = "Not Found."
                 } else if (e.response && e.response.status === 500) {
-                    this.errormsg = "An internal error occurred. Please try again later."
+                    this.errormsg.profile = "An internal error occurred. Please try again later."
                 } else {
-                    this.errormsg = e.toString()
+                    this.errormsg.profile = e.toString()
                 }
             } finally {
-                this.loading = false
+                this.loading.profile = false
             }
         },
         async loadPhotos() {
-            this.loading = true
+            this.loading.photos = true
+            this.errormsg.photos = null
             try {
                 let response = await this.$axios.get("/photos/", {
                     params: {
@@ -114,20 +124,21 @@ export default {
 
             } catch (e) {
                 if (e.response && e.response.status === 400) {
-                    this.errormsg = "Bad request."
+                    this.errormsg.photos = "Bad request."
                 } else if (e.response && e.response.status === 401) {
-                    this.errormsg = "Unauthorized."
+                    this.errormsg.photos = "Unauthorized."
                 } else if (e.response && e.response.status === 500) {
-                    this.errormsg = "An internal error occurred. Please try again later."
+                    this.errormsg.photos = "An internal error occurred. Please try again later."
                 } else {
-                    this.errormsg = e.toString()
+                    this.errormsg.photos = e.toString()
                 }
             } finally {
-                this.loading = false
+                this.loading.photos = false
             }
         },
         async loadFollowers() {
-            this.loading = true
+            this.loading.profile = true
+            this.errormsg.profile = null
             try {
                 let response = await this.$axios.get(`/users/${this.user.userId}/followers/`, {
                     params: {
@@ -145,20 +156,20 @@ export default {
                 }
             } catch (e) {
                 if (e.response && e.response.status === 400) {
-                    this.errormsg = "Bad request."
+                    this.errormsg.profile = "Bad request."
                 } else if (e.response && e.response.status === 401) {
-                    this.errormsg = "Unauthorized."
+                    this.errormsg.profile = "Unauthorized."
                 } else if (e.response && e.response.status === 403) {
-                    this.errormsg = "Forbidden."
+                    this.errormsg.profile = "Forbidden."
                 } else if (e.response && e.response.status === 404) {
-                    this.errormsg = "Not Found."
+                    this.errormsg.profile = "Not Found."
                 } else if (e.response && e.response.status === 500) {
-                    this.errormsg = "An internal error occurred. Please try again later."
+                    this.errormsg.profile = "An internal error occurred. Please try again later."
                 } else {
-                    this.errormsg = e.toString()
+                    this.errormsg.profile = e.toString()
                 }
             } finally {
-                this.loading = false
+                this.loading.profile = false
             }
         },
         resetFollowers() {
@@ -170,7 +181,8 @@ export default {
             }
         },
         async loadFollowing() {
-            this.loading = true
+            this.loading.profile = true
+            this.errormsg.profile = null
             try {
                 let response = await this.$axios.get(`/users/${this.user.userId}/following/`, {
                     params: {
@@ -188,20 +200,20 @@ export default {
                 }
             } catch (e) {
                 if (e.response && e.response.status === 400) {
-                    this.errormsg = "Bad request."
+                    this.errormsg.profile = "Bad request."
                 } else if (e.response && e.response.status === 401) {
-                    this.errormsg = "Unauthorized."
+                    this.errormsg.profile = "Unauthorized."
                 } else if (e.response && e.response.status === 403) {
-                    this.errormsg = "Forbidden."
+                    this.errormsg.profile = "Forbidden."
                 } else if (e.response && e.response.status === 404) {
-                    this.errormsg = "Not Found."
+                    this.errormsg.profile = "Not Found."
                 } else if (e.response && e.response.status === 500) {
-                    this.errormsg = "An internal error occurred. Please try again later."
+                    this.errormsg.profile = "An internal error occurred. Please try again later."
                 } else {
-                    this.errormsg = e.toString()
+                    this.errormsg.profile = e.toString()
                 }
             } finally {
-                this.loading = false
+                this.loading.profile = false
             }
         },
         resetFollowing() {
@@ -213,7 +225,7 @@ export default {
             }
         },
         async toggleFollow() {
-            this.loading = true
+            this.errormsg.profile = null
             try {
                 if (!this.user.isFollowed) {
                     await this.$axios.put(`/following/${this.user.userId}`)
@@ -226,24 +238,22 @@ export default {
                 }
             } catch (e) {
                 if (e.response && e.response.status === 400) {
-                    this.errormsg = "Bad request."
+                    this.errormsg.profile = "Bad request."
                 } else if (e.response && e.response.status === 401) {
-                    this.errormsg = "Unauthorized."
+                    this.errormsg.profile = "Unauthorized."
                 } else if (e.response && e.response.status === 403) {
-                    this.errormsg = "Forbidden."
+                    this.errormsg.profile = "Forbidden."
                 } else if (e.response && e.response.status === 404) {
-                    this.errormsg = "Not Found."
+                    this.errormsg.profile = "Not Found."
                 } else if (e.response && e.response.status === 500) {
-                    this.errormsg = "An internal error occurred. Please try again later."
+                    this.errormsg.profile = "An internal error occurred. Please try again later."
                 } else {
-                    this.errormsg = e.toString()
+                    this.errormsg.profile = e.toString()
                 }
-            } finally {
-                this.loading = false
             }
         },
         async toggleBan() {
-            this.loading = true
+            this.errormsg.profile = null
             try {
                 if (!this.user.isBanned) {
                     await this.$axios.put(`/bans/${this.user.userId}`)
@@ -254,23 +264,22 @@ export default {
                 }
             } catch (error) {
                 if (e.response && e.response.status === 400) {
-                    this.errormsg = "Bad request."
+                    this.errormsg.profile = "Bad request."
                 } else if (e.response && e.response.status === 401) {
-                    this.errormsg = "Unauthorized."
+                    this.errormsg.profile = "Unauthorized."
                 } else if (e.response && e.response.status === 403) {
-                    this.errormsg = "Forbidden."
+                    this.errormsg.profile = "Forbidden."
                 } else if (e.response && e.response.status === 404) {
-                    this.errormsg = "Not Found."
+                    this.errormsg.profile = "Not Found."
                 } else if (e.response && e.response.status === 500) {
-                    this.errormsg = "An internal error occurred. Please try again later."
+                    this.errormsg.profile = "An internal error occurred. Please try again later."
                 } else {
-                    this.errormsg = e.toString()
+                    this.errormsg.profile = e.toString()
                 }
-            } finally {
-                this.loading = false
             }
         },
         async updateUsername() {
+            this.errormsg.profile = null
             try {
                 await this.$axios.put("settings/username", { newUsername: this.newUsername })
                 this.user.username = this.newUsername
@@ -278,18 +287,17 @@ export default {
                 this.$router.replace(`/${this.newUsername}`)
             } catch (e) {
                 if (e.response && e.response.status === 400) {
-                    this.errormsg = "Bad request."
+                    this.errormsg.profile = "Bad request."
                 } else if (e.response && e.response.status === 401) {
-                    this.errormsg = "Unauthorized."
+                    this.errormsg.profile = "Unauthorized."
                 } else if (e.response && e.response.status === 403) {
-                    this.errormsg = "New username is already taken."
+                    this.errormsg.profile = "New username is already taken."
                 } else if (e.response && e.response.status === 500) {
-                    this.errormsg = "An internal error occurred. Please try again later."
+                    this.errormsg.profile = "An internal error occurred. Please try again later."
                 } else {
-                    this.errormsg = e.toString()
+                    this.errormsg.profile = e.toString()
                 }
             }
-
         },
         handlePostDeleted() {
             this.photos = {
@@ -309,10 +317,11 @@ export default {
 </script>
 
 <template>
-    <div>
+    <div v-if="!errormsg.userNotFound">
         <!-- Profile info -->
         <div class="container pt-3 pb-2 mt-3 mb-3 border-bottom">
             <h2 class=""> {{ this.user.username }}</h2>
+            <ErrorMsg v-if="errormsg.profile" :msg="errormsg.profile"></ErrorMsg>
             <div class="row mb-3">
                 <div class="col-2">
                     <span class="ml-2">
@@ -389,7 +398,7 @@ export default {
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button :disabled="!newUsername || !isUsernameValid() || loading" type="submit"
+                                    <button :disabled="!newUsername || !isUsernameValid()" type="submit"
                                         class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
                                 </div>
                             </form>
@@ -397,11 +406,15 @@ export default {
                     </div>
                 </div>
             </div>
+            <LoadingSpinner :loading="loading.profile"></LoadingSpinner>
         </div>
         <!-- Posts -->
-        <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+        <ErrorMsg v-if="errormsg.photos" :msg="errormsg.photos"></ErrorMsg>
         <PostList :posts-data="photos" @load-more="loadPhotos" @post-deleted="handlePostDeleted"></PostList>
-        <LoadingSpinner :loading="loading"></LoadingSpinner>
+        <LoadingSpinner :loading="loading.photos"></LoadingSpinner>
+    </div>
+    <div v-else>
+        <ErrorMsg class="mt-3" msg="User not found."></ErrorMsg>
     </div>
 </template>
 

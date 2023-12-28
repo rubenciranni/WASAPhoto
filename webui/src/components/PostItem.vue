@@ -27,7 +27,6 @@ export default {
     },
     methods: {
         async addComment() {
-            this.loading = true
             this.errormsg = null
             try {
                 await this.$axios.post(`/photos/${this.postData.photoId}/comments/`, { text: this.newCommentText })
@@ -48,7 +47,6 @@ export default {
                     this.errormsg = e.toString()
                 }
             }
-            this.loading = false
         },
         async loadComments() {
             this.loading = true
@@ -83,8 +81,9 @@ export default {
                 } else {
                     this.errormsg = e.toString()
                 }
+            } finally {
+                this.loading = false
             }
-            this.loading = false
         },
         reloadComments() {
             this.comments = {
@@ -109,6 +108,7 @@ export default {
             this.$emit('comment-deleted')
         },
         async toggleLike() {
+            this.errormsg = null
             try {
                 if (!this.postData.isLiked) {
                     await this.$axios.put(`/liked-photos/${this.postData.photoId}`)
@@ -180,6 +180,7 @@ export default {
             }
         },
         async deletePost() {
+            this.errormsg = null
             try {
                 await this.$axios.delete(`/photos/${this.postData.photoId}`)
                 this.$emit('post-deleted')

@@ -15,6 +15,7 @@ export default {
 	methods: {
 		async loadPhotos() {
 			this.loading = true
+			this.errormsg = null
 			try {
 				let response = await this.$axios.get("/stream", {
 					params: {
@@ -43,8 +44,9 @@ export default {
 				} else {
 					this.errormsg = e.toString()
 				}
+			} finally {
+				this.loading = false
 			}
-			this.loading = false
 		},
 		handlePostDeleted() {
 			this.photos = {

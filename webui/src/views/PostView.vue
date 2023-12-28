@@ -12,6 +12,7 @@ export default {
   methods: {
     async upload() {
       this.loading = true
+      this.errormsg = null
       try {
         const formData = new FormData()
         formData.append("caption", this.caption)
@@ -86,6 +87,7 @@ export default {
             </div>
             <div class="modal-body">
               Are you sure you want to upload the post?
+              <LoadingSpinner :loading="loading"></LoadingSpinner>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

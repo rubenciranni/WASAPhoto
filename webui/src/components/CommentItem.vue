@@ -5,7 +5,6 @@ export default {
     data() {
         return {
             errormsg: null,
-            loading: false,
             isAuthorLoggedInUser: null
         }
     },
@@ -14,6 +13,7 @@ export default {
     },
     methods: {
         async deleteComment() {
+            this.errormsg = null
             try {
                 await this.$axios.delete(`/photos/${this.postData.photoId}/comments/${this.commentData.commentId}`)
                 this.$emit('comment-deleted')
