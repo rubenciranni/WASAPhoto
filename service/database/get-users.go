@@ -9,14 +9,14 @@ func (db *appdbimpl) GetUsers(loggedInUserId string, username string, startId st
 		SELECT *
 		FROM User
 		WHERE 
-			username LIKE '%' || ? || '%' COLLATE NOCASE AND
-			userId > ? AND
-			userId NOT IN (
-				SELECT userId
+			User.username LIKE '%' || ? || '%' COLLATE NOCASE AND
+			User.userId > ? AND
+			NOT EXISTS (
+				SELECT 1
 				FROM BAN
-				WHERE bannedId = ?
+				WHERE bannerId = User.userId AND bannedId = ?
 			)
-		ORDER BY userId
+		ORDER BY User.userId
 		LIMIT 20
 		`,
 		username,
