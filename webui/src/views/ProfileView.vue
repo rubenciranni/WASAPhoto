@@ -58,7 +58,12 @@ export default {
         async getUser() {
             this.errormsg.profile = null
             try {
-                let response = await this.$axios.get("/users/", { params: { username: this.$route.params.username } })
+                let response = await this.$axios.get("/users/", {
+                    params: {
+                        username: this.$route.params.username,
+                        isExactMatch: true
+                    }
+                })
                 if (response.data.records.length == 1) {
                     this.user = response.data.records[0]
                 } else {
