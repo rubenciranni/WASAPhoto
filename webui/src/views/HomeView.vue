@@ -15,7 +15,6 @@ export default {
 	methods: {
 		async loadPhotos() {
 			this.loading = true
-			this.errormsg = null
 			try {
 				let response = await this.$axios.get("/stream", {
 					params: {
@@ -70,19 +69,9 @@ export default {
 			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 			<h1 class="h2">Stream</h1>
 		</div>
-		<ul class="list-group">
-			<li class="list-group-item" v-for="photo in photos.records">
-				<Post @post-deleted="handlePostDeleted" :post-data="photo" />
-			</li>
-		</ul>
-		<div class="text-center">
-			<button v-if="photos.hasNext" @click="loadPhotos" class="btn btn-primary mt-3 mb-3">Load More</button>
-			<LoadingSpinner :loading="loading"></LoadingSpinner>
-			<div v-if="!photos.hasNext" class="alert alert-secondary mt-3 mb-3" role="alert">
-				No more photos to show.
-			</div>
-		</div>
 		<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+		<PostList :posts-data="photos" @load-more="loadPhotos" @post-deleted="handlePostDeleted"></PostList>
+		<LoadingSpinner :loading="loading"></LoadingSpinner>
 	</div>
 </template>
 

@@ -310,6 +310,7 @@ export default {
 
 <template>
     <div>
+        <!-- Profile info -->
         <div class="container pt-3 pb-2 mt-3 mb-3 border-bottom">
             <h2 class=""> {{ this.user.username }}</h2>
             <div class="row mb-3">
@@ -395,27 +396,12 @@ export default {
                         </div>
                     </div>
                 </div>
-
-            </div>
-
-        </div>
-
-        <div class="container">
-            <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
-            <ul class="list-group">
-                <li class="list-group-item" v-for="photo in photos.records">
-                    <Post @post-deleted="handlePostDeleted" :post-data="photo" />
-                </li>
-            </ul>
-            <div class="text-center">
-                <button v-if="user !== null && photos.hasNext" @click="loadPhotos" class="btn btn-primary mt-3 mb-3">Load
-                    More</button>
-                <LoadingSpinner :loading="loading"></LoadingSpinner>
-                <div v-if="!photos.hasNext" class="alert alert-secondary mt-3 mb-3" role="alert">
-                    No more photos to show.
-                </div>
             </div>
         </div>
+        <!-- Posts -->
+        <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+        <PostList :posts-data="photos" @load-more="loadPhotos" @post-deleted="handlePostDeleted"></PostList>
+        <LoadingSpinner :loading="loading"></LoadingSpinner>
     </div>
 </template>
 

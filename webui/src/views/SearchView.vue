@@ -73,8 +73,8 @@ export default {
       </form>
       <div class="mt-4">
         <ul class="list-group">
-          <a class="list-group-item list-group-item-action" v-for="user in users.records">
-            <User :user-data="user" />
+          <a class="list-group-item list-group-item-action" v-for="user in users.records" :key="user.userId">
+            <UserItem :user-data="user" />
           </a>
         </ul>
         <button v-if="users.records !== null && users.hasNext" @click="loadUsers" class="btn btn-primary mt-3 mb-3">Load

@@ -32,8 +32,9 @@ export default {
                 <div class="modal-body">
                     <div class="mt-4">
                         <ul class="list-group">
-                            <a class="list-group-item list-group-item-action" v-for="user in usersData.records">
-                                <User :user-data="user" />
+                            <a class="list-group-item list-group-item-action" v-for="user in usersData.records"
+                                :key="user.userId">
+                                <UserItem :user-data="user" />
                             </a>
                         </ul>
                         <button v-if="usersData.records !== null && usersData.hasNext" @click="$emit('update-users')"

@@ -1,6 +1,6 @@
 <script>
 export default {
-    emits: ['postDeleted'],
+    emits: ['postDeleted', 'commentAdded', 'commentDeleted', 'likeAdded', 'likeDeleted'],
     props: ["postData"],
     data() {
         return {
@@ -32,7 +32,7 @@ export default {
             try {
                 await this.$axios.post(`/photos/${this.postData.photoId}/comments/`, { text: this.newCommentText })
                 this.reloadComments()
-                this.postData.numberOfComments++
+                this.$emit('comment-added')
             } catch (e) {
                 if (e.response && e.response.status === 400) {
                     this.errormsg = "Bad request."
@@ -106,20 +106,18 @@ export default {
         },
         async handleCommentDeleted() {
             this.reloadComments()
-            this.postData.numberOfComments--
+            this.$emit('comment-deleted')
         },
         async toggleLike() {
             try {
                 if (!this.postData.isLiked) {
                     await this.$axios.put(`/liked-photos/${this.postData.photoId}`)
                     this.resetLikes()
-                    this.postData.numberOfLikes++
-                    this.postData.isLiked = true
+                    this.$emit('like-added')
                 } else {
                     await this.$axios.delete(`/liked-photos/${this.postData.photoId}`)
                     this.resetLikes()
-                    this.postData.numberOfLikes--
-                    this.postData.isLiked = false
+                    this.$emit('like-deleted')
                 }
             } catch (e) {
                 if (e.response && e.response.status === 400) {
@@ -252,9 +250,7 @@ export default {
                         <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
                     </div>
                 </div>
-
             </div>
-
         </div>
     </div>
     <div class="modal fade" :id="'commentModal' + postData.photoId" tabindex="-1"
@@ -268,8 +264,8 @@ export default {
                 </div>
                 <div class="modal-body">
                     <ul class="list-group">
-                        <li class="list-group-item" v-for="comment in comments.records">
-                            <Comment @comment-deleted="handleCommentDeleted" :comment-data="comment"
+                        <li class="list-group-item" v-for="comment in comments.records" :key="comment.commentId">
+                            <CommentItem @comment-deleted="handleCommentDeleted" :comment-data="comment"
                                 :post-data="postData" />
                         </li>
                     </ul>
