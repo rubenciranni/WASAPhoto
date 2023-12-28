@@ -2,8 +2,9 @@ package request
 
 type SearchUserRequest struct {
 	QueryParameters struct {
-		Username string `key:"username"`
-		StartId  string `key:"startId"`
+		Username     string `key:"username"`
+		IsExactMatch bool   `key:"isExactMatch"`
+		StartId      string `key:"startId"`
 	}
 }
 

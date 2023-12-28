@@ -211,10 +211,10 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }
   /users/:
-    parameters:
-      - $ref: "#/components/parameters/QueryStringUsername"
     get:
       parameters:
+        - $ref: "#/components/parameters/QueryStringUsername"
+        - $ref: "#/components/parameters/QueryIsExactMatch"
         - $ref: "#/components/parameters/StartId"
       tags: ["users"]
       summary: Gets users matching given username
@@ -759,6 +759,17 @@ components:
       in: query
       schema: { $ref: "#/components/schemas/username" }
       required: true
+    QueryIsExactMatch:
+      description: Whether the given data should be matched exactly.
+      name: isExactMatch
+      in: query
+      schema:
+        description: |-
+          It is true iff the given data should be match exactly.
+          It defaults to false if not specified.
+        type: boolean
+        default: false
+      required: false
     QueryStringUserId:
       description: User identifier passed in query string.
       name: userId
