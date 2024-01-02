@@ -41,7 +41,9 @@ export default {
     <div class="card">
         <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
         <div class="card-body d-flex justify-content-between align-items-start">
-            <h6 class="card-title">{{ commentData.author.username }}</h6>
+            <a :href="`#/${postData.author.username}`">
+                <h6 class="card-title">{{ postData.author.username }}</h6>
+            </a>
             <button v-if="isAuthorLoggedInUser" type="button" class="btn btn-danger" aria-label="Close"
                 @click="deleteComment">
                 <svg class="feather">
