@@ -42,13 +42,13 @@ npm run dev
 ### Backend
 
 ```sh
-$ docker build -t wasa-photos-backend:latest -f Dockerfile.backend .
+$ docker build -t wasaphoto-backend:latest -f Dockerfile.backend .
 ```
 
 ### Frontend
 
 ```sh
-$ docker build -t wasa-photos-frontend:latest -f Dockerfile.frontend .
+$ docker build -t wasaphoto-frontend:latest -f Dockerfile.frontend .
 ```
 
 ## How to run container images
@@ -56,13 +56,13 @@ $ docker build -t wasa-photos-frontend:latest -f Dockerfile.frontend .
 ### Backend
 
 ```sh
-$ docker run -it --rm -p 3000:3000 wasa-photos-backend:latest
+$ docker run -it --rm -p 3000:3000 wasaphoto-backend:latest
 ```
 
 ### Frontend
 
 ```
-$ docker run -it --rm -p 8080:80 wasa-photos-frontend:latest
+$ docker run -it --rm -p 8080:80 wasaphoto-frontend:latest
 ```
 
 ## License
