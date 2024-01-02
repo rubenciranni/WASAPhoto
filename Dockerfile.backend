@@ -1,11 +1,11 @@
-FROM golang:1.19.1 AS builder
+FROM golang:1.17-bullseye AS builder
 
 WORKDIR /src/
 COPY . .
 
 RUN go build -o /app/webapi ./cmd/webapi
 
-FROM debian:bookworm
+FROM debian:bullseye
 
 EXPOSE 3000
 
