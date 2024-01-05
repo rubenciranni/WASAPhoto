@@ -4,7 +4,7 @@ export default {
     props: ["usersData", "title"],
     data() {
         return {
-            modalId: crypto.randomUUID()
+            modalId: Math.floor(Date.now() * Math.random()) // generates a random ID
         }
     }
 }
