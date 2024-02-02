@@ -311,6 +311,7 @@ export default {
                 lastId: null,
                 hasNext: true
             }
+            this.user.numberOfPhotos--
             this.loadPhotos()
         },
         isUsernameValid() {

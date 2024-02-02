@@ -41,9 +41,14 @@ export default {
     <div class="card">
         <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
         <div class="card-body d-flex justify-content-between align-items-start">
-            <a :href="`#/${postData.author.username}`">
-                <h6 class="card-title">{{ postData.author.username }}</h6>
-            </a>
+            <h6 class="card-title">
+                <RouterLink :to="`/${commentData.author.username}`" class="nav-link">
+                    <svg class="feather">
+                        <use href="/feather-sprite-v4.29.0.svg#user" />
+                    </svg>
+                    {{ commentData.author.username }}
+                </RouterLink>
+            </h6>
             <button v-if="isAuthorLoggedInUser" type="button" class="btn btn-danger" aria-label="Close"
                 @click="deleteComment">
                 <svg class="feather">

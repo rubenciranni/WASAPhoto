@@ -212,9 +212,14 @@ export default {
                     <img :src="`${$axios.defaults.baseURL}/photos/${postData.photoId}`" class="card-img-top"
                         alt="Post Image" />
                     <div class="card-body">
-                        <a :href="`#/${postData.author.username}`">
-                            <h6 class="card-title">{{ postData.author.username }}</h6>
-                        </a>
+                        <h6 class="card-title">
+                            <RouterLink :to="`/${postData.author.username}`" class="nav-link">
+                                <svg class="feather">
+                                    <use href="/feather-sprite-v4.29.0.svg#user" />
+                                </svg>
+                                {{ postData.author.username }}
+                            </RouterLink>
+                        </h6>
                         <p class="card-text">{{ postData.caption }}</p>
                         <p class="card-text">
                             <small class="text-muted">{{ postData.dateTime }}</small>
@@ -264,6 +269,11 @@ export default {
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="commentInput" class="form-label">Add a Comment:</label>
+                        <textarea v-model="newCommentText" class="form-control" id="commentInput" rows="3"></textarea>
+                        <button @click="addComment" type="button" class="btn btn-primary mt-2">Add Comment</button>
+                    </div>
                     <ul class="list-group">
                         <li class="list-group-item" v-for="comment in comments.records" :key="comment.commentId">
                             <CommentItem @comment-deleted="handleCommentDeleted" :comment-data="comment"
@@ -277,11 +287,6 @@ export default {
                         <div v-if="!comments.hasNext" class="alert alert-secondary mt-3 mb-3" role="alert">
                             No more comments to show.
                         </div>
-                    </div>
-                    <div class="mt-3">
-                        <label for="commentInput" class="form-label">Add a Comment:</label>
-                        <textarea v-model="newCommentText" class="form-control" id="commentInput" rows="3"></textarea>
-                        <button @click="addComment" type="button" class="btn btn-primary mt-2">Add Comment</button>
                     </div>
                 </div>
             </div>

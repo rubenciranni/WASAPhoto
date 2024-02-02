@@ -6,6 +6,14 @@ export default {
         return {
             modalId: Math.floor(Date.now() * Math.random()) // generates a random ID
         }
+    },
+    beforeUnmount() {
+        const modalBackdrop = document.querySelector('.modal-backdrop');
+        if (modalBackdrop) {
+            modalBackdrop.remove();
+        }
+        document.body.classList.remove('modal-open')
+        document.body.style.overflow = 'auto'
     }
 }
 </script>

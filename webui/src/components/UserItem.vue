@@ -5,9 +5,12 @@ export default {
 </script>
 
 <template>
-    <a :href="`#/${userData.username}`">
+    <RouterLink :to="`/${userData.username}`" class="nav-link">
+        <svg class="feather">
+            <use href="/feather-sprite-v4.29.0.svg#user" />
+        </svg>
         {{ userData.username }}
-    </a>
+    </RouterLink>
 </template>
 
 <style></style>
